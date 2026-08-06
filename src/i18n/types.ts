@@ -6,6 +6,8 @@ export interface UIStrings {
     about: string;
     archives: string;
     search: string;
+    categories: string;
+    series: string;
   };
   post: {
     publishedAt: string;
@@ -60,6 +62,26 @@ export interface UIStrings {
     noResults: string;
     goToPreviousPage: string;
     goToNextPage: string;
+  };
+  category: {
+    title: string;
+    desc: string;
+    allPosts: string;
+    seeMore: string;
+    seriesCount: string;
+  };
+  series: {
+    title: string;
+    desc: string;
+    part: string;
+    ongoing: string;
+    completed: string;
+    prevPart: string;
+    nextPart: string;
+    inThisSeries: string;
+  };
+  toc: {
+    title: string;
   };
   notFound: {
     title: string;

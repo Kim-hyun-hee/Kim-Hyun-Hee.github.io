@@ -8,6 +8,8 @@ export default {
     about: "About",
     archives: "Archives",
     search: "Search",
+    categories: "Categories",
+    series: "Series",
   },
   post: {
     publishedAt: "Published at",
@@ -62,6 +64,26 @@ export default {
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",
     goToNextPage: "Go to next page",
+  },
+  category: {
+    title: "Category",
+    desc: "Posts in this category.",
+    allPosts: "All posts",
+    seeMore: "See more",
+    seriesCount: "{{count}} parts",
+  },
+  series: {
+    title: "Series",
+    desc: "Multi-part writeups.",
+    part: "Part {{current}} of {{total}}",
+    ongoing: "Ongoing",
+    completed: "Completed",
+    prevPart: "Previous part",
+    nextPart: "Next part",
+    inThisSeries: "In this series",
+  },
+  toc: {
+    title: "Table of contents",
   },
   notFound: {
     title: "404 Not Found",
