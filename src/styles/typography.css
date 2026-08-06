@@ -35,7 +35,7 @@
     }
 
     a {
-      @apply text-accent wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
+      @apply text-link wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
     }
 
     ul {

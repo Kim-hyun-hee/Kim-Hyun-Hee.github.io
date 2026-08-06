@@ -47,3 +47,6 @@ public/pagefind
 
 # docker compose
 compose.override.yaml
+
+# codex session artifacts (local only)
+.codex/

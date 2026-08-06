@@ -64,20 +64,25 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
     cleanup();
 
     const toc = document.querySelector<HTMLElement>("#floating-toc");
-    const sentinel = document.querySelector<HTMLElement>("#toc-sentinel");
-    if (!toc || !sentinel) return;
+    const inline = document.querySelector<HTMLElement>("#inline-toc");
+    if (!toc || !inline) return;
 
     // 1) 인라인 목차를 지나쳤는지 감시해 부유 목차를 나타내고 감춘다.
-    const reveal = new IntersectionObserver(
-      ([entry]) => {
-        const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
-        toc.classList.toggle("opacity-0", !show);
-        toc.classList.toggle("opacity-100", show);
-        toc.classList.toggle("pointer-events-none", !show);
-      },
-      { rootMargin: "-80px 0px 0px 0px" }
-    );
-    reveal.observe(sentinel);
+    //
+    // 관찰 대상은 반드시 "높이가 있는" 요소여야 한다. IntersectionObserver는
+    // 관찰 영역의 경계를 넘을 때만 콜백을 부르는데, 높이 0인 요소는 경계를
+    // 넘는 순간이 한 번뿐이라 그 시점의 top 값으로 판정이 굳어버리고 이후
+    // 스크롤에는 콜백이 아예 오지 않는다. 인라인 목차 블록은 높이가 있어서
+    // 위/아래 경계를 각각 넘으며 두 번 불린다.
+    const reveal = new IntersectionObserver(([entry]) => {
+      // 인라인 목차가 화면 위로 완전히 빠져나갔을 때만 띄운다.
+      // 아직 아래쪽에 있어 안 보이는 경우(top > 0)와 구분해야 한다.
+      const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      toc.classList.toggle("opacity-0", !show);
+      toc.classList.toggle("opacity-100", show);
+      toc.classList.toggle("pointer-events-none", !show);
+    });
+    reveal.observe(inline);
 
     // 2) 헤딩 스크롤 스파이.
     const links = new Map<string, HTMLAnchorElement>();

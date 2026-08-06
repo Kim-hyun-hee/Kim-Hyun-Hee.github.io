@@ -4,6 +4,7 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-link: var(--link);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
@@ -16,8 +17,9 @@
 [data-theme="light"] {
   --background: #fdfdfe;
   --foreground: #1e1f21;
-  --accent: #353638;
+  --accent: #246d8f;
   --accent-foreground: #ffffff;
+  --link: #353638;
   --muted: #f1f3f7;
   --muted-foreground: #66666e;
   --border: #e2e5ec;
@@ -29,6 +31,7 @@
   --foreground: #f4f4f6;
   --accent: #5db0d7;
   --accent-foreground: #1e1f21;
+  --link: #cfd2d7;
   --muted: #292a2d;
   --muted-foreground: #9999a1;
   --border: #353638;
