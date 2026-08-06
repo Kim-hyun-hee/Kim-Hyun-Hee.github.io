@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join, sep } from "node:path";
 import { CATEGORY_IDS, getSubcategoryIds } from "@/categories";
 import { SERIES_IDS } from "@/series";
 
@@ -15,7 +15,21 @@ beforeAll(() => {
 const page = (...segments: string[]) =>
   join(DIST, ...segments, "index.html");
 
+/**
+ * dist/ 아래 모든 index.html뿐 아니라 모든 *.html을 재귀적으로 찾는다.
+ * pagefind 산출물(dist/pagefind/**)은 우리가 만든 페이지가 아니므로 제외한다.
+ */
+const listHtmlFiles = (dir: string): string[] =>
+  readdirSync(dir, { recursive: true, withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.endsWith(".html"))
+    .map(entry => join(entry.parentPath, entry.name))
+    .filter(file => !file.split(sep).includes("pagefind"));
+
 describe("카테고리 라우트", () => {
+  it("대분류 목록이 비어있지 않다", () => {
+    expect(CATEGORY_IDS.length).toBeGreaterThan(0);
+  });
+
   it("모든 대분류 페이지가 생성된다", () => {
     for (const id of CATEGORY_IDS) {
       expect(existsSync(page("categories", id)), id).toBe(true);
@@ -38,6 +52,10 @@ describe("카테고리 라우트", () => {
 });
 
 describe("시리즈 라우트", () => {
+  it("시리즈 목록이 비어있지 않다", () => {
+    expect(SERIES_IDS.length).toBeGreaterThan(0);
+  });
+
   it("모든 시리즈 페이지가 생성된다", () => {
     for (const id of SERIES_IDS) {
       expect(existsSync(page("series", id)), id).toBe(true);
@@ -66,15 +84,43 @@ describe("껍데기", () => {
 });
 
 describe("내부 링크", () => {
-  it("카테고리·시리즈 링크가 모두 실제 페이지를 가리킨다", () => {
-    const html = readFileSync(page(), "utf-8");
-    const hrefs = [
-      ...html.matchAll(/href="(\/(?:categories|series)\/[^"]*)"/g),
-    ].map(m => m[1]);
+  const htmlFiles = listHtmlFiles(DIST);
 
-    for (const href of hrefs) {
+  it("스캔 대상 HTML 페이지가 하나 이상 존재한다", () => {
+    expect(htmlFiles.length, "dist/ 아래 *.html을 찾지 못했습니다").toBeGreaterThan(
+      0
+    );
+  });
+
+  it("모든 페이지에서 카테고리·시리즈 링크가 실제 페이지를 가리킨다", () => {
+    // 홈만 보면 안 된다 — /series/{id} 링크는 카테고리 페이지의 시리즈 카드
+    // 분기 등 다른 페이지에서만 나타날 수도 있다. dist/ 전체를 스캔해야
+    // "링크는 있는데 검사 대상이 아니어서 놓친다"를 막을 수 있다.
+    const linksBySource: { file: string; href: string }[] = [];
+    for (const file of htmlFiles) {
+      const html = readFileSync(file, "utf-8");
+      const hrefs = [
+        ...html.matchAll(/href="(\/(?:categories|series)\/[^"]*)"/g),
+      ].map(m => m[1]);
+      for (const href of hrefs) {
+        linksBySource.push({ file, href });
+      }
+    }
+
+    // 정규식이 마크업 변경으로 더 이상 매치하지 않으면 아래 for 루프는 그냥
+    // 통과해 버린다 — 검사가 아무것도 안 하고 초록불만 켜는 상태. 그걸
+    // 막기 위해 "뭔가는 추출됐다"를 먼저 단언한다.
+    expect(
+      linksBySource.length,
+      "카테고리·시리즈 href를 하나도 추출하지 못했습니다 (정규식이 마크업과 더 이상 맞지 않을 수 있습니다)"
+    ).toBeGreaterThan(0);
+
+    for (const { file, href } of linksBySource) {
       const path = href.replace(/^\/|\/$/g, "");
-      expect(existsSync(join(DIST, path, "index.html")), href).toBe(true);
+      expect(
+        existsSync(join(DIST, path, "index.html")),
+        `${file}에서 발견된 링크 ${href}가 실제 페이지를 가리키지 않습니다`
+      ).toBe(true);
     }
   });
 });
