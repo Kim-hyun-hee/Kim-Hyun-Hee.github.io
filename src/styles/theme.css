@@ -1,9 +1,20 @@
 /* [CUSTOM] 이 파일은 값이 전부 교체됐습니다.
-   업스트림과 달라진 것: 라이트/다크 색값 14개, --link 토큰 신설(강조색과
-   링크색 분리), --font-app/--font-mono가 가리키는 폰트, 그리고 레이아웃
-   폭 토큰 3개(--sidebar-width / --toc-width / --content-width) 추가.
-   토큰 "이름"은 업스트림 그대로라 기존 유틸리티는 전부 그대로 동작합니다.
-   병합 충돌이 나면 값 선택의 문제이니 이쪽을 유지하면 됩니다. */
+   업스트림과 달라진 것: 라이트/다크 색값, --link·--brand 토큰 신설,
+   --font-app/--font-mono가 가리키는 폰트, 레이아웃 폭 토큰 3개
+   (--sidebar-width / --toc-width / --content-width) 추가.
+   업스트림에 있던 토큰 "이름"은 그대로라 기존 유틸리티는 전부 동작합니다.
+   병합 충돌이 나면 값 선택의 문제이니 이쪽을 유지하면 됩니다.
+
+   ── 색을 쓰지 않는다는 원칙 ────────────────────────────────
+   블로그 UI에는 유채색을 쓰지 않습니다. 그래서 --accent(제목·활성 메뉴·
+   포커스 링·선택 영역 등 UI 강조가 쓰는 토큰)에 본문과 같은 먹색을 넣었고,
+   강조는 색이 아니라 굵기·크기·밑줄로 냅니다.
+
+   파랑은 --brand 에 남겨뒀습니다. 팔레트에서 뺀 게 아니라 지금 UI에서
+   쓰지 않을 뿐입니다. 어딘가에 색을 넣고 싶어지면 `text-brand`,
+   `bg-brand`, `var(--brand)` 로 꺼내 쓰면 되고, UI 전반에 색을 되돌리려면
+   --accent 값을 --brand 값으로 바꾸기만 하면 됩니다. 호출부는 35군데인데
+   전부 --accent 를 거치므로 손댈 필요가 없습니다. */
 
 /* Register design tokens for Tailwind v4 */
 @theme inline {
@@ -12,6 +23,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-link: var(--link);
+  --color-brand: var(--brand);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
@@ -24,9 +36,10 @@
 [data-theme="light"] {
   --background: #fdfdfe;
   --foreground: #1e1f21;
-  --accent: #246d8f;
-  --accent-foreground: #ffffff;
+  --accent: #1e1f21;
+  --accent-foreground: #fdfdfe;
   --link: #353638;
+  --brand: #246d8f;
   --muted: #f1f3f7;
   --muted-foreground: #66666e;
   --border: #e2e5ec;
@@ -36,9 +49,10 @@
 [data-theme="dark"] {
   --background: #1e1f21;
   --foreground: #f4f4f6;
-  --accent: #5db0d7;
+  --accent: #f4f4f6;
   --accent-foreground: #1e1f21;
   --link: #cfd2d7;
+  --brand: #5db0d7;
   --muted: #292a2d;
   --muted-foreground: #9999a1;
   --border: #353638;
