@@ -4,10 +4,11 @@ import { glob } from "astro/loaders";
 import config from "@/config";
 import {
   CATEGORY_IDS,
+  getSubcategoryIds,
   hasSubcategories,
   isValidSubcategory,
 } from "@/categories";
-import { SERIES_IDS } from "@/series";
+import { SERIES, SERIES_IDS } from "@/series";
 
 export const BLOG_PATH = "src/content/posts";
 
@@ -52,7 +53,7 @@ const posts = defineCollection({
           ctx.addIssue({
             code: "custom",
             path: ["subcategory"],
-            message: `"${data.subcategory}"는 "${data.category}"의 subcategory가 아닙니다.`,
+            message: `"${data.subcategory}"는 "${data.category}"의 소분류가 아닙니다.\n            가능: ${getSubcategoryIds(data.category).join(", ")}`,
           });
         }
 
@@ -69,6 +70,14 @@ const posts = defineCollection({
             code: "custom",
             path: ["seriesOrder"],
             message: "series와 seriesOrder는 함께 지정해야 합니다.",
+          });
+        }
+
+        if (data.series && SERIES[data.series].category !== data.category) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["series"],
+            message: `"${data.series}" 시리즈는 "${SERIES[data.series].category}" 대분류에 속하는데, 이 글의 category는 "${data.category}"입니다.`,
           });
         }
       }),

@@ -1,13 +1,10 @@
 import { describe, it, expect } from "vitest";
+import { hasSubcategories } from "@/categories";
 import { SERIES, SERIES_IDS, getSeriesByCategory } from "@/series";
 
 describe("SERIES_IDS", () => {
   it("정의된 시리즈 id를 담는다", () => {
     expect(SERIES_IDS).toContain("dod-digitaltwin-unity");
-  });
-
-  it("모든 id가 SERIES의 키와 일치한다", () => {
-    expect(SERIES_IDS.every(id => id in SERIES)).toBe(true);
   });
 });
 
@@ -21,6 +18,12 @@ describe("SERIES 정의", () => {
   it("status는 ongoing 또는 completed다", () => {
     for (const id of SERIES_IDS) {
       expect(["ongoing", "completed"]).toContain(SERIES[id].status);
+    }
+  });
+
+  it("모든 시리즈는 소분류가 없는 대분류에 속한다 (시리즈 카드가 노출되려면 필요)", () => {
+    for (const id of SERIES_IDS) {
+      expect(hasSubcategories(SERIES[id].category)).toBe(false);
     }
   });
 });

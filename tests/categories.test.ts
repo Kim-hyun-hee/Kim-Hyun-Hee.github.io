@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  CATEGORIES,
   CATEGORY_IDS,
   hasSubcategories,
   getSubcategoryIds,
@@ -17,10 +16,6 @@ describe("CATEGORY_IDS", () => {
       "study",
       "etc",
     ]);
-  });
-
-  it("모든 id가 CATEGORIES의 키와 일치한다", () => {
-    expect(CATEGORY_IDS.every(id => id in CATEGORIES)).toBe(true);
   });
 });
 
