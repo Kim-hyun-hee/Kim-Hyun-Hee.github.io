@@ -1,0 +1,24 @@
+---
+/**
+ * [CUSTOM] 업스트림에 없는 파일 — 이 저장소에서 추가했습니다.
+ *
+ * 홈 첫 화면의 소개 블록. 업스트림 index.astro의 hero 섹션(인사말 + 테마
+ * 홍보 문구 + RSS 링크)을 대체합니다. index.astro를 통째로 고치는 대신
+ * 이 파일로 빼둔 이유는, 업스트림이 index.astro를 수정했을 때 병합 충돌
+ * 범위를 한 줄(<HomeHero />)로 줄이기 위해서입니다.
+ */
+import Socials from "@/components/Socials.astro";
+import config from "@/config";
+---
+
+<section id="hero" class="border-border border-b pt-8 pb-10">
+  <h1 class="text-3xl font-bold sm:text-4xl">
+    {config.site.author}
+  </h1>
+  <p class="text-muted-foreground mt-3 max-w-xl leading-relaxed">
+    {config.site.description}
+  </p>
+  <div class="mt-5">
+    <Socials />
+  </div>
+</section>

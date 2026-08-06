@@ -1,4 +1,16 @@
 ---
+/**
+ * [CUSTOM] 업스트림 원본(195줄짜리 상단 내비게이션)을 이 조립부로 대체했습니다.
+ *
+ * 여러 페이지가 이미 `<Header />`를 import하고 있어서, 그 import를 그대로
+ * 살리려고 파일 이름과 위치만 유지하고 내용을 비웠습니다. 실제 내비게이션은
+ * components/layout/ 아래에 있습니다.
+ *
+ * 업스트림이 Header.astro를 고쳐 충돌이 나면: 업스트림 변경을 살펴보고
+ * 필요한 것만 Sidebar.astro / TopBar.astro 로 옮긴 뒤, 이 파일은 아래 6줄을
+ * 유지하면 됩니다. 원본 헤더가 하던 일(skip-to-content, 내비게이션, 검색,
+ * 아카이브 링크, 테마 토글)은 전부 Sidebar.astro 에 옮겨져 있습니다.
+ */
 import Sidebar from "./layout/Sidebar.astro";
 import TopBar from "./layout/TopBar.astro";
 ---

@@ -45,6 +45,9 @@ const rssHref = getRelativeLocaleUrl(
     <meta name="generator" content={Astro.generator} />
 
     <!-- Fonts -->
+    <!-- [CUSTOM] 업스트림은 Google Sans Code 하나였습니다. 그 폰트에는 한글
+         글리프가 없어 본문이 시스템 폰트로 떨어지므로 교체했습니다.
+         본문 SUIT(로컬 self-host) + 코드 JetBrains Mono. -->
     <Font cssVariable="--font-suit" preload />
     <Font cssVariable="--font-jetbrains-mono" />
 
@@ -114,6 +117,9 @@ const rssHref = getRelativeLocaleUrl(
 
     <ClientRouter />
   </head>
+  <!-- [CUSTOM] 아래 body class 끝의 `lg:ps-(--sidebar-width)` 한 조각만 추가한
+       것입니다. 데스크톱에서 고정 사이드바 폭만큼 본문을 밀어냅니다.
+       나머지 클래스는 업스트림 원본 그대로입니다. -->
   <body
     class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col lg:ps-(--sidebar-width)"
   >

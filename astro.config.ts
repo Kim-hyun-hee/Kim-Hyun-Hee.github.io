@@ -28,6 +28,8 @@ export default defineConfig({
         config.features?.showArchives !== false || !page.endsWith("/archives/"),
     }),
   ],
+  // [CUSTOM] 업스트림은 ["en"] / "en" 입니다. 기본 로케일만 ko로 바꿨고
+  // prefixDefaultLocale: false는 그대로라 URL에 로케일 접두어가 붙지 않습니다.
   i18n: {
     locales: ["ko"],
     defaultLocale: "ko",
@@ -58,6 +60,10 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  // [CUSTOM] 업스트림은 Google Sans Code 하나만 등록합니다. 그 폰트에 한글
+  // 글리프가 없어 아래 둘로 교체했습니다. SUIT는 저장소에 담아 local provider로,
+  // JetBrains Mono는 google provider로 받습니다(빌드 시 내려받아 self-host).
+  // OG 이미지 생성(satori)이 WOFF2를 못 읽어서 ttf 포맷을 함께 요청합니다.
   fonts: [
     {
       name: "SUIT Variable",

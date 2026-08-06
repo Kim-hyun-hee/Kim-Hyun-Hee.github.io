@@ -6,6 +6,8 @@ import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import config from "@/config";
 
 export const GET: APIRoute = async context => {
+  // [CUSTOM] 업스트림은 "--font-google-sans-code"를 참조합니다. 폰트를 교체하며
+  // 이 파일에서 바뀐 것은 폰트 키와 fontFamily/name 문자열뿐입니다.
   const fonts = fontData["--font-jetbrains-mono"];
   const regularFontPath = getFontPathByWeight(fonts, 400);
   const boldFontPath = getFontPathByWeight(fonts, 700);

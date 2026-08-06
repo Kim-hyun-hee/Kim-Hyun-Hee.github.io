@@ -21,6 +21,9 @@
   }
 }
 
+/* [CUSTOM] 업스트림은 `@apply max-w-3xl`이었습니다. 같은 값(48rem)이지만
+   부유 목차의 위치 계산이 이 폭을 참조해야 해서 토큰으로 바꿨습니다.
+   숫자를 두 곳에 두면 한쪽만 고쳤을 때 목차가 조용히 어긋납니다. */
 @utility max-w-app {
   max-width: var(--content-width);
 }

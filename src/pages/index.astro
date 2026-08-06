@@ -5,14 +5,15 @@ import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { useTranslations, tplStr } from "@/i18n";
+import { useTranslations } from "@/i18n";
 import config from "@/config";
-import { getSeriesByCategory } from "@/series";
-import { getSeriesPosts } from "@/utils/getSeriesPosts";
+// [CUSTOM] 업스트림에 없는 import 2줄. 홈 상단 두 블록을 별도 컴포넌트로
+// 빼둔 것이라, 업스트림이 index.astro를 고쳐도 여기만 유지하면 됩니다.
+import HomeHero from "@/components/home/HomeHero.astro";
+import HomeSeries from "@/components/home/HomeSeries.astro";
 
 const { posts: postsConfig } = config;
 
@@ -24,12 +25,6 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const homePath = getRelativeLocaleUrl(locale, "");
-
-// sortedPosts는 이미 draft/예약 글이 걸러진 상태다.
-const projectSeries = getSeriesByCategory("project").map(s => ({
-  ...s,
-  count: getSeriesPosts(sortedPosts, s.id).length,
-}));
 ---
 
 <Layout>
@@ -40,47 +35,12 @@ const projectSeries = getSeriesByCategory("project").map(s => ({
     data-home-path={homePath}
     class="app-layout"
   >
-    <section id="hero" class="border-border border-b pt-8 pb-10">
-      <h1 class="text-3xl font-bold sm:text-4xl">
-        {config.site.author}
-      </h1>
-      <p class="text-muted-foreground mt-3 max-w-xl leading-relaxed">
-        {config.site.description}
-      </p>
-      <div class="mt-5">
-        <Socials />
-      </div>
-    </section>
-
-    {
-      projectSeries.length > 0 && (
-        <section class="border-border border-b pt-10 pb-8">
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.series.title}
-          </h2>
-          <ul class="mt-4 grid gap-4 sm:grid-cols-2">
-            {projectSeries.map(s => (
-              <li class="border-border rounded-lg border p-4">
-                <a
-                  href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
-                  class="text-accent font-semibold underline-offset-4 hover:underline"
-                >
-                  {s.label}
-                </a>
-                <p class="text-muted-foreground mt-1.5 text-sm leading-relaxed">
-                  {s.description}
-                </p>
-                <p class="text-muted-foreground mt-3 text-sm">
-                  {tplStr(t.category.seriesCount, { count: s.count })}
-                  {" · "}
-                  {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
+    {/* [CUSTOM] 업스트림의 hero 섹션을 이 두 줄이 대체합니다. 원본 hero는
+        인사말·테마 홍보 문구·RSS 링크로 이루어져 있었고, 포트폴리오 홈에는
+        맞지 않아 걷어냈습니다. 아래 featured / recent-posts 섹션부터는
+        업스트림 원본 그대로이니 병합 시 그쪽 변경을 받아들이면 됩니다. */}
+    <HomeHero />
+    <HomeSeries posts={sortedPosts} />
 
     {
       featuredPosts.length > 0 && (

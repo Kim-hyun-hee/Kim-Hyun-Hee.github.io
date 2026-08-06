@@ -1,3 +1,10 @@
+/* [CUSTOM] 이 파일은 값이 전부 교체됐습니다.
+   업스트림과 달라진 것: 라이트/다크 색값 14개, --link 토큰 신설(강조색과
+   링크색 분리), --font-app/--font-mono가 가리키는 폰트, 그리고 레이아웃
+   폭 토큰 3개(--sidebar-width / --toc-width / --content-width) 추가.
+   토큰 "이름"은 업스트림 그대로라 기존 유틸리티는 전부 그대로 동작합니다.
+   병합 충돌이 나면 값 선택의 문제이니 이쪽을 유지하면 됩니다. */
+
 /* Register design tokens for Tailwind v4 */
 @theme inline {
   --color-background: var(--background);
