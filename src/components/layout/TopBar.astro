@@ -91,7 +91,10 @@ const t = useTranslations(locale);
     document.addEventListener(
       "keydown",
       e => {
-        if (e.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+        if (
+          e.key === "Escape" &&
+          button.getAttribute("aria-expanded") === "true"
+        ) {
           setOpen(false);
           button.focus();
         }

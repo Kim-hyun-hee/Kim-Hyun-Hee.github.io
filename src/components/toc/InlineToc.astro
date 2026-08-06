@@ -39,6 +39,8 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
   )
 }
 
-{/* 이 지점을 지나면 부유 목차가 나타난다. 인라인 목차가 렌더되지 않아도
-    센티널은 항상 존재해야 FloatingToc의 관찰자가 안전하게 no-op 할 수 있다. */}
+{
+  /* 이 지점을 지나면 부유 목차가 나타난다. 인라인 목차가 렌더되지 않아도
+    센티널은 항상 존재해야 FloatingToc의 관찰자가 안전하게 no-op 할 수 있다. */
+}
 <div id="toc-sentinel" aria-hidden="true"></div>

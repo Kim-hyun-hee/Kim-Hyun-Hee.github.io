@@ -36,12 +36,10 @@ export type SeriesSummary = {
 };
 
 export function getSeriesByCategory(category: CategoryId): SeriesSummary[] {
-  return SERIES_IDS.filter(id => SERIES[id].category === category).map(
-    id => ({
-      id,
-      label: SERIES[id].label,
-      description: SERIES[id].description,
-      status: SERIES[id].status,
-    })
-  );
+  return SERIES_IDS.filter(id => SERIES[id].category === category).map(id => ({
+    id,
+    label: SERIES[id].label,
+    description: SERIES[id].description,
+    status: SERIES[id].status,
+  }));
 }

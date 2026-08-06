@@ -35,10 +35,7 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
     <nav
       id="floating-toc"
       aria-label={t.toc.title}
-      class="pointer-events-none fixed top-24 hidden w-(--toc-width) opacity-0
-             transition-opacity duration-200 2xl:block
-             ltr:left-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]
-             rtl:right-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]"
+      class="pointer-events-none fixed top-24 hidden w-(--toc-width) opacity-0 transition-opacity duration-200 2xl:block ltr:left-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)] rtl:right-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]"
     >
       <p class="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
         {t.toc.title}
