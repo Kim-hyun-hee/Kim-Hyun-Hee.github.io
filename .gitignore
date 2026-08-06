@@ -7,6 +7,19 @@ dist/
 # dependencies
 node_modules/
 
+# local git worktrees
+.worktrees/
+
+# superpowers brainstorming mockups
+.superpowers/
+
+# local reference only: previous blog skin source
+docs/css.css
+docs/html.html
+
+# local working notes
+CLAUDE.md
+
 # logs
 npm-debug.log*
 yarn-debug.log*
