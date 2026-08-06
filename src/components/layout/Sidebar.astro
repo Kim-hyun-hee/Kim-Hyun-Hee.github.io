@@ -1,0 +1,129 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconArchive from "@/assets/icons/IconArchive.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconRss from "@/assets/icons/IconRss.svg";
+import SidebarNav from "./SidebarNav.astro";
+import Socials from "@/components/Socials.astro";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const { site, features } = config;
+const locale = Astro.currentLocale ?? site.lang;
+const t = useTranslations(locale);
+const rssHref = getRelativeLocaleUrl(locale, "rss.xml");
+---
+
+<a
+  id="skip-to-content"
+  href="#main-content"
+  class="bg-background text-accent absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4"
+>
+  {t.a11y.skipToContent}
+</a>
+
+<aside
+  id="site-sidebar"
+  aria-label={t.nav.categories}
+  class="border-border bg-background fixed inset-y-0 start-0 z-40 flex w-(--sidebar-width)
+         -translate-x-full flex-col overflow-y-auto border-e px-5 py-7
+         transition-transform duration-200 lg:translate-x-0
+         rtl:translate-x-full rtl:lg:translate-x-0"
+>
+  <a
+    href={getRelativeLocaleUrl(locale, "")}
+    class="hover:text-accent text-lg font-bold"
+  >
+    {site.title}
+  </a>
+  <p class="text-muted-foreground mt-1.5 text-sm leading-relaxed">
+    {site.description}
+  </p>
+
+  <div class="mt-7">
+    <SidebarNav />
+  </div>
+
+  <div class="border-border mt-7 space-y-0.5 border-t pt-4">
+    <a
+      href={getRelativeLocaleUrl(locale, "posts")}
+      class="hover:text-accent focus-outline block rounded px-2 py-1.5 text-sm"
+    >
+      {t.nav.posts}
+    </a>
+    <a
+      href={getRelativeLocaleUrl(locale, "tags")}
+      class="hover:text-accent focus-outline block rounded px-2 py-1.5 text-sm"
+    >
+      {t.nav.tags}
+    </a>
+    <a
+      href={getRelativeLocaleUrl(locale, "about")}
+      class="hover:text-accent focus-outline block rounded px-2 py-1.5 text-sm"
+    >
+      {t.nav.about}
+    </a>
+    {
+      features.showArchives && (
+        <a
+          href={getRelativeLocaleUrl(locale, "archives")}
+          class="hover:text-accent focus-outline flex items-center gap-2 rounded px-2 py-1.5 text-sm"
+        >
+          <IconArchive class="size-4" />
+          {t.nav.archives}
+        </a>
+      )
+    }
+  </div>
+
+  <div class="mt-auto pt-6">
+    <div class="flex items-center gap-1">
+      {
+        features.search !== false && (
+          <a
+            href={getRelativeLocaleUrl(locale, "search")}
+            class="focus-outline hover:text-accent rounded p-2"
+            title={t.nav.search}
+            aria-label={t.nav.search}
+          >
+            <IconSearch class="size-5" />
+          </a>
+        )
+      }
+      <a
+        href={rssHref}
+        class="focus-outline hover:text-accent rounded p-2"
+        title="RSS"
+        aria-label="RSS"
+      >
+        <IconRss class="size-5" />
+      </a>
+      {
+        features.lightAndDarkMode && (
+          <button
+            id="theme-btn"
+            type="button"
+            class="focus-outline hover:[&>svg]:stroke-accent relative size-9 rounded"
+            title={t.a11y.toggleTheme}
+            aria-label="auto"
+            aria-live="polite"
+          >
+            <IconMoon class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+            <IconSunHigh class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          </button>
+        )
+      }
+    </div>
+    <div class="mt-3">
+      <Socials />
+    </div>
+  </div>
+</aside>
+
+<button
+  id="sidebar-overlay"
+  type="button"
+  aria-label={t.a11y.closeMenu}
+  class="fixed inset-0 z-30 hidden bg-black/40 lg:hidden"></button>
