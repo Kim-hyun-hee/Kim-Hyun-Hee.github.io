@@ -3,7 +3,7 @@ import { defineAstroPaperConfig } from "./src/types/config";
 export default defineAstroPaperConfig({
   site: {
     url: "https://astro-paper.pages.dev/",
-    title: "Devgroot",
+    title: "Dev groot",
     description: "Unity 그래픽스·DOD",
     author: "김현희",
     profile: "https://github.com/Kim-hyun-hee",
