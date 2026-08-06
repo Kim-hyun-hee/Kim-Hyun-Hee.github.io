@@ -30,7 +30,6 @@ export default {
     page: "Page",
   },
   home: {
-    socialLinks: "Social Links",
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
@@ -66,11 +65,11 @@ export default {
     goToNextPage: "Go to next page",
   },
   category: {
-    title: "Category",
-    desc: "Posts in this category.",
+    desc: "Posts grouped by category.",
     allPosts: "All posts",
     seeMore: "See more",
     seriesCount: "{{count}} parts",
+    postCount: "{{count}} posts",
   },
   series: {
     title: "Series",
@@ -81,6 +80,7 @@ export default {
     prevPart: "Previous part",
     nextPart: "Next part",
     inThisSeries: "In this series",
+    empty: "No posts yet.",
   },
   toc: {
     title: "Table of contents",

@@ -34,9 +34,15 @@ const t = useTranslations(locale);
       {" · "}
       {meta.status === "ongoing" ? t.series.ongoing : t.series.completed}
     </p>
-    <ol>
-      {posts.map(post => <Card {...post} />)}
-    </ol>
+    {
+      posts.length === 0 ? (
+        <p class="text-muted-foreground text-sm">{t.series.empty}</p>
+      ) : (
+        <ol>
+          {posts.map(post => <Card {...post} />)}
+        </ol>
+      )
+    }
   </Main>
   <Footer />
 </Layout>

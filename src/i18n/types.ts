@@ -28,7 +28,6 @@ export interface UIStrings {
     page: string;
   };
   home: {
-    socialLinks: string;
     featured: string;
     recentPosts: string;
     allPosts: string;
@@ -64,11 +63,11 @@ export interface UIStrings {
     goToNextPage: string;
   };
   category: {
-    title: string;
     desc: string;
     allPosts: string;
     seeMore: string;
     seriesCount: string;
+    postCount: string;
   };
   series: {
     title: string;
@@ -79,6 +78,7 @@ export interface UIStrings {
     prevPart: string;
     nextPart: string;
     inThisSeries: string;
+    empty: string;
   };
   toc: {
     title: string;

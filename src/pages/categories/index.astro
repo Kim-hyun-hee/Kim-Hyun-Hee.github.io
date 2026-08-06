@@ -8,7 +8,7 @@ import Footer from "@/components/Footer.astro";
 import { CATEGORIES, CATEGORY_IDS } from "@/categories";
 import { filterByCategory } from "@/utils/getPostsByCategory";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { useTranslations } from "@/i18n";
+import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 const posts = getSortedPosts(await getCollection("posts"));
@@ -37,7 +37,9 @@ const overview = CATEGORY_IDS.map(id => ({
               {c.label}
             </a>
             <p class="text-muted-foreground mt-1 text-sm">{c.description}</p>
-            <p class="text-muted-foreground mt-2 text-sm">{c.count}</p>
+            <p class="text-muted-foreground mt-2 text-sm">
+              {tplStr(t.category.postCount, { count: c.count })}
+            </p>
           </li>
         ))
       }

@@ -30,7 +30,6 @@ export default {
     page: "페이지",
   },
   home: {
-    socialLinks: "소셜 링크",
     featured: "추천 글",
     recentPosts: "최근 글",
     allPosts: "전체 글",
@@ -56,11 +55,11 @@ export default {
     searchDesc: "글 검색 ...",
   },
   category: {
-    title: "카테고리",
-    desc: "이 분류에 속한 글입니다.",
+    desc: "글을 분류별로 모아 봅니다.",
     allPosts: "전체 보기",
     seeMore: "더 보기",
     seriesCount: "{{count}}편",
+    postCount: "{{count}}개의 글",
   },
   series: {
     title: "시리즈",
@@ -71,6 +70,7 @@ export default {
     prevPart: "이전 편",
     nextPart: "다음 편",
     inThisSeries: "이 시리즈의 글",
+    empty: "아직 글이 없습니다.",
   },
   toc: {
     title: "목차",

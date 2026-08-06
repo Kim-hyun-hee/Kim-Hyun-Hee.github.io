@@ -8,12 +8,15 @@ import {
   hasSubcategories,
 } from "@/categories";
 import { getPathSegments } from "@/utils/withBase";
+import { useTranslations } from "@/i18n";
 import config from "@/config";
 
 const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
 const segments = getPathSegments(Astro.url.pathname, locale);
 const activeCategory = segments[0] === "categories" ? segments[1] : undefined;
-const activeSubcategory = segments[0] === "categories" ? segments[2] : undefined;
+const activeSubcategory =
+  segments[0] === "categories" ? segments[2] : undefined;
 
 const linkClass =
   "block rounded px-2 py-1.5 text-sm hover:text-accent focus-outline";
@@ -32,7 +35,10 @@ const linkClass =
             <li>
               <a
                 href={href}
-                class:list={[linkClass, { "text-accent font-semibold": isActive }]}
+                class:list={[
+                  linkClass,
+                  { "text-accent font-semibold": isActive },
+                ]}
                 aria-current={isActive ? "page" : undefined}
               >
                 {category.label}
@@ -64,16 +70,22 @@ const linkClass =
                     class:list={[
                       linkClass,
                       "text-muted-foreground",
-                      { "text-accent font-semibold": isActive && !activeSubcategory },
+                      {
+                        "text-accent font-semibold":
+                          isActive && !activeSubcategory,
+                      },
                     ]}
                   >
-                    전체
+                    {t.category.allPosts}
                   </a>
                 </li>
                 {getSubcategoryIds(id).map(sub => (
                   <li>
                     <a
-                      href={getRelativeLocaleUrl(locale, `categories/${id}/${sub}`)}
+                      href={getRelativeLocaleUrl(
+                        locale,
+                        `categories/${id}/${sub}`
+                      )}
                       class:list={[
                         linkClass,
                         "text-muted-foreground",
@@ -83,7 +95,9 @@ const linkClass =
                         },
                       ]}
                       aria-current={
-                        isActive && activeSubcategory === sub ? "page" : undefined
+                        isActive && activeSubcategory === sub
+                          ? "page"
+                          : undefined
                       }
                     >
                       {getSubcategoryLabel(id, sub)}
