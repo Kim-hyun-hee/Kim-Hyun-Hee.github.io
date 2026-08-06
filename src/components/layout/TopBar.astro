@@ -61,6 +61,9 @@ const t = useTranslations(locale);
       button.setAttribute("aria-label", mobileOpen ? closeLabel : openLabel);
       sidebar.classList.toggle("-translate-x-full", !mobileOpen);
       sidebar.classList.toggle("rtl:translate-x-full", !mobileOpen);
+      // Desktop keeps the sidebar permanently visible, so it must never be
+      // inert there; only the closed-on-mobile state should trap focus out.
+      sidebar.inert = !mobileOpen && !desktop.matches;
       overlay.classList.toggle("hidden", !mobileOpen);
       document.body.classList.toggle("overflow-hidden", mobileOpen);
     };
