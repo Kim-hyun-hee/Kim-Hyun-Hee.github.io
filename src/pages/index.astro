@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -10,10 +9,12 @@ import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { useTranslations } from "@/i18n";
+import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
+import { getSeriesByCategory } from "@/series";
+import { getSeriesPosts } from "@/utils/getSeriesPosts";
 
-const { socials, posts: postsConfig } = config;
+const { posts: postsConfig } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
@@ -23,6 +24,12 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const homePath = getRelativeLocaleUrl(locale, "");
+
+// sortedPosts는 이미 draft/예약 글이 걸러진 상태다.
+const projectSeries = getSeriesByCategory("project").map(s => ({
+  ...s,
+  count: getSeriesPosts(sortedPosts, s.id).length,
+}));
 ---
 
 <Layout>
@@ -33,52 +40,47 @@ const homePath = getRelativeLocaleUrl(locale, "");
     data-home-path={homePath}
     class="app-layout"
   >
-    <section id="hero" class="border-border border-b pt-8 pb-6">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Mingalaba
+    <section id="hero" class="border-border border-b pt-8 pb-10">
+      <h1 class="text-3xl font-bold sm:text-4xl">
+        {config.site.author}
       </h1>
-      <a
-        target="_blank"
-        href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-        class="inline-block"
-        aria-label="RSS Feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
-
-      <p>
-        AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro
-        blog theme. This theme follows best practices and provides accessibility
-        out of the box. Light and dark mode are supported by default. Moreover,
-        additional color schemes can also be configured.
+      <p class="text-muted-foreground mt-3 max-w-xl leading-relaxed">
+        {config.site.description}
       </p>
-      <p class="mt-2">
-        Read the blog posts or check{" "}
-        <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href="https://github.com/satnaing/astro-paper#readme"
-        >
-          README
-        </LinkButton>{" "}
-        for more info.
-      </p>
-      {
-        socials.length > 0 && (
-          <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-              {t.home.socialLinks}:
-            </div>
-            <Socials />
-          </div>
-        )
-      }
+      <div class="mt-5">
+        <Socials />
+      </div>
     </section>
+
+    {
+      projectSeries.length > 0 && (
+        <section class="border-border border-b pt-10 pb-8">
+          <h2 class="text-2xl font-semibold tracking-wide">
+            {t.series.title}
+          </h2>
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+            {projectSeries.map(s => (
+              <li class="border-border rounded-lg border p-4">
+                <a
+                  href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
+                  class="text-accent font-semibold underline-offset-4 hover:underline"
+                >
+                  {s.label}
+                </a>
+                <p class="text-muted-foreground mt-1.5 text-sm leading-relaxed">
+                  {s.description}
+                </p>
+                <p class="text-muted-foreground mt-3 text-sm">
+                  {tplStr(t.category.seriesCount, { count: s.count })}
+                  {" · "}
+                  {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     {
       featuredPosts.length > 0 && (

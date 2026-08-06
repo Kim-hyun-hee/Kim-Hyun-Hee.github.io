@@ -3,10 +3,10 @@ import { defineAstroPaperConfig } from "./src/types/config";
 export default defineAstroPaperConfig({
   site: {
     url: "https://astro-paper.pages.dev/",
-    title: "AstroPaper",
-    description: "A minimal, responsive and SEO-friendly Astro blog theme.",
-    author: "Sat Naing",
-    profile: "https://satna.ing",
+    title: "Devgroot",
+    description: "Unity 그래픽스·DOD",
+    author: "김현희",
+    profile: "https://github.com/Kim-hyun-hee",
     ogImage: "default-og.jpg",
     lang: "ko",
     timezone: "Asia/Seoul",
@@ -24,15 +24,12 @@ export default defineAstroPaperConfig({
     showBackButton: true,
     editPost: {
       enabled: true,
-      url: "https://github.com/satnaing/astro-paper/edit/main/",
+      url: "https://github.com/Kim-hyun-hee/astro-paper/edit/main/",
     },
     search: "pagefind",
   },
   socials: [
-    { name: "github",   url: "https://github.com/satnaing/astro-paper" },
-    { name: "x",        url: "https://x.com/username" },
-    { name: "linkedin", url: "https://www.linkedin.com/in/username/" },
-    { name: "mail",     url: "mailto:yourmail@gmail.com" },
+    { name: "github",   url: "https://github.com/Kim-hyun-hee" },
   ],
   shareLinks: [
     { name: "whatsapp", url: "https://wa.me/?text=" },
