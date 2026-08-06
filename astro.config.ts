@@ -60,13 +60,31 @@ export default defineConfig({
   },
   fonts: [
     {
-      name: "Google Sans Code",
-      cssVariable: "--font-google-sans-code",
+      name: "SUIT Variable",
+      cssVariable: "--font-suit",
+      provider: fontProviders.local(),
+      fallbacks: ["system-ui", "sans-serif"],
+      options: {
+        variants: [
+          {
+            weight: "400 800",
+            style: "normal",
+            src: ["./src/assets/fonts/SUIT-Variable.woff2"],
+          },
+        ],
+      },
+    },
+    {
+      name: "JetBrains Mono",
+      cssVariable: "--font-jetbrains-mono",
       provider: fontProviders.google(),
       fallbacks: ["monospace"],
-      weights: [300, 400, 500, 600, 700],
+      weights: [400, 500, 700],
       styles: ["normal", "italic"],
-      formats: ["woff", "ttf"],
+      // "ttf" is included (in addition to the brief's "woff2") because the
+      // OG image routes (src/pages/og.png.ts, src/pages/posts/[...slug]/index.png.ts)
+      // render text via satori, which does not support WOFF2 font data.
+      formats: ["woff2", "ttf"],
     },
   ],
   env: {

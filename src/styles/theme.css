@@ -7,28 +7,37 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-app: var(--font-google-sans-code);
+  --font-app: var(--font-suit);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #fdfdfd;
-  --foreground: #282728;
-  --accent: #006cac;
+  --background: #fdfdfe;
+  --foreground: #1e1f21;
+  --accent: #353638;
   --accent-foreground: #ffffff;
-  --muted: #e6e6e6;
-  --muted-foreground: #6b7280;
-  --border: #ece9e9;
+  --muted: #f1f3f7;
+  --muted-foreground: #66666e;
+  --border: #e2e5ec;
 }
 
 /* Dark theme values */
 [data-theme="dark"] {
-  --background: #212737;
-  --foreground: #eaedf3;
-  --accent: #ff6b01;
-  --accent-foreground: #ffffff;
-  --muted: #343f60;
-  --muted-foreground: #afb9ca;
-  --border: #ab4b08;
+  --background: #1e1f21;
+  --foreground: #f4f4f6;
+  --accent: #5db0d7;
+  --accent-foreground: #1e1f21;
+  --muted: #292a2d;
+  --muted-foreground: #9999a1;
+  --border: #353638;
+}
+
+/* Layout widths — single source, referenced by shell and TOC */
+:root {
+  --sidebar-width: 240px;
+  --toc-width: 224px;
+  /* Same value as max-w-3xl. Floating TOC position math reads this. */
+  --content-width: 48rem;
 }

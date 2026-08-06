@@ -1,6 +1,13 @@
 @plugin "@tailwindcss/typography";
 
 @layer base {
+  code,
+  kbd,
+  samp,
+  pre {
+    @apply font-mono;
+  }
+
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
     @apply prose;
