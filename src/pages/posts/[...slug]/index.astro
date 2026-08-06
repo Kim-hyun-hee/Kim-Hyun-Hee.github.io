@@ -11,13 +11,12 @@ import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
 import { postFilter } from "@/utils/postFilter";
 import { getSeriesPosts, getSeriesPosition } from "@/utils/getSeriesPosts";
-// [CUSTOM] 아래 import 4개와, 본문 중 <SeriesBox> <SeriesNav> <InlineToc>
-// <FloatingToc> 를 렌더하는 자리, 그리고 seriesId/seriesPosts/seriesPosition을
+// [CUSTOM] 아래 import 3개와, 본문 중 <SeriesBox> <SeriesNav> <FloatingToc>
+// 를 렌더하는 자리, 그리고 seriesId/seriesPosts/seriesPosition을
 // 계산하는 블록이 이 파일에 추가된 전부입니다. 나머지는 업스트림 원본이므로
 // 병합 시 업스트림 변경을 받아들이고 이 조각들만 다시 끼우면 됩니다.
 import SeriesBox from "@/components/series/SeriesBox.astro";
 import SeriesNav from "@/components/series/SeriesNav.astro";
-import InlineToc from "@/components/toc/InlineToc.astro";
 import FloatingToc from "@/components/toc/FloatingToc.astro";
 import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
@@ -127,15 +126,18 @@ const ogImage = ogImageUrl
 >
   <Header />
 
-  <FloatingToc {headings} />
-
   <BackButton />
 
   <main
     id="main-content"
-    class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
+    class:list={[
+      "app-layout relative",
+      { "mt-8": !config.features.showBackButton },
+    ]}
     data-pagefind-body
   >
+    <FloatingToc {headings} />
+
     <h1
       style={{ viewTransitionName: toTransitionName(post.id) }}
       class="text-accent inline-block text-2xl font-bold sm:text-3xl"
@@ -174,7 +176,6 @@ const ogImage = ogImageUrl
           />
         )
       }
-      <InlineToc {headings} />
       <Content />
     </article>
 
