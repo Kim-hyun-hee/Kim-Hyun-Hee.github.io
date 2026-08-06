@@ -32,6 +32,19 @@ export function stripBase(pathname: string): string {
 }
 
 /**
+ * Split a pathname into route segments after stripping the Astro `base`
+ * and locale prefix — the single source of truth for "where am I" used by
+ * the sidebar nav and its active-state links.
+ * e.g. with base "" and locale "ko": "/ko/categories/deep-dive/rendering/"
+ * → ["categories", "deep-dive", "rendering"]
+ */
+export function getPathSegments(pathname: string, locale: string): string[] {
+  return stripLocale(stripBase(pathname), locale)
+    .split("/")
+    .filter(Boolean);
+}
+
+/**
  * Prefix an asset/file path with the configured Astro `base`.
  * Does not force a trailing slash for empty paths.
  */

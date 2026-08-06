@@ -8,7 +8,7 @@ import IconRss from "@/assets/icons/IconRss.svg";
 import SidebarNav from "./SidebarNav.astro";
 import Socials from "@/components/Socials.astro";
 import { useTranslations } from "@/i18n";
-import { stripBase, stripLocale } from "@/utils/withBase";
+import { getPathSegments } from "@/utils/withBase";
 import config from "@/config";
 
 const { site, features } = config;
@@ -16,8 +16,7 @@ const locale = Astro.currentLocale ?? site.lang;
 const t = useTranslations(locale);
 const rssHref = getRelativeLocaleUrl(locale, "rss.xml");
 
-const currentPath = stripLocale(stripBase(Astro.url.pathname), locale);
-const activeSegment = currentPath.split("/").filter(Boolean)[0];
+const activeSegment = getPathSegments(Astro.url.pathname, locale)[0];
 const utilLinkClass =
   "hover:text-accent focus-outline block rounded px-2 py-1.5 text-sm";
 const activeUtilLinkClass = "text-accent font-semibold";
@@ -34,7 +33,6 @@ const activeUtilLinkClass = "text-accent font-semibold";
 <aside
   id="site-sidebar"
   aria-label={t.nav.categories}
-  inert
   class="border-border bg-background fixed inset-y-0 start-0 z-40 flex w-(--sidebar-width)
          -translate-x-full flex-col overflow-y-auto border-e px-5 py-7
          transition-transform duration-200 lg:translate-x-0

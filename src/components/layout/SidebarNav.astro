@@ -7,14 +7,11 @@ import {
   getSubcategoryLabel,
   hasSubcategories,
 } from "@/categories";
-import { stripBase, stripLocale } from "@/utils/withBase";
+import { getPathSegments } from "@/utils/withBase";
 import config from "@/config";
 
 const locale = Astro.currentLocale ?? config.site.lang;
-const currentPath = stripLocale(stripBase(Astro.url.pathname), locale);
-
-/** `/categories/deep-dive/rendering/` → ["deep-dive", "rendering"] */
-const segments = currentPath.split("/").filter(Boolean);
+const segments = getPathSegments(Astro.url.pathname, locale);
 const activeCategory = segments[0] === "categories" ? segments[1] : undefined;
 const activeSubcategory = segments[0] === "categories" ? segments[2] : undefined;
 
