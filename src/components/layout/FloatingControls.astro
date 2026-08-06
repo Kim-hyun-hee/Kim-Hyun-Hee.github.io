@@ -1,0 +1,66 @@
+---
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const { features } = config;
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+// 원형 버튼: 밝은 표면(muted) + 보조 텍스트색, hover 시 한 톤 진하게(border).
+const btnClass =
+  "bg-muted text-muted-foreground hover:bg-border dark:text-foreground flex size-10 items-center justify-center rounded-full transition-colors";
+---
+
+<div class="fixed end-5 bottom-5 z-40 flex items-center gap-2.5">
+  {
+    features.lightAndDarkMode && (
+      <button
+        id="theme-btn"
+        type="button"
+        class:list={[btnClass, "relative"]}
+        title={t.a11y.toggleTheme}
+        aria-label="auto"
+        aria-live="polite"
+      >
+        <IconMoon class="absolute size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+        <IconSunHigh class="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+      </button>
+    )
+  }
+  <button
+    id="scroll-top-btn"
+    type="button"
+    class={btnClass}
+    title={t.post.backToTop}
+    aria-label={t.post.backToTop}
+  >
+    <svg
+      class="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M6 15l6 -6l6 6" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  // 상단으로: 위임 클릭(뷰 트랜지션 이후에도 유지되도록 한 번만 바인딩).
+  // 테마 버튼(#theme-btn)은 scripts/theme.ts가 담당한다.
+  const w = window as unknown as { __scrollTopBound?: boolean };
+  if (!w.__scrollTopBound) {
+    w.__scrollTopBound = true;
+    document.addEventListener("click", e => {
+      if ((e.target as HTMLElement).closest("#scroll-top-btn")) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
+</script>
