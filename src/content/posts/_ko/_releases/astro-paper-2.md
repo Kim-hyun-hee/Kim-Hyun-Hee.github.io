@@ -1,4 +1,5 @@
 ---
+category: etc
 author: Sat Naing
 pubDatetime: 2023-01-30T15:57:52.737Z
 title: AstroPaper 2.0
