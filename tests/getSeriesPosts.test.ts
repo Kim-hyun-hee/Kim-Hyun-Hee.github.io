@@ -19,14 +19,12 @@ describe("getSeriesPosts", () => {
 
   it("seriesOrder가 중복되면 예외를 던진다", () => {
     const posts = [part("a", 1), part("b", 1)];
-    expect(() => getSeriesPosts(posts, "s1")).toThrowError(
-      /중복된 seriesOrder/
-    );
+    expect(() => getSeriesPosts(posts, "s1")).toThrow(/중복된 seriesOrder/);
   });
 
   it("예외 메시지에 중복된 번호가 들어간다", () => {
     const posts = [part("a", 2), part("b", 2)];
-    expect(() => getSeriesPosts(posts, "s1")).toThrowError(/2/);
+    expect(() => getSeriesPosts(posts, "s1")).toThrow(/2/);
   });
 });
 
