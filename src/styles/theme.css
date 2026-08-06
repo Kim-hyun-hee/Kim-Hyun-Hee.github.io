@@ -27,6 +27,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-sidebar-link: var(--sidebar-link);
   --font-app: var(--font-suit);
   --font-mono: var(--font-jetbrains-mono);
 }
@@ -43,6 +44,7 @@
   --muted: #f1f3f7;
   --muted-foreground: #66666e;
   --border: #e2e5ec;
+  --sidebar-link: #9999a1;
 }
 
 /* Dark theme values */
@@ -56,11 +58,12 @@
   --muted: #292a2d;
   --muted-foreground: #9999a1;
   --border: #353638;
+  --sidebar-link: #9999a1;
 }
 
 /* Layout widths — single source, referenced by shell and TOC */
 :root {
-  --sidebar-width: 240px;
+  --sidebar-width: 256px;
   --toc-width: 224px;
   /* Single source for article width. max-w-app (global.css) and the
      floating TOC position math both read this. */

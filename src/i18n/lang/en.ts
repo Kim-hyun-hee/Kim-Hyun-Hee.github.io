@@ -4,6 +4,7 @@ export default {
   nav: {
     home: "Home",
     posts: "Posts",
+    allByCategory: "All posts",
     tags: "Tags",
     about: "About",
     archives: "Archives",
@@ -59,6 +60,7 @@ export default {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     toggleTheme: "Toggle theme",
+    toggleSubcategories: "Toggle subcategories",
     searchPlaceholder: "Search posts...",
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",

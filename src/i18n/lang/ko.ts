@@ -4,6 +4,7 @@ export default {
   nav: {
     home: "홈",
     posts: "글",
+    allByCategory: "분류 전체보기",
     tags: "태그",
     about: "소개",
     archives: "아카이브",
@@ -80,6 +81,7 @@ export default {
     openMenu: "메뉴 열기",
     closeMenu: "메뉴 닫기",
     toggleTheme: "테마 전환",
+    toggleSubcategories: "하위 분류 펼치기/접기",
     searchPlaceholder: "글 검색...",
     noResults: "검색 결과가 없습니다",
     goToPreviousPage: "이전 페이지로",

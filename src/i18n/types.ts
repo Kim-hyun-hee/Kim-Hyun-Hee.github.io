@@ -2,6 +2,7 @@ export interface UIStrings {
   nav: {
     home: string;
     posts: string;
+    allByCategory: string;
     tags: string;
     about: string;
     archives: string;
@@ -57,6 +58,7 @@ export interface UIStrings {
     openMenu: string;
     closeMenu: string;
     toggleTheme: string;
+    toggleSubcategories: string;
     searchPlaceholder: string;
     noResults: string;
     goToPreviousPage: string;
