@@ -13,6 +13,8 @@ import { postFilter } from "@/utils/postFilter";
 import { getSeriesPosts, getSeriesPosition } from "@/utils/getSeriesPosts";
 import SeriesBox from "@/components/series/SeriesBox.astro";
 import SeriesNav from "@/components/series/SeriesNav.astro";
+import InlineToc from "@/components/toc/InlineToc.astro";
+import FloatingToc from "@/components/toc/FloatingToc.astro";
 import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
@@ -88,7 +90,7 @@ const {
   hideEditPost,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 let ogImageUrl: string | undefined;
 
@@ -120,6 +122,8 @@ const ogImage = ogImageUrl
   modDatetime={modDatetime}
 >
   <Header />
+
+  <FloatingToc {headings} />
 
   <BackButton />
 
@@ -166,6 +170,7 @@ const ogImage = ogImageUrl
           />
         )
       }
+      <InlineToc {headings} />
       <Content />
     </article>
 

@@ -1,0 +1,106 @@
+---
+import type { MarkdownHeading } from "astro";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+type Props = { headings: MarkdownHeading[] };
+
+const { headings } = Astro.props;
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+const items = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length > 1 && (
+    <nav
+      id="floating-toc"
+      aria-label={t.toc.title}
+      class="pointer-events-none fixed top-24 hidden w-(--toc-width) opacity-0
+             transition-opacity duration-200 xl:block
+             ltr:left-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]
+             rtl:right-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]"
+    >
+      <p class="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
+        {t.toc.title}
+      </p>
+      <ul class="border-border space-y-2 border-s">
+        {items.map(h => (
+          <li class:list={["text-xs leading-snug", h.depth === 3 && "ps-3"]}>
+            <a
+              href={`#${h.slug}`}
+              data-toc-link={h.slug}
+              class="text-muted-foreground hover:text-accent block ps-3 underline-offset-4 hover:underline"
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  let cleanup = () => {};
+
+  function initToc() {
+    cleanup();
+
+    const toc = document.querySelector<HTMLElement>("#floating-toc");
+    const sentinel = document.querySelector<HTMLElement>("#toc-sentinel");
+    if (!toc || !sentinel) return;
+
+    // 1) 인라인 목차를 지나쳤는지 감시해 부유 목차를 나타내고 감춘다.
+    const reveal = new IntersectionObserver(
+      ([entry]) => {
+        const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+        toc.classList.toggle("opacity-0", !show);
+        toc.classList.toggle("opacity-100", show);
+        toc.classList.toggle("pointer-events-none", !show);
+      },
+      { rootMargin: "-80px 0px 0px 0px" }
+    );
+    reveal.observe(sentinel);
+
+    // 2) 헤딩 스크롤 스파이.
+    const links = new Map<string, HTMLAnchorElement>();
+    toc.querySelectorAll<HTMLAnchorElement>("[data-toc-link]").forEach(a => {
+      links.set(a.dataset.tocLink!, a);
+    });
+
+    const targets = [...links.keys()]
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const setActive = (id: string) => {
+      links.forEach((a, key) => {
+        const on = key === id;
+        a.classList.toggle("text-accent", on);
+        a.classList.toggle("font-semibold", on);
+        a.classList.toggle("text-muted-foreground", !on);
+      });
+    };
+
+    const spy = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-80px 0px -70% 0px", threshold: 0 }
+    );
+    targets.forEach(el => spy.observe(el));
+
+    cleanup = () => {
+      reveal.disconnect();
+      spy.disconnect();
+    };
+  }
+
+  initToc();
+  document.addEventListener("astro:before-swap", () => cleanup());
+  document.addEventListener("astro:after-swap", initToc);
+</script>
