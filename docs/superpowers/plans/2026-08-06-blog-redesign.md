@@ -946,7 +946,7 @@ Expected: 성공.
 - [ ] **Step 5: 검증이 실제로 동작하는지 확인 (일부러 깨뜨리기)**
 
 ```bash
-cat > src/content/posts/_ko/__probe.md <<'EOF'
+cat > src/content/posts/_ko/zz-probe.md <<'EOF'
 ---
 title: probe
 description: probe
@@ -964,7 +964,7 @@ Expected: 빌드 실패, 메시지에 `"rendring"는 "deep-dive"의 subcategory�
 - [ ] **Step 6: 두 번째 검증 — 소분류 누락**
 
 ```bash
-perl -pi -e 's/^subcategory: rendring$//' src/content/posts/_ko/__probe.md
+perl -pi -e 's/^subcategory: rendring$//' src/content/posts/_ko/zz-probe.md
 pnpm build; echo "exit=$?"
 ```
 
@@ -973,7 +973,7 @@ Expected: 빌드 실패, `"deep-dive"에는 subcategory가 필요합니다`.
 - [ ] **Step 7: 프로브 제거 후 빌드 복구 확인**
 
 ```bash
-rm src/content/posts/_ko/__probe.md
+rm src/content/posts/_ko/zz-probe.md
 pnpm build
 ```
 
@@ -2365,9 +2365,11 @@ Expected: 각각 1 이상, 파일 존재.
 
 - [ ] **Step 8: 중복 순번 검출이 동작하는지 확인**
 
+프로브 파일명이 `_`로 시작하면 안 된다. 글로브 패턴 `**/[^_]*.{md,mdx}`가 **파일명** 기준으로 걸러내므로 `_`로 시작하는 프로브는 아예 로드되지 않아 검증이 거짓 통과한다.
+
 ```bash
 for n in 1 2; do
-cat > "src/content/posts/_ko/__s$n.md" <<EOF
+cat > "src/content/posts/_ko/zz-s$n.md" <<EOF
 ---
 title: series probe $n
 description: probe
@@ -2387,7 +2389,7 @@ Expected: 빌드 실패, 메시지에 `중복된 seriesOrder`와 `1`이 포함�
 - [ ] **Step 9: 정상 순번으로 고쳐 시리즈 UI 육안 확인**
 
 ```bash
-perl -pi -e 's/^seriesOrder: 1$/seriesOrder: 2/' src/content/posts/_ko/__s2.md
+perl -pi -e 's/^seriesOrder: 1$/seriesOrder: 2/' src/content/posts/_ko/zz-s2.md
 pnpm build && pnpm preview
 ```
 
@@ -2396,7 +2398,7 @@ pnpm build && pnpm preview
 - [ ] **Step 10: 프로브 제거**
 
 ```bash
-rm src/content/posts/_ko/__s1.md src/content/posts/_ko/__s2.md
+rm src/content/posts/_ko/zz-s1.md src/content/posts/_ko/zz-s2.md
 pnpm build
 ```
 
