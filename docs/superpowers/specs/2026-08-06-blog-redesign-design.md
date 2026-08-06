@@ -113,32 +113,50 @@ export const SERIES_IDS = Object.keys(SERIES) as [SeriesId, ...SeriesId[]];
 
 `status`는 `"ongoing" | "completed"`. 시리즈 제목을 글마다 반복 기입하지 않아도 되고, 오타로 시리즈가 둘로 쪼개지는 사고를 막는다.
 
-### 4.3 스키마 확장 — `src/content.config.ts` (수정)
+### 4.3 스키마 확장 — `src/taxonomySchema.ts` (신규) + `src/content.config.ts` (수정)
 
-기존 `posts` 컬렉션 스키마에 필드 4개를 추가한다.
+필드 정의와 교차 검증은 **신규 파일 `src/taxonomySchema.ts`에 둔다.** `content.config.ts`는 업스트림이 계속 손대는 파일이라, 거기에 50줄짜리 검증 블록을 인라인으로 넣으면 업스트림 변경을 받을 때마다 통째로 충돌한다. 분리하면 `content.config.ts` 쪽 변경은 세 줄로 끝난다.
+
+`taxonomySchema.ts`가 내보내는 것:
 
 ```ts
-category: z.enum(CATEGORY_IDS),
-subcategory: z.string().optional(),
-series: z.enum(SERIES_IDS).optional(),
-seriesOrder: z.number().int().positive().optional(),
+export const taxonomyFields = {
+  category: z.enum(CATEGORY_IDS),
+  subcategory: z.string().optional(),
+  series: z.enum(SERIES_IDS).optional(),
+  seriesOrder: z.number().int().positive().optional(),
+};
+
+export function validateTaxonomy(data, ctx): void { /* 규칙 5개 */ }
 ```
 
-여기에 `.superRefine()`으로 교차 검증을 붙인다. 이것이 이 모델의 핵심 값어치다.
+`content.config.ts`에서는 이렇게만 쓴다:
+
+```ts
+import { taxonomyFields, validateTaxonomy } from "@/taxonomySchema";
+// ... posts 스키마 안에서
+  ...taxonomyFields,
+// ... z.object() 뒤에
+  .superRefine(validateTaxonomy)
+```
+
+교차 검증 규칙은 다섯 가지다. 이것이 이 모델의 핵심 값어치다.
 
 | 규칙 | 위반 시 |
 |---|---|
-| 소분류를 가진 대분류에는 `subcategory` 필수 | 빌드 실패 |
+| 소분류를 가진 대분류에는 `subcategory` 필수 | 빌드 실패 (가능한 값 목록 출력) |
 | `subcategory`는 해당 대분류에 속한 값이어야 함 | 빌드 실패 (가능한 값 목록 출력) |
 | 소분류가 없는 대분류에 `subcategory` 지정 금지 | 빌드 실패 |
 | `series`와 `seriesOrder`는 항상 함께 | 빌드 실패 |
+| 글의 `category`와 시리즈가 선언한 `category`가 일치해야 함 | 빌드 실패 |
+
+마지막 규칙이 없으면 `category: etc`인 글에 Project 시리즈를 달 수 있고, 그 글이 Etc 목록과 Project 시리즈 카드에 동시에 집계된다.
 
 오타 예시:
 
 ```
 [content] posts → deep-dive/brg-draw-call.md
-  subcategory: "rendring"는 "deep-dive"의 소분류가 아닙니다.
-              가능: rendering, architecture, memory
+  subcategory: "rendring"는 "deep-dive"의 소분류가 아닙니다. 가능: rendering, architecture, memory
 ```
 
 **조용히 404가 되는 경로가 생기지 않는다.** 이전 브랜치가 무너진 지점을 이 검증이 막는다.
@@ -223,7 +241,9 @@ JavaScript는 **모바일 사이드바 열고 닫기 하나**에만 쓴다.
 
 폭 예산: 본문 영역은 사이드바를 제외한 나머지 공간 안에서 다시 가운데 정렬되므로, 사이드바 폭을 그대로 오른쪽 여백으로 쓸 수 있는 게 아니라 남는 공간의 절반만 오른쪽 여백이 된다. 목차 오른쪽 끝이 뷰포트 안에 들어오려면 뷰포트 폭이 최소 `1520px`이어야 한다. Tailwind 표준 브레이크포인트 중 이보다 큰 가장 가까운 단계는 `2xl`(1536px)이므로 이를 기준으로 삼는다. **1536px 미만에서는 우측 목차를 렌더하지 않고 인라인 목차만 남긴다.** 이 규칙이 "가리지 않음"을 보장한다.
 
-구현: Astro `render()`가 반환하는 `headings` 배열 하나를 `InlineToc`와 `FloatingToc`가 공유한다. 스크립트는 `IntersectionObserver` 두 개 — 인라인 목차 통과를 감시하는 센티널, 헤딩 스크롤 스파이. 외부 라이브러리를 쓰지 않는다.
+구현: Astro `render()`가 반환하는 `headings` 배열 하나를 `InlineToc`와 `FloatingToc`가 공유한다. 스크립트는 `IntersectionObserver` 두 개 — 인라인 목차를 지나쳤는지 감시하는 것과 헤딩 스크롤 스파이. 외부 라이브러리를 쓰지 않는다.
+
+**첫 번째 관찰자의 대상은 반드시 높이가 있는 요소여야 한다.** 처음에는 인라인 목차 아래에 높이 0인 센티널 `<div>`를 두고 그것을 관찰했는데, 목차가 아예 나타나지 않았다. `IntersectionObserver`는 대상이 관찰 영역의 경계를 **넘는 순간**에만 콜백을 부르는데, 높이가 0이면 경계를 넘는 순간이 한 번뿐이라 그 시점의 `boundingClientRect.top` 값으로 판정이 굳고 이후 스크롤에는 콜백이 아예 오지 않는다. 그래서 센티널을 없애고 **인라인 목차 블록 자체를 관찰한다.** 높이가 있으니 위쪽 경계와 아래쪽 경계를 각각 넘으며 두 번 불린다.
 
 ### 6.4 시리즈 UI
 
@@ -238,6 +258,10 @@ JavaScript는 **모바일 사이드바 열고 닫기 하나**에만 쓴다.
 
 위에서부터: 소개(직무 한 줄 + 2~3문장) → 대표 프로젝트/시리즈 카드 → 최근 글 목록.
 
+앞의 두 블록은 각각 `src/components/home/HomeHero.astro`, `HomeSeries.astro` **신규 파일**로 둔다. `src/pages/index.astro`는 업스트림 소유 파일이므로 거기에 마크업을 직접 쓰면 업스트림이 홈을 고칠 때 본문 전체가 충돌한다. 컴포넌트로 빼두면 `index.astro` 쪽 변경은 import 2줄과 렌더 2줄로 줄어든다.
+
+`HomeSeries`는 편 수 계산에 쓸 글 목록을 prop으로 받는다. 안에서 `getCollection`을 다시 부르면 같은 페이지에서 컬렉션을 두 번 읽게 된다.
+
 ### 6.6 스크립트 생명주기
 
 Astro의 뷰 트랜지션에서 이벤트 리스너가 누적되지 않도록, 모든 클라이언트 스크립트는 `AbortController`로 리스너를 등록하고 `astro:before-swap`에서 `abort()`, `astro:after-swap`에서 재초기화한다.
@@ -250,14 +274,17 @@ Astro의 뷰 트랜지션에서 이벤트 리스너가 누적되지 않도록, �
 
 차분한 무채색을 기조로 하고, 라이트 테마의 배경 계열만 아주 미세하게 차갑게(파랑 쪽으로) 기울인다.
 
+**강조색과 링크색은 별개의 토큰이다.** 강조색(`--accent`)은 UI가 쓰는 브랜드색으로 양쪽 테마 모두 파랑 계열이고, 링크색(`--link`)은 본문 안에서 조용히 있어야 하므로 배경의 반대편 무채색이다.
+
 **라이트**
 
 | 토큰 | 값 | 역할 |
 |---|---|---|
 | `--background` | `#fdfdfe` | 배경 |
 | `--foreground` | `#1e1f21` | 본문 |
-| `--accent` | `#353638` | 강조·링크 |
+| `--accent` | `#246d8f` | 강조 (UI) |
 | `--accent-foreground` | `#ffffff` | 강조 위 텍스트 |
+| `--link` | `#353638` | 본문 링크 |
 | `--muted` | `#f1f3f7` | 표면·코드블록 |
 | `--muted-foreground` | `#66666e` | 보조 텍스트 |
 | `--border` | `#e2e5ec` | 테두리 |
@@ -268,15 +295,23 @@ Astro의 뷰 트랜지션에서 이벤트 리스너가 누적되지 않도록, �
 |---|---|---|
 | `--background` | `#1e1f21` | 배경 |
 | `--foreground` | `#f4f4f6` | 본문 |
-| `--accent` | `#5db0d7` | 강조·링크 |
+| `--accent` | `#5db0d7` | 강조 (UI) |
 | `--accent-foreground` | `#1e1f21` | 강조 위 텍스트 |
+| `--link` | `#cfd2d7` | 본문 링크 |
 | `--muted` | `#292a2d` | 표면·코드블록 |
 | `--muted-foreground` | `#9999a1` | 보조 텍스트 |
 | `--border` | `#353638` | 테두리 |
 
-라이트의 강조색은 먹색, 다크는 파랑이라는 비대칭이 있다. 의도한 결과이며 유지한다.
+두 값을 고른 근거:
 
-**링크 표시: 밑줄만.** 굵게 처리하지 않고 색도 강조색 그대로 쓴다. 라이트에서 링크(`#353638`)와 본문(`#1e1f21`)은 색으로 거의 구분되지 않으므로 밑줄이 유일한 단서다. 조용한 인상을 위해 의도한 선택이다.
+- **라이트 강조 `#246d8f`** — 다크의 `#5db0d7`을 HSL로 풀면 색상각 199°, 채도 60%, 명도 60%다. 색상각과 채도를 그대로 두고 명도만 35%로 낮췄다. 같은 파랑이되 밝은 배경에서 읽히는 밝기다. 원래 값을 그대로 쓰면 흰 배경에서 대비가 2.1:1이라 글자로 못 쓴다.
+- **다크 링크 `#cfd2d7`** — 라이트에서 링크(`#353638`)는 본문(`#1e1f21`)보다 아주 살짝 연하다. 그 관계를 다크에서 뒤집었다.
+
+대비가 양쪽에서 거의 대칭을 이룬다: 라이트는 본문 16.2:1 / 링크 11.9:1, 다크는 본문 15.0:1 / 링크 10.9:1. 강조색은 라이트 5.7:1, 다크 6.8:1로 둘 다 AA를 넘는다.
+
+**링크 표시: 밑줄만.** 굵게 처리하지 않는다. 링크색이 본문색과 색으로 거의 구분되지 않으므로 밑줄이 유일한 단서다. 조용한 인상을 위해 의도한 선택이다.
+
+`--link`는 **본문(prose) 링크에만** 적용한다(`typography.css`). 사이드바 활성 항목, 글 목록 카드 제목, 버튼 등 나머지 UI는 `--accent`를 쓴다. 글 목록 제목은 본문이라기보다 내비게이션에 가까워 파랑이 자연스럽다는 판단이다.
 
 적용 위치는 `src/styles/theme.css` 하나다. 이 파일은 전체가 토큰 정의라 값 교체가 자연스럽고 업스트림과 충돌하더라도 해결이 자명하다.
 
@@ -297,13 +332,15 @@ SUIT은 Astro Fonts API의 `local` provider로 self-host한다. JetBrains Mono�
 
 ### 7.3 폭
 
-| 토큰 | 값 |
-|---|---|
-| `--sidebar-width` | `240px` |
-| `--toc-width` | `224px` |
-| 본문 최대 폭 | `max-w-3xl` (768px, 기존 `max-w-app` 유지) |
+| 토큰 | 값 | 쓰이는 곳 |
+|---|---|---|
+| `--sidebar-width` | `240px` | 사이드바 폭, `Layout.astro`의 본문 오프셋, 목차 위치 계산 |
+| `--toc-width` | `224px` | 부유 목차 폭 |
+| `--content-width` | `48rem` (768px) | `global.css`의 `max-w-app`, 목차 위치 계산 |
 
-사이드바 폭은 CSS 변수 하나로 단일화한다. 이전 브랜치는 `Layout.astro`의 `lg:ps-64`와 `Header.astro`의 `w-64`가 별개 매직넘버로 존재해 한쪽만 고치면 어긋나는 구조였다.
+세 값 모두 CSS 변수 하나가 단일 소스다. 이전 브랜치는 `Layout.astro`의 `lg:ps-64`와 `Header.astro`의 `w-64`가 별개 매직넘버로 존재해 한쪽만 고치면 어긋나는 구조였다.
+
+`--content-width`도 같은 이유로 만들었다. 업스트림의 `max-w-app`은 `@apply max-w-3xl`이었는데, 부유 목차의 위치 계산이 본문 폭을 참조해야 하므로 숫자가 두 군데에 존재하게 된다. `max-w-app`이 토큰을 읽도록 바꿔 한 곳으로 모았다. 값은 48rem으로 `max-w-3xl`과 동일하므로 렌더 결과는 바뀌지 않는다.
 
 ## 8. 파일 구조와 업스트림 전략
 
@@ -333,6 +370,7 @@ import TopBar from "./layout/TopBar.astro";
 ```
 src/categories.ts
 src/series.ts
+src/taxonomySchema.ts
 src/i18n/lang/ko.ts
 src/components/layout/Sidebar.astro
 src/components/layout/SidebarNav.astro
@@ -341,6 +379,8 @@ src/components/toc/InlineToc.astro
 src/components/toc/FloatingToc.astro
 src/components/series/SeriesBox.astro
 src/components/series/SeriesNav.astro
+src/components/home/HomeHero.astro
+src/components/home/HomeSeries.astro
 src/utils/getPostsByCategory.ts
 src/utils/getSeriesPosts.ts
 src/pages/categories/index.astro
@@ -348,25 +388,40 @@ src/pages/categories/[category]/index.astro
 src/pages/categories/[category]/[subcategory]/[...page].astro
 src/pages/series/index.astro
 src/pages/series/[slug].astro
-public/fonts/  (SUIT, JetBrains Mono)
+tests/*.test.ts
+src/assets/fonts/SUIT-Variable.woff2
 ```
 
 **수정 (최소 라인)**
 
 | 파일 | 변경 |
 |---|---|
-| `src/content.config.ts` | 필드 4개 + `superRefine` |
-| `src/components/Header.astro` | 6줄 조립부로 축소 |
-| `src/styles/theme.css` | 색 토큰 값 교체, 폰트·폭 토큰 추가 |
-| `src/styles/global.css` | 폭 변수 참조 |
-| `src/layouts/Layout.astro` | body에 사이드바 오프셋 |
-| `astro.config.ts` | Fonts API에 SUIT / JetBrains Mono 등록 |
-| `astro-paper.config.ts` | `lang: "ko"`, `timezone: "Asia/Seoul"`, 사이트 제목·작성자·소개 |
+| `src/content.config.ts` | import 1줄 + `...taxonomyFields` + `.superRefine(validateTaxonomy)` |
+| `src/components/Header.astro` | 조립부로 축소 (원본 195줄 → 6줄) |
+| `src/pages/index.astro` | hero를 `<HomeHero />`로 대체 + `<HomeSeries />` 삽입 |
+| `src/pages/posts/[...slug]/index.astro` | 시리즈·목차 컴포넌트 삽입, `render()`에서 `headings` 수령 |
+| `src/styles/theme.css` | 색 토큰 값 교체, `--link`·폰트·폭 토큰 추가 |
+| `src/styles/global.css` | `max-w-app`이 `--content-width`를 읽도록 |
+| `src/styles/typography.css` | 코드에 `font-mono`, 본문 링크에 `text-link` |
+| `src/layouts/Layout.astro` | `<Font>` 2개 교체, body에 사이드바 오프셋 |
+| `src/utils/withBase.ts` | `getPathSegments()` 추가 |
+| `src/utils/getFontPathByWeight.ts` | 포맷별 항목 검색 버그 수정 (업스트림 PR 후보) |
+| `src/pages/og.png.ts`, `posts/[...slug]/index.png.ts` | 폰트 키 교체 |
+| `astro.config.ts` | Fonts API에 SUIT / JetBrains Mono 등록, 로케일 `ko` |
+| `astro-paper.config.ts` | 사이트 정보, `lang`, `timezone` |
 | `src/content/posts/` | 글을 `_ko/` 하위로 이동 (9.1 참고, URL 불변) |
+
+**업스트림 파일의 커스텀 지점 표시**
+
+위 "수정" 목록의 파일에는 바꾼 자리마다 `[CUSTOM]` 주석을 남긴다. 업스트림 원본이 무엇이었는지, 왜 바꿨는지, 병합 충돌 시 어느 쪽을 유지해야 하는지를 적는다. 전부 찾으려면:
+
+```bash
+grep -rn "\[CUSTOM\]" src/ astro.config.ts
+```
 
 **무손상**
 
-`Card`, `Footer`, `Pagination`, `Tag`, `Datetime`, `Breadcrumb`, `Main`, `LinkButton`, `Socials`, `ResponsiveTable`, `posts/[...slug]/**`, `tags/**`, `archives/**`, `search.astro`
+`Card`, `Footer`, `Pagination`, `Tag`, `Datetime`, `Breadcrumb`, `Main`, `LinkButton`, `Socials`, `ResponsiveTable`, `tags/**`, `archives/**`, `search.astro`
 
 ## 9. 언어
 
@@ -402,13 +457,19 @@ public/fonts/  (SUIT, JetBrains Mono)
 
 ## 11. 완료 기준
 
-1. `pnpm build`가 통과한다 (`astro check` 0 errors 포함).
-2. 잘못된 `subcategory`를 가진 글을 추가하면 빌드가 실패하고, 오류 메시지에 가능한 값 목록이 출력된다.
-3. 같은 시리즈에 중복 `seriesOrder`가 있으면 빌드가 실패한다.
-4. 사이드바에서 현재 글이 속한 대분류가 펼쳐진 상태로 첫 렌더된다 (JavaScript 비활성 상태에서도).
-5. JavaScript를 끈 상태에서 사이드바 아코디언 토글이 동작한다.
-6. 1536px 이상에서 우측 목차가 본문을 가리지 않고, 1536px 미만에서는 렌더되지 않는다.
-7. 페이지를 5회 이동한 뒤에도 스크롤/리사이즈 리스너가 중복 등록되지 않는다.
-8. `features.showArchives`가 `true`일 때 사이드바에 아카이브 링크가 존재한다.
-9. 생성된 모든 카테고리·시리즈 링크가 실제 페이지를 가리킨다 (404 없음).
-10. 라이트·다크 양쪽에서 본문·링크·보조 텍스트가 WCAG AA(4.5:1)를 만족한다.
+| # | 기준 | 상태 |
+|---|---|---|
+| 1 | `pnpm build`가 통과한다 (`astro check` 0 errors 포함) | ✅ |
+| 2 | 잘못된 `subcategory`를 가진 글을 추가하면 빌드가 실패하고, 오류 메시지에 가능한 값 목록이 출력된다 | ✅ |
+| 3 | 같은 시리즈에 중복 `seriesOrder`가 있으면 빌드가 실패한다 | ✅ |
+| 4 | 사이드바에서 현재 글이 속한 대분류가 펼쳐진 상태로 첫 렌더된다 | ✅ |
+| 5 | JavaScript를 끈 상태에서 사이드바 아코디언 토글이 동작한다 | 미확인 (아래 참고) |
+| 6 | 1536px 이상에서 우측 목차가 본문을 가리지 않고, 1536px 미만에서는 렌더되지 않는다 | ✅ 사람이 확인 |
+| 7 | 페이지를 여러 번 이동한 뒤에도 리스너가 중복 등록되지 않는다 | ✅ 사람이 확인 |
+| 8 | `features.showArchives`가 `true`일 때 사이드바에 아카이브 링크가 존재한다 | ✅ |
+| 9 | 생성된 모든 카테고리·시리즈 링크가 실제 페이지를 가리킨다 (404 없음) | ✅ `tests/routes.test.ts` |
+| 10 | 라이트·다크 양쪽에서 본문·링크·보조 텍스트가 WCAG AA(4.5:1)를 만족한다 | ✅ 토큰 값으로 계산 확인 |
+
+5번은 **필수 요건이 아니다.** 아코디언을 `<details>`/`<summary>`로 만들면 이 성질이 따라오기 때문에 기준에 넣었을 뿐, 개인 개발 블로그의 독자는 사실상 전원 JavaScript가 켜져 있다. 구현은 이미 그렇게 되어 있으므로 되돌릴 이유는 없지만, 확인하지 않고 넘어가도 무방하다.
+
+1·2·3·8·9번은 자동 검증된다. 2번과 3번은 일부러 깨진 글을 만들어 빌드가 실제로 멈추는지 확인했다.

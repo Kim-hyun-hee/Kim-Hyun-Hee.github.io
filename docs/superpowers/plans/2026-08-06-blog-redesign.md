@@ -1,5 +1,18 @@
 # 블로그 리디자인 구현 계획
 
+> **이 문서는 실행이 끝난 기록입니다.** 11개 태스크를 모두 수행했고, 그 과정에서 계획과 달라진 부분이 있습니다.
+> **현재 코드의 설계를 알고 싶다면 스펙(`docs/superpowers/specs/2026-08-06-blog-redesign-design.md`)을 보세요.** 이 문서는 "어떤 순서로 만들었는가"의 기록이며, 아래 목록에 적힌 지점들은 이미 낡았습니다.
+>
+> **실행 중 계획이 틀렸던 곳:**
+>
+> 1. **Task 1의 Fonts API 문법** — `provider: "local"` + 최상위 `variants`로 적었으나, 설치된 Astro 7의 실제 스키마는 `fontProviders.local()` + `options: { variants }`다. 그대로 쓰면 스키마 검증에서 실패한다. 또 폰트를 교체하면 OG 이미지 생성 경로(`og.png.ts`, `index.png.ts`)가 함께 깨지는데 계획에 없었다. satori가 WOFF2를 못 읽어 `ttf` 포맷을 함께 요청해야 한다.
+> 2. **검증 프로브 파일명** — `__probe.md`처럼 밑줄로 시작하는 이름을 썼는데, 콘텐츠 글로브 `**/[^_]*.{md,mdx}`가 파일명 기준으로 걸러내므로 아예 로드되지 않는다. "검증이 동작한다"는 확인이 거짓으로 통과한다. `zz-` 접두어로 바꿨다.
+> 3. **Task 9의 목차 폭 예산** — `240+768+32+224=1264`로 계산해 `xl`(1280px)을 기준으로 삼았으나 틀렸다. 본문이 사이드바를 제외한 공간 안에서 다시 가운데 정렬되므로 오른쪽 여백은 남는 공간의 절반뿐이다. 실제 하한은 1520px이고 `2xl`(1536px)을 쓴다. 자세한 산술은 스펙 §6.3.
+> 4. **목차 관찰 대상** — 높이 0인 센티널 `<div>`를 `IntersectionObserver`로 관찰하게 했는데, 높이가 0이면 경계를 넘는 순간이 한 번뿐이라 판정이 굳고 이후 콜백이 오지 않는다. 목차가 영영 나타나지 않았다. 인라인 목차 블록 자체를 관찰하도록 바꿨다.
+> 5. **누락된 요구** — 모바일에서 화면 밖 사이드바의 `inert` 처리, 상단 메뉴 링크의 활성 표시, 시리즈와 대분류의 정합성 검증, 소분류 오류 메시지의 "가능한 값" 목록이 계획에 없었다. 리뷰에서 발견해 추가했다.
+> 6. **분리 위치** — 계획은 검증 로직을 `content.config.ts`에, 홈 마크업을 `index.astro`에 직접 두었다. 둘 다 업스트림 소유 파일이라 병합 충돌 면적이 커져, 각각 `src/taxonomySchema.ts`와 `src/components/home/*`로 추출했다.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** AstroPaper 기반 블로그를 좌측 사이드바 + 2단 카테고리 + 시리즈 구조를 갖춘 포트폴리오 겸 개발 블로그로 재구성한다.
