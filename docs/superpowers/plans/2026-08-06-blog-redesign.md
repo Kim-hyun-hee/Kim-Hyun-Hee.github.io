@@ -145,6 +145,8 @@ ls -la src/assets/fonts/SUIT-Variable.woff2
 :root {
   --sidebar-width: 240px;
   --toc-width: 224px;
+  /* max-w-3xl과 같은 값. 부유 목차 위치 계산이 이 값을 참조한다. */
+  --content-width: 48rem;
 }
 ```
 
@@ -2498,8 +2500,8 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
       aria-label={t.toc.title}
       class="pointer-events-none fixed top-24 hidden w-(--toc-width) opacity-0
              transition-opacity duration-200 xl:block
-             ltr:left-[calc(50%+var(--sidebar-width)/2+384px+2rem)]
-             rtl:right-[calc(50%+var(--sidebar-width)/2+384px+2rem)]"
+             ltr:left-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]
+             rtl:right-[calc(50%+var(--sidebar-width)/2+var(--content-width)/2+2rem)]"
     >
       <p class="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
         {t.toc.title}
@@ -2585,7 +2587,7 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
 </script>
 ```
 
-`left` 계산에서 `384px`는 본문 `max-w-3xl`(768px)의 절반이다. `--sidebar-width`만큼 본문 영역이 오른쪽으로 밀린 상태에서 중앙 정렬되므로, 본문 오른쪽 끝은 `50% + sidebar/2 + 384px`이고 거기에 `2rem` 간격을 둔다.
+`left` 계산의 근거: body에 `lg:ps-(--sidebar-width)`가 걸려 본문 영역이 사이드바만큼 오른쪽으로 밀린 상태에서 중앙 정렬되므로, 본문의 오른쪽 끝은 `50% + sidebar/2 + content/2`다. 거기에 `2rem` 간격을 두고 목차를 놓는다. 폭 값은 전부 Task 1에서 정의한 토큰을 참조하며 숫자를 다시 적지 않는다.
 
 - [ ] **Step 3: 글 페이지에 목차 연결**
 
