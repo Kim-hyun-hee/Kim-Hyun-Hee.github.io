@@ -32,18 +32,35 @@ export function getSeriesPosts<T extends TaxonomyPost>(
   return inSeries.sort((a, b) => a.data.seriesOrder! - b.data.seriesOrder!);
 }
 
+/**
+ * 시리즈 내에서 특정 편(`order`)의 위치를 계산한다.
+ *
+ * 계약: `order`가 `posts`로 넘어온 목록 안에 없으면(예: 예약 발행 등으로
+ * `postFilter`가 걸러낸 글을 미리보기로 여는 경우) `current`는 `null`을
+ * 반환한다. `0`이나 다른 임의의 값으로 대체하지 않는다 — 호출부가
+ * "존재하지 않음"과 "1편"을 값으로 구분할 수 있어야 하고, `null`을
+ * 그대로 화면에 찍으면 눈에 띄는 오류가 나지 조용히 "0편"처럼 보이지
+ * 않는다. `total`은 이 경우에도 시리즈 전체 편수를 그대로 반환하고,
+ * `prev`/`next`는 항상 `null`이다.
+ */
 export function getSeriesPosition<T extends TaxonomyPost>(
   posts: T[],
   seriesId: string,
   order: number
-): { current: number; total: number; prev: T | null; next: T | null } {
+): {
+  current: number | null;
+  total: number;
+  prev: T | null;
+  next: T | null;
+} {
   const ordered = getSeriesPosts(posts, seriesId);
   const index = ordered.findIndex(p => p.data.seriesOrder === order);
+  const found = index !== -1;
 
   return {
-    current: index + 1,
+    current: found ? index + 1 : null,
     total: ordered.length,
     prev: index > 0 ? ordered[index - 1] : null,
-    next: index >= 0 && index < ordered.length - 1 ? ordered[index + 1] : null,
+    next: found && index < ordered.length - 1 ? ordered[index + 1] : null,
   };
 }

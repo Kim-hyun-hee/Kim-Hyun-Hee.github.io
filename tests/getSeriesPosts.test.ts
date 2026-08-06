@@ -52,4 +52,12 @@ describe("getSeriesPosition", () => {
   it("마지막 편의 next는 null이다", () => {
     expect(getSeriesPosition(posts, "s1", 3).next).toBeNull();
   });
+
+  it("존재하지 않는 순번을 요청하면 current는 null이고 total은 유지된다", () => {
+    const pos = getSeriesPosition(posts, "s1", 99);
+    expect(pos.current).toBeNull();
+    expect(pos.total).toBe(3);
+    expect(pos.prev).toBeNull();
+    expect(pos.next).toBeNull();
+  });
 });

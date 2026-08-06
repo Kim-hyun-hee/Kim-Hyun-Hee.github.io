@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import { SERIES, SERIES_IDS } from "@/series";
+import { getSeriesPosts } from "@/utils/getSeriesPosts";
+import { postFilter } from "@/utils/postFilter";
+import { useTranslations, tplStr } from "@/i18n";
+import config from "@/config";
+
+const all = (await getCollection("posts")).filter(postFilter);
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+const list = SERIES_IDS.map(id => ({
+  id,
+  ...SERIES[id],
+  count: getSeriesPosts(all, id).length,
+}));
+---
+
+<Layout title={`${t.series.title} | ${config.site.title}`}>
+  <Header />
+  <Main pageTitle={t.series.title} pageDesc={t.series.desc}>
+    <ul class="space-y-4">
+      {
+        list.map(s => (
+          <li class="border-border rounded-lg border p-4">
+            <a
+              href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
+              class="text-accent text-lg font-semibold underline-offset-4 hover:underline"
+            >
+              {s.label}
+            </a>
+            <p class="text-muted-foreground mt-1 text-sm">{s.description}</p>
+            <p class="text-muted-foreground mt-2 text-sm">
+              {tplStr(t.category.seriesCount, { count: s.count })}
+              {" · "}
+              {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </Main>
+  <Footer />
+</Layout>
