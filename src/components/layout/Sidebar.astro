@@ -49,7 +49,7 @@ const activeUtilLinkClass = "text-foreground";
 <a
   id="skip-to-content"
   href="#main-content"
-  class="bg-background text-accent absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4"
+  class="bg-background text-foreground absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4"
 >
   {t.a11y.skipToContent}
 </a>
@@ -61,7 +61,7 @@ const activeUtilLinkClass = "text-foreground";
 >
   <a
     href={getRelativeLocaleUrl(locale, "")}
-    class="hover:text-accent text-lg font-bold"
+    class="decoration-accent text-lg font-bold underline-offset-4 hover:underline"
   >
     {site.title}
   </a>

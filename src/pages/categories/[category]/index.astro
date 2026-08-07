@@ -63,7 +63,7 @@ const series = getSeriesByCategory(category).map(s => ({
                     locale,
                     `categories/${category}/${group.id}`
                   )}
-                  class="hover:text-accent"
+                  class="decoration-accent underline-offset-4 hover:underline"
                 >
                   {getSubcategoryLabel(category, group.id)}
                 </a>
@@ -83,7 +83,7 @@ const series = getSeriesByCategory(category).map(s => ({
                     locale,
                     `categories/${category}/${group.id}`
                   )}
-                  class="text-accent text-sm underline-offset-4 hover:underline"
+                  class="text-link decoration-accent text-sm underline-offset-4 hover:underline"
                 >
                   {t.category.seeMore}
                 </a>
@@ -101,7 +101,7 @@ const series = getSeriesByCategory(category).map(s => ({
             <li class="border-border rounded-lg border p-4">
               <a
                 href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
-                class="text-accent text-lg font-semibold underline-offset-4 hover:underline"
+                class="text-foreground decoration-accent text-lg font-semibold underline-offset-4 hover:underline"
               >
                 {s.label}
               </a>
