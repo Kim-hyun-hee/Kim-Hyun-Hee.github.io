@@ -11,10 +11,11 @@ import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
 import { postFilter } from "@/utils/postFilter";
 import { getSeriesPosts, getSeriesPosition } from "@/utils/getSeriesPosts";
-// [CUSTOM] 아래 import 3개와, 본문 중 <SeriesBox> <SeriesNav> <FloatingToc>
-// 를 렌더하는 자리, 그리고 seriesId/seriesPosts/seriesPosition을
-// 계산하는 블록이 이 파일에 추가된 전부입니다. 나머지는 업스트림 원본이므로
-// 병합 시 업스트림 변경을 받아들이고 이 조각들만 다시 끼우면 됩니다.
+// [CUSTOM] 아래 import들(SeriesBox, SeriesNav, FloatingToc과
+// OtherPosts, getNearbyCategoryPosts, CATEGORIES, getSubcategoryLabel)과,
+// 계산 블록 2개(시리즈/카테고리), allPosts 호이스팅,
+// <FloatingToc> <SeriesBox> <OtherPosts> <SeriesNav> 렌더가 추가되었습니다.
+// <BackToTopButton />는 삭제됨 - 병합 시 끼우지 마세요.
 import SeriesBox from "@/components/series/SeriesBox.astro";
 import SeriesNav from "@/components/series/SeriesNav.astro";
 import FloatingToc from "@/components/toc/FloatingToc.astro";
