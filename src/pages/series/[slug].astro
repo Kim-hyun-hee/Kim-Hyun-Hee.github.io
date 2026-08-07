@@ -29,7 +29,7 @@ const t = useTranslations(locale);
 <Layout title={`${meta.label} | ${config.site.title}`}>
   <Header />
   <Main pageTitle={meta.label} pageDesc={meta.description}>
-    <p class="text-muted-foreground -mt-4 mb-6 text-sm">
+    <p class="text-muted-foreground -mt-4 mb-8 text-sm">
       {tplStr(t.category.seriesCount, { count: posts.length })}
       {" · "}
       {meta.status === "ongoing" ? t.series.ongoing : t.series.completed}
@@ -39,7 +39,9 @@ const t = useTranslations(locale);
         <p class="text-muted-foreground text-sm">{t.series.empty}</p>
       ) : (
         <ol>
-          {posts.map(post => <Card {...post} />)}
+          {posts.map(post => (
+            <Card {...post} />
+          ))}
         </ol>
       )
     }
