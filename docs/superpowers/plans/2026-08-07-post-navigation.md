@@ -15,7 +15,7 @@
 - **패키지 매니저는 pnpm이고 PATH에 없다.** 모든 명령은 `corepack pnpm ...` 으로 실행한다. `npm install`을 절대 돌리지 않는다.
 - **`corepack pnpm format`을 저장소 전체에 돌리지 않는다.** 기존 드리프트 때문에 무관한 파일 90여 개가 재포맷된다. 건드린 파일만 경로로 지정해 `corepack pnpm exec prettier --write <경로>` 를 쓴다.
 - **`git add -A` / `git add .` 를 쓰지 않는다.** 경로로 명시해 스테이징하고, 커밋 전에 `git status --short`로 의도한 파일만 올라갔는지 확인한다.
-- **커밋 메시지와 코드 주석에 다음 고유명사를 쓰지 않는다:** hELLO, Inpa Dev, 티스토리, Tistory.
+- **커밋 메시지와 코드 주석에 특정 고유명사를 쓰지 않는다.** 목록은 저장소 루트의 로컬 작업 메모 파일에 있다.
 - **커밋 메시지와 코드 주석은 한국어로 쓴다.**
 - **UI에 유채색을 쓰지 않는다.** 새로 쓰는 색은 기존 토큰(`--muted`, `--border`, `--foreground`, `--muted-foreground`)에서 가져온다.
 - **`src/series.ts` / `src/categories.ts` / `content.config.ts` 를 고치면 dev 서버를 재시작해야 값이 반영된다.** 이 계획에서는 세 파일 모두 건드리지 않지만, 화면이 이상하면 재시작을 먼저 의심한다.

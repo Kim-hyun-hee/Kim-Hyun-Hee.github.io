@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - **패키지 매니저는 pnpm이고 PATH에 없다.** 모든 명령은 `corepack pnpm ...` 으로 실행한다. `npm install`을 절대 돌리지 않는다 — `package-lock.json`이 생긴다.
-- **커밋 메시지와 `docs/superpowers/**`, 코드 주석에 다음 고유명사를 쓰지 않는다:** hELLO, Inpa Dev, 티스토리/Tistory. 같은 뜻을 말해야 하면 "기존에 쓰던 블로그" 같은 중립적 표현으로 바꾼다.
+- **커밋 메시지와 `docs/superpowers/**`, 코드 주석에 특정 고유명사를 쓰지 않는다.** 목록은 저장소 루트의 로컬 작업 메모 파일에 있다. 같은 뜻을 말해야 하면 "기존에 쓰던 블로그" 같은 중립적 표현으로 바꾼다.
 - **시리즈 컴포넌트를 열지 않는다.** `src/components/series/SeriesBox.astro`, `src/components/series/SeriesNav.astro`는 이번 diff에 등장하면 안 된다. 시리즈 UI는 별도 작업에서 아코디언으로 다시 짠다.
 - **UI에 유채색을 쓰지 않는다.** 새로 넣는 색도 무채색이어야 한다.
 - 아이콘은 Tabler Icons(MIT) 계열로 통일돼 있다. 새 아이콘도 같은 규격(24×24, `stroke="currentColor"`, `stroke-width="2"`)을 따른다.

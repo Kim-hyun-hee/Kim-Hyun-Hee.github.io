@@ -18,7 +18,9 @@
    해당하는 곳은 404 페이지의 숫자 하나뿐입니다.
 
    --sky 는 독립된 포인트 색이 아니라 --accent 와 함께 그라데이션을 만드는
-   짝입니다. 단독으로 쓰지 마세요. 지금은 본문 인용문 배경에만 쓰입니다.
+   짝입니다. 단독으로 쓰지 마세요. 지금은 예약만 해두었을 뿐 실제로 쓰이는
+   곳은 없고, 본문 인용문 배경 그라데이션에는 --accent-muted 와 함께
+   --sky-muted 가 쓰입니다.
 
    관련 설계: docs/superpowers/specs/2026-08-07-palette-and-scale-design.md */
 
@@ -47,14 +49,14 @@
   --background: #fcfdff;
   --foreground: #2e3442;
   --accent: #7e82d8;
-  --accent-foreground: #ffffff;
+  --accent-foreground: #2e3442;
   --accent-muted: #eceeff;
   --sky: #79c8ea;
   --sky-muted: #eaf8ff;
   --link: #3d4453;
   --quote-foreground: #5f677a;
   --muted: #f3f7fc;
-  --muted-foreground: #717889;
+  --muted-foreground: #686f80;
   --border: #e1e8f2;
   --sidebar-link: #9aa2b3;
 }

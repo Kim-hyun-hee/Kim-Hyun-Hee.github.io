@@ -54,7 +54,7 @@ const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long" });
               .map(([month, monthGroup]) => (
                 <div class="flex flex-col sm:flex-row">
                   <div class="mt-8 min-w-36 text-lg sm:my-8">
-                    <span class="font-bold">
+                    <span class="font-semibold">
                       {monthFormatter.format(
                         new Date(2000, Number(month) - 1, 1)
                       )}
