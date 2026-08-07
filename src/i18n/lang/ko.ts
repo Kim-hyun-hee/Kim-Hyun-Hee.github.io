@@ -61,6 +61,7 @@ export default {
     seeMore: "더 보기",
     seriesCount: "{{count}}편",
     postCount: "{{count}}개의 글",
+    otherPosts: "'{{label}}' 카테고리의 다른 글",
   },
   series: {
     title: "시리즈",

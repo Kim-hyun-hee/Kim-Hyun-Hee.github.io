@@ -72,6 +72,7 @@ export default {
     seeMore: "See more",
     seriesCount: "{{count}} parts",
     postCount: "{{count}} posts",
+    otherPosts: "More in '{{label}}'",
   },
   series: {
     title: "Series",

@@ -70,6 +70,7 @@ export interface UIStrings {
     seeMore: string;
     seriesCount: string;
     postCount: string;
+    otherPosts: string;
   };
   series: {
     title: string;
