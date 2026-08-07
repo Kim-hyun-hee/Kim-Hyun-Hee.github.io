@@ -21,8 +21,8 @@ const locale = Astro.currentLocale ?? config.site.lang;
     class:list={[
       "inline-flex items-center gap-1.5 rounded-md px-4 py-2 transition-colors",
       "bg-muted text-muted-foreground dark:text-foreground",
-      "hover:bg-tag-hover hover:text-tag-hover-foreground",
-      "focus-visible:bg-tag-hover focus-visible:text-tag-hover-foreground",
+      "hover:bg-accent-muted hover:text-foreground",
+      "focus-visible:bg-accent-muted focus-visible:text-foreground",
       { "text-sm": size === "sm" },
       { "text-base": size === "lg" },
     ]}

@@ -36,11 +36,11 @@
       @apply text-foreground;
     }
 
-    /* [CUSTOM] 업스트림은 `text-accent`였습니다. 강조색과 링크색을 분리해
-       강조색은 파랑, 본문 링크는 무채색으로 두기로 해서 text-link로 바꿨습니다.
-       나머지 유틸(줄바꿈·점선 밑줄·오프셋)은 업스트림 원본입니다. */
+    /* [CUSTOM] 업스트림은 `text-accent`였습니다. 포인트 색은 본문 크기
+       텍스트에 쓰지 않기로 해서 글씨는 --link 로 두고 밑줄만 포인트 색을
+       칠합니다. 나머지 유틸(줄바꿈·오프셋)은 업스트림 원본입니다. */
     a {
-      @apply text-link wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
+      @apply text-link decoration-accent wrap-break-word underline-offset-4 focus-visible:no-underline;
     }
 
     ul {

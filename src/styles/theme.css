@@ -1,20 +1,26 @@
 /* [CUSTOM] 이 파일은 값이 전부 교체됐습니다.
-   업스트림과 달라진 것: 라이트/다크 색값, --link·--brand 토큰 신설,
-   --font-app/--font-mono가 가리키는 폰트, 레이아웃 폭 토큰 3개
-   (--sidebar-width / --toc-width / --content-width) 추가.
+   업스트림과 달라진 것: 라이트/다크 색값, --link·--accent-muted·--sky·
+   --sky-muted·--sidebar-link 토큰 신설, --font-app/--font-mono가 가리키는
+   폰트, 레이아웃 폭 토큰 3개 추가.
    업스트림에 있던 토큰 "이름"은 그대로라 기존 유틸리티는 전부 동작합니다.
    병합 충돌이 나면 값 선택의 문제이니 이쪽을 유지하면 됩니다.
 
-   ── 색을 쓰지 않는다는 원칙 ────────────────────────────────
-   블로그 UI에는 유채색을 쓰지 않습니다. 그래서 --accent(제목·활성 메뉴·
-   포커스 링·선택 영역 등 UI 강조가 쓰는 토큰)에 본문과 같은 먹색을 넣었고,
-   강조는 색이 아니라 굵기·크기·밑줄로 냅니다.
+   ── 포인트 색을 쓰는 원칙 ──────────────────────────────────
+   포인트 색(--accent)은 "표시"에만 씁니다 — 선, 테두리, 배경 틴트, 밑줄,
+   아이콘, 진행 바, 활성 표시, 선택 영역.
 
-   파랑은 --brand 에 남겨뒀습니다. 팔레트에서 뺀 게 아니라 지금 UI에서
-   쓰지 않을 뿐입니다. 어딘가에 색을 넣고 싶어지면 `text-brand`,
-   `bg-brand`, `var(--brand)` 로 꺼내 쓰면 되고, UI 전반에 색을 되돌리려면
-   --accent 값을 --brand 값으로 바꾸기만 하면 됩니다. 호출부는 35군데인데
-   전부 --accent 를 거치므로 손댈 필요가 없습니다. */
+   본문 크기 텍스트(제목·링크·목록 항목)에는 쓰지 않습니다. 라이트의
+   #7e82d8은 흰 배경에서 3.4:1이라 작은 글씨에 쓰면 흐리고, 글자마다 색이
+   들어가면 화면이 시끄러워집니다. 링크는 글씨를 --link 로 두고 밑줄만
+   --accent 로 칠합니다.
+
+   예외는 24px 이상 큰 글씨입니다. 대비 기준이 3:1이라 통과합니다. 지금
+   해당하는 곳은 404 페이지의 숫자 하나뿐입니다.
+
+   --sky 는 독립된 포인트 색이 아니라 --accent 와 함께 그라데이션을 만드는
+   짝입니다. 단독으로 쓰지 마세요. 지금은 본문 인용문 배경에만 쓰입니다.
+
+   관련 설계: docs/superpowers/specs/2026-08-07-palette-and-scale-design.md */
 
 /* Register design tokens for Tailwind v4 */
 @theme inline {
@@ -22,14 +28,14 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-muted: var(--accent-muted);
+  --color-sky: var(--sky);
+  --color-sky-muted: var(--sky-muted);
   --color-link: var(--link);
-  --color-brand: var(--brand);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-sidebar-link: var(--sidebar-link);
-  --color-tag-hover: var(--tag-hover);
-  --color-tag-hover-foreground: var(--tag-hover-foreground);
   --font-app: var(--font-suit);
   --font-mono: var(--font-jetbrains-mono);
 }
@@ -37,39 +43,34 @@
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #fdfdfe;
-  --foreground: #1e1f21;
-  --accent: #1e1f21;
-  --accent-foreground: #fdfdfe;
-  --link: #353638;
-  --brand: #246d8f;
-  --muted: #f1f3f7;
-  --muted-foreground: #66666e;
-  --border: #e2e5ec;
-  --sidebar-link: #9999a1;
+  --background: #fcfdff;
+  --foreground: #2e3442;
+  --accent: #7e82d8;
+  --accent-foreground: #ffffff;
+  --accent-muted: #eceeff;
+  --sky: #79c8ea;
+  --sky-muted: #eaf8ff;
+  --link: #3d4453;
+  --muted: #f3f7fc;
+  --muted-foreground: #717889;
+  --border: #e1e8f2;
+  --sidebar-link: #9aa2b3;
 }
 
 /* Dark theme values */
 [data-theme="dark"] {
-  --background: #1e1f21;
-  --foreground: #f4f4f6;
-  --accent: #f4f4f6;
-  --accent-foreground: #1e1f21;
-  --link: #cfd2d7;
-  --brand: #5db0d7;
-  --muted: #292a2d;
-  --muted-foreground: #9999a1;
-  --border: #353638;
-  --sidebar-link: #9999a1;
-}
-
-/* 테마와 무관한 값 — 위의 라이트/다크 블록에서 덮지 않는다.
-   태그 칩 hover는 기존에 쓰던 블로그와 같이 양쪽 테마 모두 먹색으로
-   어두워진다. --foreground/--background 는 테마에 따라 뒤집히므로
-   이 동작을 표현할 수 없어 별도 토큰을 둔다. */
-:root {
-  --tag-hover: #353638;
-  --tag-hover-foreground: #f4f4f6;
+  --background: #16181f;
+  --foreground: #e6e9f0;
+  --accent: #a5a8ea;
+  --accent-foreground: #16181f;
+  --accent-muted: #2b2f4a;
+  --sky: #8fd2f0;
+  --sky-muted: #1c2a35;
+  --link: #c9cedb;
+  --muted: #232733;
+  --muted-foreground: #9aa1b2;
+  --border: #2e3342;
+  --sidebar-link: #9aa1b2;
 }
 
 /* Layout widths — single source, referenced by shell and TOC */
