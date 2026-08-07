@@ -21,7 +21,6 @@ import FloatingToc from "@/components/toc/FloatingToc.astro";
 import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
-import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import config from "@/config";
 
@@ -182,8 +181,6 @@ const ogImage = ogImageUrl
     <hr class="my-8 border-dashed" />
 
     <EditPost class="sm:hidden" {hideEditPost} {post} />
-
-    <BackToTopButton />
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
