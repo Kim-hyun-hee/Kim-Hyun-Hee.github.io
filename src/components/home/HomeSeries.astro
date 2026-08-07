@@ -36,7 +36,7 @@ const projectSeries = getSeriesByCategory("project").map(s => ({
 {
   projectSeries.length > 0 && (
     <section class="border-border border-b pt-10 pb-8">
-      <h2 class="text-2xl font-semibold tracking-wide">{t.series.title}</h2>
+      <h2 class="text-xl font-semibold tracking-wide">{t.series.title}</h2>
       <ul class="mt-4 grid gap-4 sm:grid-cols-2">
         {projectSeries.map(s => (
           <li class="border-border rounded-lg border p-4">

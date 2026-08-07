@@ -35,10 +35,12 @@ const homePath = getRelativeLocaleUrl(locale, "");
     data-home-path={homePath}
     class="app-layout"
   >
-    {/* [CUSTOM] 업스트림의 hero 섹션을 이 두 줄이 대체합니다. 원본 hero는
+    {
+      /* [CUSTOM] 업스트림의 hero 섹션을 이 두 줄이 대체합니다. 원본 hero는
         인사말·테마 홍보 문구·RSS 링크로 이루어져 있었고, 포트폴리오 홈에는
         맞지 않아 걷어냈습니다. 아래 featured / recent-posts 섹션부터는
-        업스트림 원본 그대로이니 병합 시 그쪽 변경을 받아들이면 됩니다. */}
+        업스트림 원본 그대로이니 병합 시 그쪽 변경을 받아들이면 됩니다. */
+    }
     <HomeHero />
     <HomeSeries posts={sortedPosts} />
 
@@ -51,9 +53,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
             { "border-border border-b": recentPosts.length > 0 },
           ]}
         >
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.featured}
-          </h2>
+          <h2 class="text-xl font-semibold tracking-wide">{t.home.featured}</h2>
           <ul>
             {featuredPosts.map(data => (
               <Card variant="h3" {...data} />
@@ -66,7 +66,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
     {
       recentPosts.length > 0 && (
         <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">
+          <h2 class="text-xl font-semibold tracking-wide">
             {t.home.recentPosts}
           </h2>
           <ul>
