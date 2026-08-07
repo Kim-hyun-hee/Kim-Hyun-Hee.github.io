@@ -1,37 +1,26 @@
 ---
 title: "About"
-description: "A bit about me and this blog."
+description: "Unity 그래픽스와 데이터 지향 설계를 기록합니다."
 ---
 
-AstroPaper is a minimal, accessible and SEO-friendly blog theme built with [Astro](https://astro.build/) and [Tailwind CSS](https://tailwindcss.com/).
+**김현희**입니다. 온라인에서는 *Dev groot*라는 이름을 씁니다.
 
-![Astro Paper](@/assets/images/astropaper-og.jpg)
+Unity에서 그래픽스와 데이터 지향 설계(DOD)를 다룹니다. 지금은 설비 6,400개를
+실시간으로 그리는 디지털트윈을 만들고 있고, 그 과정을
+[DOD로 만드는 디지털트윈](/series/dod-digitaltwin-unity/) 시리즈로 적고 있습니다.
 
-AstroPaper provides a solid foundation for blogs, or even portfolios\_ with full markdown support, built-in dark mode, and a clean layout that works out-of-the-box.
+## 이 블로그
 
-The blog posts in this theme also serve as guides, docs or example articles\_ making AstroPaper a flexible starting point for your next content-driven site.
+분류는 다섯 갈래입니다.
 
-## Features
+- **[Deep Dive](/categories/deep-dive/)** — 렌더링·아키텍처·메모리를 파고든 기록
+- **[Project](/categories/project/)** — 만든 것들
+- **[Troubleshooting](/categories/troubleshooting/)** — 짧고 실전적인 이슈 기록
+- **[Study](/categories/study/)** — 기초를 다시 훑는 기록
+- **[Etc](/categories/etc/)** — 잡담·회고·커리어
 
-AstroPaper comes with a set of useful features that make content publishing easy and effective:
+여러 편으로 이어지는 글은 [시리즈](/series/)로 묶어둡니다.
 
-- SEO-friendly
-- Fast performance
-- Light & dark mode
-- Highly customizable
-- Organizable blog posts
-- Responsive & accessible
-- Static search with [PageFind](https://pagefind.app/)
-- Automatic social image generation
+## 연락
 
-and so much more.
-
-## Show your support
-
-If you like [AstroPaper](https://github.com/satnaing/astro-paper), consider giving it a star ⭐️.
-
-Found a bug 🐛 or have an improvement ✨ in mind? Feel free to open an [issue](https://github.com/satnaing/astro-paper/issues), submit a [pull request](https://github.com/satnaing/astro-paper/pulls) or start a [discussion](https://github.com/satnaing/astro-paper/discussions).
-
-If you find this theme helpful, you can also [sponsor me on GitHub](https://github.com/sponsors/satnaing) or [buy me a coffee](https://buymeacoffee.com/satnaing) to show your support — every penny counts.
-
-Kyay zuu! 🙏🏼
+- GitHub — [Kim-hyun-hee](https://github.com/Kim-hyun-hee)

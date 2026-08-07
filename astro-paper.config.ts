@@ -5,7 +5,10 @@ export default defineAstroPaperConfig({
     url: "https://astro-paper.pages.dev/",
     title: "Dev groot",
     description: "Unity 그래픽스·DOD",
-    author: "김현희",
+    // 사이트 전역에 노출되는 이름이라 브랜드명을 쓴다.
+    // <meta name="author">, 글의 JSON-LD, 자동 생성 OG 이미지가 모두 이 값을
+    // 읽는다. 실명은 About 페이지에만 둔다.
+    author: "Dev groot",
     profile: "https://github.com/Kim-hyun-hee",
     ogImage: "default-og.jpg",
     lang: "ko",
