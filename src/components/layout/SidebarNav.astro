@@ -6,24 +6,34 @@ import {
   getSubcategoryIds,
   getSubcategoryLabel,
   hasSubcategories,
+  type CategoryId,
 } from "@/categories";
 import type { CategoryCounts } from "@/utils/getCategoryCounts";
-import { getPathSegments } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
-type Props = { counts: CategoryCounts };
-const { counts } = Astro.props;
+type Props = {
+  counts: CategoryCounts;
+  /** 지금 위치. Sidebar가 resolveActiveTaxonomy()로 판정해 넘긴다. */
+  activeCategory?: CategoryId;
+  activeSubcategory?: string;
+  /** "page"일 때만 aria-current를 붙인다. */
+  activeKind: "page" | "section";
+  /** "분류 전체보기"를 강조할지. Sidebar가 판정해 넘긴다. */
+  postsActive: boolean;
+};
+
+const { counts, activeCategory, activeSubcategory, activeKind, postsActive } =
+  Astro.props;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
-const segments = getPathSegments(Astro.url.pathname, locale);
-const activeCategory = segments[0] === "categories" ? segments[1] : undefined;
-const activeSubcategory =
-  segments[0] === "categories" ? segments[2] : undefined;
+
+// 글 페이지에서는 사이드바의 강조 항목이 "지금 보는 페이지"가 아니라
+// "지금 속한 섹션"이다. 화면 강조는 같게 하되 스크린 리더에는 알리지 않는다.
+const ariaCurrent = activeKind === "page" ? "page" : undefined;
 
 const postsHref = getRelativeLocaleUrl(locale, "posts");
-const postsActive = segments[0] === "posts";
 ---
 
 <nav aria-label={t.nav.categories}>
@@ -50,7 +60,7 @@ const postsActive = segments[0] === "posts";
               <a
                 href={href}
                 class:list={["cat-row", { "is-active": catActive }]}
-                aria-current={catActive ? "page" : undefined}
+                aria-current={catActive ? ariaCurrent : undefined}
               >
                 <span class="label">{category.label}</span>
                 <span class="cnt">{counts.byCategory[id]}</span>
@@ -64,7 +74,7 @@ const postsActive = segments[0] === "posts";
             <a
               href={href}
               class:list={["cat-row", { "is-active": catActive }]}
-              aria-current={catActive ? "page" : undefined}
+              aria-current={catActive ? ariaCurrent : undefined}
             >
               <span class="label">{category.label}</span>
               <span class="cnt">{counts.byCategory[id]}</span>
@@ -102,10 +112,14 @@ const postsActive = segments[0] === "posts";
                             `categories/${id}/${sub}`
                           )}
                           class:list={["sub-link", { "is-active": subActive }]}
-                          aria-current={subActive ? "page" : undefined}
+                          aria-current={subActive ? ariaCurrent : undefined}
                         >
-                          <span class="label">{getSubcategoryLabel(id, sub)}</span>
-                          <span class="cnt">{counts.bySubcategory[`${id}/${sub}`]}</span>
+                          <span class="label">
+                            {getSubcategoryLabel(id, sub)}
+                          </span>
+                          <span class="cnt">
+                            {counts.bySubcategory[`${id}/${sub}`]}
+                          </span>
                         </a>
                       </li>
                     );
