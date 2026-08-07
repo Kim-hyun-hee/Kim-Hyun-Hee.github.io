@@ -193,11 +193,7 @@ const ogImage = ogImageUrl
 
     <hr class="my-8 border-dashed" />
 
-    {
-      seriesPosition && (
-        <SeriesNav prev={seriesPosition.prev} next={seriesPosition.next} />
-      )
-    }
+    {seriesPosition && <SeriesNav prev={seriesPosition.prev} next={seriesPosition.next} />}
 
     <AdjacentPostNav {prevPost} {nextPost} />
   </main>
