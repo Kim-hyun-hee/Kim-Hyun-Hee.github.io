@@ -102,9 +102,11 @@ const { Content, headings } = await render(post);
 
 // 같은 분류의 다른 글. 범위 라벨은 유틸이 고르는 범위와 같은 기준으로 뽑는다 —
 // 제목이 곧 범위 설명이라 목록 항목에 소분류 뱃지를 달 필요가 없다.
+// 4개인 이유: 창 크기가 홀수(4+1)가 되어 현재 글 앞뒤로 2개씩 대칭이 된다.
 const nearbyCategoryPosts = getNearbyCategoryPosts(
   getSortedPosts(allPosts),
-  post
+  post,
+  4
 );
 const categoryLabel =
   (post.data.subcategory &&
