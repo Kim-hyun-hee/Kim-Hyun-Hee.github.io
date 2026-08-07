@@ -35,11 +35,16 @@ const { total, prev, next } = getSeriesPosition(posts, seriesId, currentOrder);
       <ol class="flex flex-col gap-y-2">
         {posts.map(p => (
           <li class="flex items-baseline gap-2 text-sm">
+            <span class="w-3 shrink-0 text-end" aria-hidden="true">
+              {p.data.seriesOrder === currentOrder ? "▸" : ""}
+            </span>
             <span class="w-4 shrink-0 text-end tabular-nums opacity-60">
               {p.data.seriesOrder}
             </span>
             {p.data.seriesOrder === currentOrder ? (
-              <span class="text-foreground font-bold">{p.data.title}</span>
+              <span class="text-foreground font-bold" aria-current="page">
+                {p.data.title}
+              </span>
             ) : (
               <a
                 href={getPostUrl(p.id, p.filePath, locale)}

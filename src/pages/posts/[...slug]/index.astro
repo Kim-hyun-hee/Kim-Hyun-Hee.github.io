@@ -17,6 +17,8 @@ import { getSeriesPosts, getSeriesPosition } from "@/utils/getSeriesPosts";
 // <FloatingToc> <SeriesBadge> 렌더와 본문 아래 상자 분기
 // (시리즈 글이면 <SeriesPosts>, 아니면 <CategoryPosts>)가 추가되었습니다.
 // <BackToTopButton />, <AdjacentPostNav />는 삭제됨 - 병합 시 끼우지 마세요.
+// <ShareLinks />와 그 위 <AdjacentPostNav /> 사이에 있던 두 번째
+// <hr class="my-8 border-dashed" />도 함께 삭제됨(업스트림 요소) - 병합 시 끼우지 마세요.
 import SeriesBadge from "@/components/series/SeriesBadge.astro";
 import SeriesPosts from "@/components/related/SeriesPosts.astro";
 import FloatingToc from "@/components/toc/FloatingToc.astro";
