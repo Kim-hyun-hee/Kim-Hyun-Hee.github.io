@@ -138,7 +138,9 @@ Props: `title`(문자열), `titleAside`(선택 슬롯 — 우측 아이콘이나
 
 Props: `posts`(편 순서로 정렬된 목록), `seriesId`, `currentOrder`.
 
-`RelatedBox`를 쓰고, `titleAside`에 총 편수를 넣는다. 목록과 이전/다음 편을
+`RelatedBox`를 쓰고, `title-aside`에는 카테고리 상자와 **같은 아이콘**을 넣는다.
+편수를 글자로 넣지 않는 이유: 편수는 상단 배지가 `3/7편`으로 이미 보여주고,
+두 상자의 제목 줄이 같아야 "같은 부품"으로 읽힌다. 목록과 이전/다음 편을
 그린다. 이전/다음은 `getSeriesPosition()`이 이미 계산해 주므로 그대로 쓴다.
 
 현재 편이 목록에 없으면(`getSeriesPosition`의 `current`가 `null`) 이전/다음이
