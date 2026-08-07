@@ -141,8 +141,10 @@ Props: `posts`(편 순서로 정렬된 목록), `seriesId`, `currentOrder`.
 `RelatedBox`를 쓰고, `titleAside`에 총 편수를 넣는다. 목록과 이전/다음 편을
 그린다. 이전/다음은 `getSeriesPosition()`이 이미 계산해 주므로 그대로 쓴다.
 
-현재 편이 목록에 없으면(`getSeriesPosition`의 `current`가 `null`) 편수 표시와
-이전/다음을 생략하고 목록만 그린다. 기존 `SeriesBox`가 지키던 계약이다.
+현재 편이 목록에 없으면(`getSeriesPosition`의 `current`가 `null`) 이전/다음이
+자동으로 생략된다 — `getSeriesPosition`이 그 경우 `prev`/`next`를 항상 `null`로
+돌려주기 때문이다. 총 편수는 그 경우에도 옳은 값이므로 그대로 보여준다.
+위치를 감추는 쪽은 상단 배지가 맡는다(§5.3).
 
 ### 5.3 `SeriesBadge.astro`
 
