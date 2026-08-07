@@ -77,7 +77,7 @@ export default {
   series: {
     title: "Series",
     desc: "Multi-part writeups.",
-    part: "Part {{current}} of {{total}}",
+    badge: "Part {{current}} of {{total}}",
     ongoing: "Ongoing",
     completed: "Completed",
     prevPart: "Previous part",

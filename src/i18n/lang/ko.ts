@@ -66,7 +66,7 @@ export default {
   series: {
     title: "시리즈",
     desc: "여러 편으로 이어지는 글입니다.",
-    part: "{{total}}편 중 {{current}}편",
+    badge: "{{current}}/{{total}}편",
     ongoing: "연재 중",
     completed: "완결",
     prevPart: "이전 편",

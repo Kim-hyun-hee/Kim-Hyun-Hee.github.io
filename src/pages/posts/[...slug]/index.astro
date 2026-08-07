@@ -11,13 +11,14 @@ import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
 import { postFilter } from "@/utils/postFilter";
 import { getSeriesPosts, getSeriesPosition } from "@/utils/getSeriesPosts";
-// [CUSTOM] 아래 import들(SeriesBox, SeriesNav, FloatingToc과
+// [CUSTOM] 아래 import들(SeriesBadge, SeriesPosts, FloatingToc과
 // CategoryPosts, getNearbyCategoryPosts, CATEGORIES, getSubcategoryLabel)과,
 // 계산 블록 2개(시리즈/카테고리), allPosts 호이스팅,
-// <FloatingToc> <SeriesBox> <CategoryPosts> <SeriesNav> 렌더가 추가되었습니다.
-// <BackToTopButton />, AdjacentPostNav는 삭제됨 - 병합 시 끼우지 마세요.
-import SeriesBox from "@/components/series/SeriesBox.astro";
-import SeriesNav from "@/components/series/SeriesNav.astro";
+// <FloatingToc> <SeriesBadge> 렌더와 본문 아래 상자 분기
+// (시리즈 글이면 <SeriesPosts>, 아니면 <CategoryPosts>)가 추가되었습니다.
+// <BackToTopButton />, <AdjacentPostNav />는 삭제됨 - 병합 시 끼우지 마세요.
+import SeriesBadge from "@/components/series/SeriesBadge.astro";
+import SeriesPosts from "@/components/related/SeriesPosts.astro";
 import FloatingToc from "@/components/toc/FloatingToc.astro";
 import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
@@ -147,6 +148,16 @@ const ogImage = ogImageUrl
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
 
+    {
+      seriesId && seriesPosition && (
+        <SeriesBadge
+          seriesId={seriesId}
+          current={seriesPosition.current}
+          total={seriesPosition.total}
+        />
+      )
+    }
+
     <article
       id="article"
       class:list={[
@@ -155,15 +166,6 @@ const ogImage = ogImageUrl
         "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
       ]}
     >
-      {
-        seriesId && seriesOrder && (
-          <SeriesBox
-            seriesId={seriesId}
-            posts={seriesPosts}
-            currentOrder={seriesOrder}
-          />
-        )
-      }
       <Content />
     </article>
 
@@ -171,21 +173,23 @@ const ogImage = ogImageUrl
 
     <EditPost class="sm:hidden" {hideEditPost} {post} />
 
-    <CategoryPosts posts={nearbyCategoryPosts} label={categoryLabel} />
+    {
+      seriesId && seriesOrder ? (
+        <SeriesPosts
+          seriesId={seriesId}
+          posts={seriesPosts}
+          currentOrder={seriesOrder}
+        />
+      ) : (
+        <CategoryPosts posts={nearbyCategoryPosts} label={categoryLabel} />
+      )
+    }
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
 
     <ShareLinks />
-
-    <hr class="my-8 border-dashed" />
-
-    {
-      seriesPosition && (
-        <SeriesNav prev={seriesPosition.prev} next={seriesPosition.next} />
-      )
-    }
   </main>
   <Footer />
 </PostLayout>

@@ -1,0 +1,40 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { SERIES, type SeriesId } from "@/series";
+import { useTranslations, tplStr } from "@/i18n";
+import config from "@/config";
+
+/**
+ * 본문 위 한 줄짜리 연재 위치 표시. 목록도 접기도 없다.
+ * 검색으로 중간 편에 들어온 사람이 이 글이 연재의 일부라는 것을
+ * 다 읽기 전에 알 수 있게 하는 것이 전부다. 목록과 이동은 하단
+ * SeriesPosts가 맡는다.
+ */
+type Props = {
+  seriesId: SeriesId;
+  /** 현재 편 번호. 예약 발행 등으로 목록에 없으면 null. */
+  current: number | null;
+  total: number;
+};
+
+const { seriesId, current, total } = Astro.props;
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+---
+
+<p class="text-muted-foreground mt-1 text-sm">
+  <a
+    href={getRelativeLocaleUrl(locale, `series/${seriesId}`)}
+    class="underline-offset-4 hover:underline"
+  >
+    {SERIES[seriesId].label}
+  </a>
+  {
+    current !== null && (
+      <Fragment>
+        <span aria-hidden="true"> · </span>
+        {tplStr(t.series.badge, { current, total })}
+      </Fragment>
+    )
+  }
+</p>

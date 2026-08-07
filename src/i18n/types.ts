@@ -75,7 +75,7 @@ export interface UIStrings {
   series: {
     title: string;
     desc: string;
-    part: string;
+    badge: string;
     ongoing: string;
     completed: string;
     prevPart: string;
