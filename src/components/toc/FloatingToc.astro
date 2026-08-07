@@ -41,7 +41,7 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
               <a
                 href={`#${h.slug}`}
                 data-toc-link={h.slug}
-                class="text-muted-foreground decoration-accent block ps-3 underline-offset-4 hover:underline"
+                class="text-muted-foreground decoration-accent -ms-px block border-s-2 border-s-transparent ps-3 underline-offset-4 hover:underline"
               >
                 {h.text}
               </a>
@@ -75,8 +75,9 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
     const setActive = (id: string) => {
       links.forEach((a, key) => {
         const on = key === id;
-        a.classList.toggle("text-accent", on);
+        a.classList.toggle("text-foreground", on);
         a.classList.toggle("font-semibold", on);
+        a.classList.toggle("border-s-accent", on);
         a.classList.toggle("text-muted-foreground", !on);
       });
     };
