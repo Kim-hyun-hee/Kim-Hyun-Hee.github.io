@@ -109,7 +109,7 @@
        걷어낸 이유: 글씨 색을 직접 정하므로 투명도로 흐리게 만들 필요가
        없고, opacity 는 배경 그라데이션까지 함께 흐리게 만듭니다. */
     blockquote {
-      @apply border-s-accent text-muted-foreground my-8 rounded-e-xl border-s-[3px] px-5 py-4 wrap-break-word;
+      @apply border-s-accent text-quote-foreground my-8 rounded-e-xl border-s-[3px] px-5 py-4 wrap-break-word;
       background: linear-gradient(
         100deg,
         var(--accent-muted),

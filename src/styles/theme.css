@@ -32,6 +32,7 @@
   --color-sky: var(--sky);
   --color-sky-muted: var(--sky-muted);
   --color-link: var(--link);
+  --color-quote-foreground: var(--quote-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
@@ -51,6 +52,7 @@
   --sky: #79c8ea;
   --sky-muted: #eaf8ff;
   --link: #3d4453;
+  --quote-foreground: #5f677a;
   --muted: #f3f7fc;
   --muted-foreground: #717889;
   --border: #e1e8f2;
@@ -67,6 +69,7 @@
   --sky: #8fd2f0;
   --sky-muted: #1c2a35;
   --link: #c9cedb;
+  --quote-foreground: #a8b0c2;
   --muted: #232733;
   --muted-foreground: #9aa1b2;
   --border: #2e3342;
