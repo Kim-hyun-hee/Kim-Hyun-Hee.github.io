@@ -78,6 +78,7 @@ const items = headings.filter(h => h.depth === 2 || h.depth === 3);
         a.classList.toggle("text-foreground", on);
         a.classList.toggle("font-semibold", on);
         a.classList.toggle("border-s-accent", on);
+        a.classList.toggle("border-s-transparent", !on);
         a.classList.toggle("text-muted-foreground", !on);
       });
     };
