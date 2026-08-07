@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import RelatedBox from "./RelatedBox.astro";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
@@ -20,14 +21,12 @@ const t = useTranslations(locale);
 
 {
   posts.length > 0 && (
-    <aside
-      data-pagefind-ignore
-      class="bg-muted text-muted-foreground dark:text-foreground mt-4 mb-2 rounded-md p-5"
-    >
-      <div class="border-border mb-4 flex items-center justify-between gap-2 border-b pb-2 text-sm font-bold">
-        <span class="truncate">{tplStr(t.category.otherPosts, { label })}</span>
-        <IconMenuDeep class="size-4 shrink-0" aria-hidden="true" />
-      </div>
+    <RelatedBox title={tplStr(t.category.otherPosts, { label })}>
+      <IconMenuDeep
+        slot="title-aside"
+        class="size-4 shrink-0"
+        aria-hidden="true"
+      />
       <ul class="flex flex-col gap-y-2">
         {posts.map(p => (
           <li>
@@ -41,6 +40,6 @@ const t = useTranslations(locale);
           </li>
         ))}
       </ul>
-    </aside>
+    </RelatedBox>
   )
 }

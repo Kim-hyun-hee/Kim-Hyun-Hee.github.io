@@ -12,9 +12,9 @@ import { toTransitionName } from "@/utils/toTransitionName";
 import { postFilter } from "@/utils/postFilter";
 import { getSeriesPosts, getSeriesPosition } from "@/utils/getSeriesPosts";
 // [CUSTOM] 아래 import들(SeriesBox, SeriesNav, FloatingToc과
-// OtherPosts, getNearbyCategoryPosts, CATEGORIES, getSubcategoryLabel)과,
+// CategoryPosts, getNearbyCategoryPosts, CATEGORIES, getSubcategoryLabel)과,
 // 계산 블록 2개(시리즈/카테고리), allPosts 호이스팅,
-// <FloatingToc> <SeriesBox> <OtherPosts> <SeriesNav> 렌더가 추가되었습니다.
+// <FloatingToc> <SeriesBox> <CategoryPosts> <SeriesNav> 렌더가 추가되었습니다.
 // <BackToTopButton />는 삭제됨 - 병합 시 끼우지 마세요.
 import SeriesBox from "@/components/series/SeriesBox.astro";
 import SeriesNav from "@/components/series/SeriesNav.astro";
@@ -23,7 +23,7 @@ import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
-import OtherPosts from "@/components/category/OtherPosts.astro";
+import CategoryPosts from "@/components/related/CategoryPosts.astro";
 import { getNearbyCategoryPosts } from "@/utils/getNearbyCategoryPosts";
 import { CATEGORIES, getSubcategoryLabel } from "@/categories";
 import config from "@/config";
@@ -201,7 +201,7 @@ const ogImage = ogImageUrl
 
     <EditPost class="sm:hidden" {hideEditPost} {post} />
 
-    <OtherPosts posts={nearbyCategoryPosts} label={categoryLabel} />
+    <CategoryPosts posts={nearbyCategoryPosts} label={categoryLabel} />
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}

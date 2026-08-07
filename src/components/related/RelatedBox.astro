@@ -1,0 +1,26 @@
+---
+/**
+ * 본문 끝 "다음에 읽을 것" 상자의 공통 껍데기.
+ * 배경·모서리·제목 줄과 검색 색인 제외를 여기서 책임진다. 내용물
+ * (SeriesPosts / CategoryPosts)은 목록만 그린다.
+ */
+type Props = {
+  /** 상자 제목. 예: "이 시리즈의 글" */
+  title: string;
+};
+
+const { title } = Astro.props;
+---
+
+<aside
+  data-pagefind-ignore
+  class="bg-muted text-muted-foreground dark:text-foreground mt-4 mb-2 rounded-md p-5"
+>
+  <div
+    class="border-border mb-4 flex items-center justify-between gap-2 border-b pb-2 text-sm font-bold"
+  >
+    <span class="truncate">{title}</span>
+    <slot name="title-aside" />
+  </div>
+  <slot />
+</aside>
