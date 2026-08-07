@@ -14,6 +14,12 @@ export const SERIES = {
     category: "project",
     status: "ongoing",
   },
+  "building-this-blog": {
+    label: "이 블로그를 만든 기록",
+    description: "정적 사이트 테마를 포크해 내 정보 구조로 뜯어고치기까지",
+    category: "project",
+    status: "ongoing",
+  },
 } as const satisfies Record<
   string,
   {
