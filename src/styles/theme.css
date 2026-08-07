@@ -28,6 +28,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-sidebar-link: var(--sidebar-link);
+  --color-tag-hover: var(--tag-hover);
+  --color-tag-hover-foreground: var(--tag-hover-foreground);
   --font-app: var(--font-suit);
   --font-mono: var(--font-jetbrains-mono);
 }
@@ -59,6 +61,15 @@
   --muted-foreground: #9999a1;
   --border: #353638;
   --sidebar-link: #9999a1;
+}
+
+/* 테마와 무관한 값 — 위의 라이트/다크 블록에서 덮지 않는다.
+   태그 칩 hover는 기존에 쓰던 블로그와 같이 양쪽 테마 모두 먹색으로
+   어두워진다. --foreground/--background 는 테마에 따라 뒤집히므로
+   이 동작을 표현할 수 없어 별도 토큰을 둔다. */
+:root {
+  --tag-hover: #353638;
+  --tag-hover-foreground: #f4f4f6;
 }
 
 /* Layout widths — single source, referenced by shell and TOC */
