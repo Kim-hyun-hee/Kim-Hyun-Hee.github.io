@@ -25,7 +25,7 @@ const overview = CATEGORY_IDS.map(id => ({
 ---
 
 <Layout title={`${t.nav.categories} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={t.nav.categories} />
   <Main pageTitle={t.nav.categories} pageDesc={t.category.desc}>
     <ul class="space-y-4">
       {

@@ -19,6 +19,13 @@ export default {
     previousPost: "이전 글",
     nextPost: "다음 글",
   },
+  bar: {
+    allPosts: "전체 글 목록",
+    category: "'{{name}}' 카테고리",
+    postsIn: "'{{name}}'의 글 목록",
+    series: "'{{name}}' 시리즈",
+    tag: "'{{name}}' 태그의 글 목록",
+  },
   home: {
     featured: "추천 글",
     recentPosts: "최근 글",

@@ -23,7 +23,7 @@ const { Content } = await render(about);
   ogImage={about.data.ogImage}
   canonicalURL={about.data.canonicalURL}
 >
-  <Header />
+  <Header barTitle={about.data.title} />
 
   <Main pageTitle={about.data.title} class="app-prose">
     <Content />

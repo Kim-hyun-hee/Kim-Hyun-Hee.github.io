@@ -16,6 +16,7 @@ import {
 } from "@/categories";
 import { filterBySubcategory } from "@/utils/getPostsByCategory";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
@@ -37,10 +38,12 @@ const subcategory = Astro.params.subcategory as string;
 
 const categoryLabel = CATEGORIES[category].label;
 const subLabel = getSubcategoryLabel(category, subcategory);
+
+const t = useTranslations(Astro.currentLocale ?? config.site.lang);
 ---
 
 <Layout title={`${categoryLabel} › ${subLabel} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={tplStr(t.bar.postsIn, { name: subLabel ?? categoryLabel })} />
   <Main pageTitle={`${categoryLabel} › ${subLabel}`}>
     <ul>
       {page.data.map(post => <Card {...post} />)}

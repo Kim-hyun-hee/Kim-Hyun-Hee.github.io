@@ -19,6 +19,14 @@ export interface UIStrings {
     previousPost: string;
     nextPost: string;
   };
+  // 상단 바 문구. h1을 복사하지 않고 "여기가 어디인지"를 말한다.
+  bar: {
+    allPosts: string;
+    category: string;
+    postsIn: string;
+    series: string;
+    tag: string;
+  };
   home: {
     featured: string;
     recentPosts: string;

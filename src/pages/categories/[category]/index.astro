@@ -58,7 +58,7 @@ const series = getSeriesByCategory(category).map(s => ({
 ---
 
 <Layout title={`${meta.label} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={tplStr(t.bar.category, { name: meta.label })} />
   <Main pageTitle={meta.label} pageDesc={meta.description}>
     {
       groups.length > 0 && (

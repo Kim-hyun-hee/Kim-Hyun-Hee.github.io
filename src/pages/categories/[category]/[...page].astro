@@ -11,6 +11,7 @@ import { CATEGORIES, CATEGORY_IDS, type CategoryId } from "@/categories";
 import { filterByCategory } from "@/utils/getPostsByCategory";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { listsPostsDirectly } from "@/utils/listsPostsDirectly";
+import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 /**
@@ -31,10 +32,12 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 const { page } = Astro.props;
 const category = Astro.params.category as CategoryId;
 const meta = CATEGORIES[category];
+
+const t = useTranslations(Astro.currentLocale ?? config.site.lang);
 ---
 
 <Layout title={`${meta.label} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={tplStr(t.bar.postsIn, { name: meta.label })} />
   <Main pageTitle={meta.label} pageDesc={meta.description}>
     <ul>
       {page.data.map(post => <Card {...post} />)}

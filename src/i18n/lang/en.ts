@@ -19,6 +19,13 @@ export default {
     previousPost: "Previous Post",
     nextPost: "Next Post",
   },
+  bar: {
+    allPosts: "All posts",
+    category: "Category: {{name}}",
+    postsIn: "Posts in {{name}}",
+    series: "Series: {{name}}",
+    tag: "Tagged {{name}}",
+  },
   home: {
     featured: "Featured",
     recentPosts: "Recent Posts",

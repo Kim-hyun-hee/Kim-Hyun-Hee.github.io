@@ -23,7 +23,7 @@ const t = useTranslations(locale);
 ---
 
 <Layout title={`${t.pages.postsTitle} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={t.bar.allPosts} />
 
   <Main pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
     <ul>

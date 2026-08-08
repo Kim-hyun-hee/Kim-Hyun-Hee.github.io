@@ -14,8 +14,14 @@
 import Sidebar from "./layout/Sidebar.astro";
 import TopBar from "./layout/TopBar.astro";
 import FloatingControls from "./layout/FloatingControls.astro";
+
+// barTitle: 스크롤하면 상단 바에 뜨는 문구. 페이지가 자기 라벨을 알고 있으므로
+// 그대로 넘겨받는다. 경로를 파싱해 만들지 않는다.
+type Props = { barTitle?: string };
+
+const { barTitle } = Astro.props;
 ---
 
 <Sidebar />
-<TopBar />
+<TopBar {barTitle} />
 <FloatingControls />

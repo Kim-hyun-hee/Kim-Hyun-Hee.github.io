@@ -24,7 +24,7 @@ const list = SERIES_IDS.map(id => ({
 ---
 
 <Layout title={`${t.series.title} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={t.series.title} />
   <Main pageTitle={t.series.title} pageDesc={t.series.desc}>
     <ul class="space-y-4">
       {

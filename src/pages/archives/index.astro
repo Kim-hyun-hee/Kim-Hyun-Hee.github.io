@@ -27,7 +27,7 @@ const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long" });
 ---
 
 <Layout title={`${t.pages.archivesTitle} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={t.pages.archivesTitle} />
 
   <Main pageTitle={t.pages.archivesTitle} pageDesc={t.pages.archivesDesc}>
     {

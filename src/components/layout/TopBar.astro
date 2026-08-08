@@ -4,19 +4,31 @@ import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
+type Props = { barTitle?: string };
+
+const { barTitle } = Astro.props;
+
 const { site } = config;
 const locale = Astro.currentLocale ?? site.lang;
 const t = useTranslations(locale);
 ---
 
+{
+  /*
+    56px 바가 항상 자리를 차지하되 평소엔 완전히 투명하다. h1이 바 아래로
+    사라지면 아래 스크립트가 data-stuck을 걸어 배경(반투명+blur)과 문구를
+    켠다. sticky라서 자리를 미리 차지하고, 고정된 뒤에는 본문이 밑으로 지나간다.
+  */
+}
 <header
-  class="border-border bg-background/95 sticky top-0 z-20 border-b backdrop-blur lg:hidden"
+  id="top-bar"
+  class="sticky top-0 z-20 border-b border-transparent transition-colors duration-200 data-[stuck]:border-border data-[stuck]:bg-background/80 data-[stuck]:backdrop-blur"
 >
   <div class="flex min-h-14 items-center gap-3 px-4">
     <button
       id="sidebar-menu-btn"
       type="button"
-      class="focus-outline rounded p-2"
+      class="focus-outline rounded p-2 lg:hidden"
       aria-label={t.a11y.openMenu}
       aria-expanded="false"
       aria-controls="site-sidebar"
@@ -25,20 +37,88 @@ const t = useTranslations(locale);
     >
       <IconMenuDeep />
     </button>
+
+    {/* 좁은 화면에서 위에 있을 때만 보이는 사이트 이름. 스크롤하면 문구가 대신한다. */}
     <a
       href={getRelativeLocaleUrl(locale, "")}
-      class="decoration-accent font-semibold underline-offset-4 hover:underline"
+      class="decoration-accent font-semibold underline-offset-4 hover:underline lg:hidden"
+      data-site-title
     >
       {site.title}
     </a>
+
+    {
+      /*
+        min-w-0: flex 자식은 기본 min-width가 auto라 이게 없으면 줄어들지 못해
+        truncate가 먹지 않고 긴 제목이 바 밖으로 넘친다.
+        aria-hidden: 같은 내용을 h1이 이미 말한다. 빼지 않으면 모든 페이지에서
+        제목이 두 번 읽힌다.
+      */
+    }
+    {
+      barTitle && (
+        <p
+          id="top-bar-title"
+          class="min-w-0 truncate font-semibold opacity-0 transition-opacity duration-100"
+          aria-hidden="true"
+        >
+          {barTitle}
+        </p>
+      )
+    }
   </div>
 </header>
 
 <script>
   let cleanup = () => {};
 
-  function initSidebar() {
+  function initTopBar() {
     cleanup();
+
+    const bar = document.querySelector<HTMLElement>("#top-bar");
+    const title = document.querySelector<HTMLElement>("#top-bar-title");
+    const siteTitle = document.querySelector<HTMLElement>("[data-site-title]");
+    // 임계점은 픽셀 상수가 아니라 h1의 위치다. 페이지마다 h1 높이가 달라
+    // 상수로 잡으면 어긋난다.
+    const heading = document.querySelector<HTMLElement>("h1");
+
+    if (!bar) return;
+
+    const setStuck = (stuck: boolean) => {
+      bar.toggleAttribute("data-stuck", stuck);
+      title?.classList.toggle("opacity-0", !stuck);
+      // 좁은 화면에서 사이트 이름과 문구가 같이 서지 않도록 맞바꾼다.
+      siteTitle?.classList.toggle("hidden", stuck);
+    };
+
+    if (!heading) {
+      setStuck(false);
+      return;
+    }
+
+    // 바 높이(56px)만큼 가려지는 순간을 경계로 삼는다.
+    const spy = new IntersectionObserver(
+      ([entry]) => setStuck(!entry.isIntersecting),
+      { rootMargin: "-56px 0px 0px 0px", threshold: 0 }
+    );
+    spy.observe(heading);
+
+    cleanup = () => {
+      spy.disconnect();
+      cleanup = () => {};
+    };
+  }
+
+  initTopBar();
+  document.addEventListener("astro:before-swap", () => cleanup());
+  document.addEventListener("astro:after-swap", initTopBar);
+</script>
+
+<script>
+  let cleanupSidebar = () => {};
+
+  function initSidebar() {
+    cleanupSidebar();
 
     const button =
       document.querySelector<HTMLButtonElement>("#sidebar-menu-btn");
@@ -105,13 +185,13 @@ const t = useTranslations(locale);
 
     setOpen(false);
 
-    cleanup = () => {
+    cleanupSidebar = () => {
       controller.abort();
       document.body.classList.remove("overflow-hidden");
     };
   }
 
   initSidebar();
-  document.addEventListener("astro:before-swap", () => cleanup());
+  document.addEventListener("astro:before-swap", () => cleanupSidebar());
   document.addEventListener("astro:after-swap", initSidebar);
 </script>

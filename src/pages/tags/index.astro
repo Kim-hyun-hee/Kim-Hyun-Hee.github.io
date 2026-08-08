@@ -17,7 +17,7 @@ const t = useTranslations(locale);
 ---
 
 <Layout title={`${t.pages.tagsTitle} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={t.pages.tagsTitle} />
 
   <Main pageTitle={t.pages.tagsTitle} pageDesc={t.pages.tagsDesc}>
     <ul class="flex flex-wrap gap-2">

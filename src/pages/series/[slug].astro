@@ -27,7 +27,7 @@ const t = useTranslations(locale);
 ---
 
 <Layout title={`${meta.label} | ${config.site.title}`}>
-  <Header />
+  <Header barTitle={tplStr(t.bar.series, { name: meta.label })} />
   <Main pageTitle={meta.label} pageDesc={meta.description}>
     <p class="text-muted-foreground -mt-4 mb-8 text-sm">
       {tplStr(t.category.seriesCount, { count: posts.length })}
