@@ -2,7 +2,6 @@ import type { UIStrings } from "../types";
 
 export default {
   nav: {
-    home: "Home",
     posts: "Posts",
     allByCategory: "All posts",
     tags: "Tags",
@@ -22,11 +21,6 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
-  },
-  pagination: {
-    prev: "Prev",
-    next: "Next",
-    page: "Page",
   },
   home: {
     featured: "Featured",

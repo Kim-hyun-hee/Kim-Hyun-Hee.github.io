@@ -1,6 +1,5 @@
 export interface UIStrings {
   nav: {
-    home: string;
     posts: string;
     allByCategory: string;
     tags: string;
@@ -22,11 +21,6 @@ export interface UIStrings {
     // 되살릴 수 있어 의도적으로 남겨둔다. 지금은 호출부가 없다.
     previousPost: string;
     nextPost: string;
-  };
-  pagination: {
-    prev: string;
-    next: string;
-    page: string;
   };
   home: {
     featured: string;

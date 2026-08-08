@@ -2,7 +2,6 @@ import type { UIStrings } from "../types";
 
 export default {
   nav: {
-    home: "홈",
     posts: "글",
     allByCategory: "분류 전체보기",
     tags: "Tags",
@@ -22,11 +21,6 @@ export default {
     editPage: "이 글 수정",
     previousPost: "이전 글",
     nextPost: "다음 글",
-  },
-  pagination: {
-    prev: "이전",
-    next: "다음",
-    page: "페이지",
   },
   home: {
     featured: "추천 글",
