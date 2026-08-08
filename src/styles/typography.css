@@ -56,7 +56,7 @@
     }
 
     img {
-      @apply border-border mx-auto border;
+      @apply border-border mx-auto rounded-lg border;
     }
 
     img[role="button"] {
