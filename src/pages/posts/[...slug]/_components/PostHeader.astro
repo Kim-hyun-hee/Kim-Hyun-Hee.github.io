@@ -21,15 +21,8 @@ type Props = {
 const { post, seriesPosition } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 
-const {
-  title,
-  pubDatetime,
-  modDatetime,
-  timezone,
-  category,
-  subcategory,
-  series,
-} = post.data;
+const { title, pubDatetime, timezone, category, subcategory, series } =
+  post.data;
 
 const trail = getCategoryTrail(category, subcategory);
 ---
@@ -53,7 +46,7 @@ const trail = getCategoryTrail(category, subcategory);
     }
 
     <span aria-hidden="true">·</span>
-    <Datetime {pubDatetime} {modDatetime} {timezone} icon={false} />
+    <Datetime {pubDatetime} {timezone} icon={false} />
 
     {
       series && seriesPosition && (

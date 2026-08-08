@@ -14,7 +14,6 @@ export default {
   },
   post: {
     publishedAt: "작성일",
-    updatedAt: "수정일",
     sharePostIntro: "이 글 공유하기:",
     sharePostOn: "{{platform}}에 공유",
     sharePostViaEmail: "메일로 공유",

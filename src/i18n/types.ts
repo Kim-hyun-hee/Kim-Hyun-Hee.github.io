@@ -12,7 +12,6 @@ export interface UIStrings {
   };
   post: {
     publishedAt: string;
-    updatedAt: string;
     sharePostIntro: string;
     sharePostOn: string;
     sharePostViaEmail: string;
