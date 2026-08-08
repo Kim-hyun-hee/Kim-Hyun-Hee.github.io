@@ -5,8 +5,8 @@ export default {
     home: "홈",
     posts: "글",
     allByCategory: "분류 전체보기",
-    tags: "태그",
-    about: "소개",
+    tags: "Tags",
+    about: "About",
     archives: "아카이브",
     search: "검색",
     categories: "카테고리",
@@ -18,7 +18,6 @@ export default {
     sharePostIntro: "이 글 공유하기:",
     sharePostOn: "{{platform}}에 공유",
     sharePostViaEmail: "메일로 공유",
-    tagLabel: "태그",
     backToTop: "맨 위로",
     goBack: "뒤로",
     editPage: "이 글 수정",
@@ -40,10 +39,10 @@ export default {
     allRightsReserved: "All rights reserved.",
   },
   pages: {
-    tagTitle: "태그",
+    tagTitle: "Tag",
     tagDesc: "이 태그가 달린 글",
 
-    tagsTitle: "태그",
+    tagsTitle: "Tags",
     tagsDesc: "글에 사용된 모든 태그입니다.",
 
     postsTitle: "글",
