@@ -5,6 +5,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import LinkCard from "@/components/LinkCard.astro";
 import { SERIES, SERIES_IDS } from "@/series";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
 import { postFilter } from "@/utils/postFilter";
@@ -28,20 +29,17 @@ const list = SERIES_IDS.map(id => ({
     <ul class="space-y-4">
       {
         list.map(s => (
-          <li class="border-border rounded-lg border p-4">
-            <a
-              href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
-              class="text-foreground decoration-accent text-lg font-semibold underline-offset-4 hover:underline"
-            >
-              {s.label}
-            </a>
+          <LinkCard
+            href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
+            title={s.label}
+          >
             <p class="text-muted-foreground mt-1 text-sm">{s.description}</p>
             <p class="text-muted-foreground mt-2 text-sm">
               {tplStr(t.category.seriesCount, { count: s.count })}
               {" · "}
               {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
             </p>
-          </li>
+          </LinkCard>
         ))
       }
     </ul>

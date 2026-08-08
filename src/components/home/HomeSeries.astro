@@ -10,6 +10,7 @@
  */
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import LinkCard from "@/components/LinkCard.astro";
 import { getSeriesByCategory } from "@/series";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
 import { useTranslations, tplStr } from "@/i18n";
@@ -39,13 +40,11 @@ const projectSeries = getSeriesByCategory("project").map(s => ({
       <h2 class="text-xl font-semibold tracking-wide">{t.series.title}</h2>
       <ul class="mt-4 grid gap-4 sm:grid-cols-2">
         {projectSeries.map(s => (
-          <li class="border-border rounded-lg border p-4">
-            <a
-              href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
-              class="text-foreground decoration-accent font-semibold underline-offset-4 hover:underline"
-            >
-              {s.label}
-            </a>
+          <LinkCard
+            href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
+            title={s.label}
+            titleSize="base"
+          >
             <p class="text-muted-foreground mt-1.5 text-sm leading-relaxed">
               {s.description}
             </p>
@@ -54,7 +53,7 @@ const projectSeries = getSeriesByCategory("project").map(s => ({
               {" · "}
               {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
             </p>
-          </li>
+          </LinkCard>
         ))}
       </ul>
     </section>

@@ -1,0 +1,31 @@
+---
+/**
+ * 시리즈·분류를 안내하는 상자. 상자 전체가 클릭 영역이다.
+ *
+ * 링크는 제목에만 걸고 가상 요소로 상자를 덮는다. 상자 전체를 <a>로 감싸면
+ * 설명과 편수까지 링크 이름에 섞여 스크린리더가 통째로 읽는다.
+ */
+type Props = {
+  href: string;
+  title: string;
+  /** 홈의 시리즈 상자만 제목이 작다. */
+  titleSize?: "base" | "lg";
+};
+
+const { href, title, titleSize = "lg" } = Astro.props;
+---
+
+<li
+  class="border-border focus-within:border-accent hover:border-accent relative rounded-lg border p-4 transition-colors"
+>
+  <a
+    href={href}
+    class:list={[
+      "text-foreground font-semibold after:absolute after:inset-0",
+      { "text-lg": titleSize === "lg" },
+    ]}
+  >
+    {title}
+  </a>
+  <slot />
+</li>
