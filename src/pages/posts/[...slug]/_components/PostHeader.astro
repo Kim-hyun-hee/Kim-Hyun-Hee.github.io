@@ -67,13 +67,15 @@ const trail = getCategoryTrail(category, subcategory);
   }
 
   <div class="mt-4 flex items-center gap-3">
-    <Image
-      src={profileImage}
-      alt=""
-      width={96}
-      height={96}
-      class="size-12 rounded-full"
-    />
+    <div class="profile-ring rounded-full p-[2px]">
+      <Image
+        src={profileImage}
+        alt=""
+        width={96}
+        height={96}
+        class="block size-12 rounded-full"
+      />
+    </div>
     <div class="text-sm leading-snug">
       <p class="text-foreground font-semibold">{config.site.title}</p>
       <p class="text-muted-foreground">{config.site.role}</p>
