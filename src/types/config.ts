@@ -7,6 +7,8 @@ interface SiteConfig {
   description: string;
   /** Default post author name */
   author: string;
+  /** Author's role or job title, e.g. "Software Engineer" */
+  role?: string;
   /** Author profile URL (used in structured data) */
   profile?: string;
   /** Fallback OG image filename in /public, e.g. "og.jpg" */
@@ -115,7 +117,7 @@ type ResolvedSiteConfig = Required<
     | "ogImage"
   >
 > &
-  Pick<SiteConfig, "profile" | "googleVerification">;
+  Pick<SiteConfig, "role" | "profile" | "googleVerification">;
 
 export interface ResolvedAstroPaperConfig {
   site: ResolvedSiteConfig;

@@ -9,6 +9,7 @@ export default defineAstroPaperConfig({
     // <meta name="author">, 글의 JSON-LD, 자동 생성 OG 이미지가 모두 이 값을
     // 읽는다. 실명은 About 페이지에만 둔다.
     author: "Dev groot",
+    role: "Software Engineer",
     profile: "https://github.com/Kim-hyun-hee",
     ogImage: "default-og.jpg",
     lang: "ko",
