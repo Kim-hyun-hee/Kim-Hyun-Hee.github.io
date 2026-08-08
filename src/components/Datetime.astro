@@ -12,6 +12,7 @@ dayjs.extend(timezone);
 type Props = {
   class?: string;
   size?: "sm" | "lg";
+  icon?: boolean;
   pubDatetime: string | Date;
   timezone?: string;
   modDatetime?: string | Date | null;
@@ -21,6 +22,7 @@ const {
   pubDatetime,
   modDatetime,
   size = "sm",
+  icon = true,
   class: className = "",
   timezone: postTimezone,
 } = Astro.props;
@@ -33,18 +35,22 @@ const datetime = dayjs(isModified ? modDatetime : pubDatetime).tz(
   postTimezone ?? config.site.timezone
 );
 
-const date = datetime.format("D MMM, YYYY");
+const date = datetime.format("YYYY[년] M[월] D[일]");
 ---
 
 <div
   class:list={["text-muted-foreground flex items-center gap-x-2", className]}
 >
-  <IconCalendar
-    class:list={[
-      "inline-block size-6 min-w-5.5",
-      { "scale-90": size === "sm" },
-    ]}
-  />
+  {
+    icon && (
+      <IconCalendar
+        class:list={[
+          "inline-block size-6 min-w-5.5",
+          { "scale-90": size === "sm" },
+        ]}
+      />
+    )
+  }
   {
     isModified && (
       <span class:list={["text-sm", { "sm:text-base": size === "lg" }]}>
