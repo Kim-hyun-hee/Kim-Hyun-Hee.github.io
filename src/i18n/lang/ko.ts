@@ -85,6 +85,8 @@ export default {
     noResults: "검색 결과가 없습니다",
     goToPreviousPage: "이전 페이지로",
     goToNextPage: "다음 페이지로",
+    paginationGoTo: "{{page}}페이지로",
+    paginationCurrent: "{{page}}페이지, 현재 페이지",
   },
   notFound: {
     title: "404 Not Found",

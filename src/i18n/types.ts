@@ -63,6 +63,8 @@ export interface UIStrings {
     noResults: string;
     goToPreviousPage: string;
     goToNextPage: string;
+    paginationGoTo: string;
+    paginationCurrent: string;
   };
   category: {
     desc: string;

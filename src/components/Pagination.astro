@@ -3,44 +3,89 @@ import type { Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
-import LinkButton from "./LinkButton.astro";
-import { useTranslations } from "@/i18n";
+import { getPaginationItems, getPageBasePath } from "@/utils/pagination";
+import { useTranslations, tplStr } from "@/i18n";
 
 type Props = {
   page: Page<CollectionEntry<"posts">>;
 };
 
 const { page } = Astro.props;
-
 const t = useTranslations(Astro.currentLocale);
+
+const base = getPageBasePath(page.url.current, page.currentPage);
+const items = getPaginationItems(page.currentPage, page.lastPage);
+
+/** 1페이지는 번호 없는 주소다. */
+const urlFor = (n: number) => (n === 1 ? `${base}/` : `${base}/${n}`);
+
+// 이전·다음도 같은 함수로 만든다. page.url.prev 는 끝 슬래시가 없어서
+// 그대로 쓰면 한 페이지에 두 가지 주소가 생긴다.
+const prevUrl = page.currentPage > 1 ? urlFor(page.currentPage - 1) : null;
+const nextUrl =
+  page.currentPage < page.lastPage ? urlFor(page.currentPage + 1) : null;
+
+const cell =
+  "grid size-11 place-items-center rounded-md text-sm transition-colors";
+const inactive = "text-muted-foreground hover:bg-muted hover:text-foreground";
+const disabled = "text-muted-foreground pointer-events-none opacity-40";
 ---
 
 {
   page.lastPage > 1 && (
     <nav
-      class="mt-auto mb-8 flex justify-center gap-4"
-      role="navigation"
+      class="mt-auto mb-8 flex items-center justify-center gap-1"
       aria-label="Pagination Navigation"
     >
-      <LinkButton
-        disabled={!page.url.prev}
-        href={page.url.prev as string}
-        class:list={["select-none", { "opacity-50": !page.url.prev }]}
+      <a
+        href={prevUrl ?? "#"}
+        class:list={[cell, prevUrl ? inactive : disabled]}
         aria-label={t.a11y.goToPreviousPage}
+        aria-disabled={prevUrl ? undefined : "true"}
+        tabindex={prevUrl ? undefined : -1}
       >
-        <IconArrowLeft class="inline-block rtl:rotate-180" />
-        {t.pagination.prev}
-      </LinkButton>
-      {page.currentPage} / {page.lastPage}
-      <LinkButton
-        disabled={!page.url.next}
-        href={page.url.next as string}
-        class:list={["select-none", { "opacity-50": !page.url.next }]}
+        <IconArrowLeft class="inline-block size-5 rtl:rotate-180" />
+      </a>
+
+      {items.map(item =>
+        item === "dots" ? (
+          <span
+            class="text-muted-foreground grid size-11 place-items-center text-sm"
+            aria-hidden="true"
+          >
+            &hellip;
+          </span>
+        ) : item === page.currentPage ? (
+          <span
+            class:list={[
+              cell,
+              "bg-accent text-accent-foreground font-semibold",
+            ]}
+            aria-current="page"
+            aria-label={tplStr(t.a11y.paginationCurrent, { page: item })}
+          >
+            {item}
+          </span>
+        ) : (
+          <a
+            href={urlFor(item)}
+            class:list={[cell, inactive]}
+            aria-label={tplStr(t.a11y.paginationGoTo, { page: item })}
+          >
+            {item}
+          </a>
+        )
+      )}
+
+      <a
+        href={nextUrl ?? "#"}
+        class:list={[cell, nextUrl ? inactive : disabled]}
         aria-label={t.a11y.goToNextPage}
+        aria-disabled={nextUrl ? undefined : "true"}
+        tabindex={nextUrl ? undefined : -1}
       >
-        {t.pagination.next}
-        <IconArrowRight class="inline-block rtl:rotate-180" />
-      </LinkButton>
+        <IconArrowRight class="inline-block size-5 rtl:rotate-180" />
+      </a>
     </nav>
   )
 }

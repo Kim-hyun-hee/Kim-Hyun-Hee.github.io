@@ -63,6 +63,8 @@ export default {
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",
     goToNextPage: "Go to next page",
+    paginationGoTo: "Go to page {{page}}",
+    paginationCurrent: "Page {{page}}, current page",
   },
   category: {
     desc: "Posts grouped by category.",
