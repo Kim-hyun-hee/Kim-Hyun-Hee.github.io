@@ -61,13 +61,15 @@ const activeUtilLinkClass = "text-foreground";
   aria-label={t.nav.categories}
   class="border-border bg-muted fixed inset-y-0 start-0 z-40 flex w-(--sidebar-width) -translate-x-full flex-col overflow-y-auto border-e px-5 py-7 transition-transform duration-200 lg:translate-x-0 rtl:translate-x-full rtl:lg:translate-x-0"
 >
-  <Image
-    src={profileImage}
-    alt=""
-    width={128}
-    height={128}
-    class="size-16 rounded-full"
-  />
+  <div class="profile-ring w-fit rounded-full p-[3px]">
+    <Image
+      src={profileImage}
+      alt=""
+      width={128}
+      height={128}
+      class="block size-16 rounded-full"
+    />
+  </div>
   <a
     href={getRelativeLocaleUrl(locale, "")}
     class="decoration-accent mt-3 text-lg font-bold underline-offset-4 hover:underline"
@@ -81,6 +83,10 @@ const activeUtilLinkClass = "text-foreground";
       </p>
     )
   }
+
+  <div class="-ms-2 mt-3">
+    <Socials />
+  </div>
 
   <div class="mt-8">
     <SidebarNav
@@ -152,9 +158,6 @@ const activeUtilLinkClass = "text-foreground";
       >
         <IconRss class="size-5" />
       </a>
-    </div>
-    <div class="mt-4">
-      <Socials />
     </div>
   </div>
 </aside>

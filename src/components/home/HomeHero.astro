@@ -7,7 +7,6 @@
  * 이 파일로 빼둔 이유는, 업스트림이 index.astro를 수정했을 때 병합 충돌
  * 범위를 한 줄(<HomeHero />)로 줄이기 위해서입니다.
  */
-import Socials from "@/components/Socials.astro";
 import config from "@/config";
 ---
 
@@ -18,7 +17,4 @@ import config from "@/config";
   <p class="text-muted-foreground mt-4 max-w-xl leading-relaxed">
     {config.site.description}
   </p>
-  <div class="mt-4">
-    <Socials />
-  </div>
 </section>

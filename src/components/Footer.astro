@@ -1,6 +1,5 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import Socials from "./Socials.astro";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -20,13 +19,11 @@ const currentYear = new Date().getFullYear();
   {...attrs}
 >
   <div
-    class="border-border flex flex-col items-center justify-between border-t py-6 sm:flex-row-reverse sm:py-4"
+    class="border-border flex items-center justify-center border-t py-6 sm:py-4"
   >
-    <Socials />
-    <div class="my-2 flex items-center whitespace-nowrap">
-      <span>
-        &#169; {currentYear} {site.title} &middot; {t.footer.allRightsReserved}
-      </span>
-    </div>
+    <span class="whitespace-nowrap">
+      &#169; {currentYear}
+      {site.title} &middot; {t.footer.allRightsReserved}
+    </span>
   </div>
 </footer>
