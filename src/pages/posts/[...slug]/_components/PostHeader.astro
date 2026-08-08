@@ -46,20 +46,7 @@ const trail = getCategoryTrail(category, subcategory);
     }
 
     <span aria-hidden="true">·</span>
-    <Datetime {pubDatetime} {timezone} icon={false} />
-
-    {
-      series && seriesPosition && (
-        <>
-          <span aria-hidden="true">·</span>
-          <SeriesBadge
-            seriesId={series}
-            current={seriesPosition.current}
-            total={seriesPosition.total}
-          />
-        </>
-      )
-    }
+    <Datetime {pubDatetime} {timezone} />
   </div>
 
   <h1
@@ -68,6 +55,16 @@ const trail = getCategoryTrail(category, subcategory);
   >
     {title}
   </h1>
+
+  {
+    series && seriesPosition && (
+      <SeriesBadge
+        seriesId={series}
+        current={seriesPosition.current}
+        total={seriesPosition.total}
+      />
+    )
+  }
 
   <div class="mt-4 flex items-center gap-3">
     <Image

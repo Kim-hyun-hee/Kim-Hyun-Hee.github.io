@@ -22,7 +22,7 @@ const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 ---
 
-<span>
+<p class="text-muted-foreground mt-2 text-sm">
   <a
     href={getRelativeLocaleUrl(locale, `series/${seriesId}`)}
     class="decoration-accent underline-offset-4 hover:underline"
@@ -37,4 +37,4 @@ const t = useTranslations(locale);
       </Fragment>
     )
   }
-</span>
+</p>
