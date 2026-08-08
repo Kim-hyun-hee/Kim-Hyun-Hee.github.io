@@ -18,9 +18,15 @@
    해당하는 곳은 404 페이지의 숫자 하나뿐입니다.
 
    --sky 는 독립된 포인트 색이 아니라 --accent 와 함께 그라데이션을 만드는
-   짝입니다. 단독으로 쓰지 마세요. 지금은 예약만 해두었을 뿐 실제로 쓰이는
-   곳은 없고, 본문 인용문 배경 그라데이션에는 --accent-muted 와 함께
-   --sky-muted 가 쓰입니다.
+   짝입니다. 단독으로 쓰지 마세요. 쓰이는 곳은 두 군데뿐입니다 — 사이드바
+   프로필 사진의 테두리(global.css 의 profile-ring)에 --accent 와 함께,
+   본문 인용문 배경에 --accent-muted 와 --sky-muted 가 함께 쓰입니다.
+
+   ── 회색은 무채색으로 ──────────────────────────────────────
+   회색 계열은 채도 0%입니다. 색을 가진 것은 --accent 계열뿐입니다.
+   전에는 회색에 파랑이 섞여(채도 10~60%) 화면 전체가 은은하게 파랬고
+   눈이 피로했습니다. 회색을 비우고 색을 포인트에 몰아주는 쪽으로
+   되돌렸습니다. 회색 토큰에 색상값을 넣지 마세요.
 
    관련 설계: docs/superpowers/specs/2026-08-07-palette-and-scale-design.md */
 
@@ -46,36 +52,36 @@
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #fcfdff;
-  --foreground: #2e3442;
-  --accent: #7e82d8;
-  --accent-foreground: #2e3442;
-  --accent-muted: #eceeff;
-  --sky: #79c8ea;
-  --sky-muted: #eaf8ff;
-  --link: #3d4453;
-  --quote-foreground: #5f677a;
-  --muted: #f3f7fc;
-  --muted-foreground: #686f80;
-  --border: #e1e8f2;
-  --sidebar-link: #9aa2b3;
+  --background: #ffffff;
+  --foreground: #262626;
+  --accent: #8387d3;
+  --accent-foreground: #262626;
+  --accent-muted: #f4f5fe;
+  --sky: #8fb4dd;
+  --sky-muted: #f4fbff;
+  --link: #404040;
+  --quote-foreground: #525252;
+  --muted: #f5f5f5;
+  --muted-foreground: #666666;
+  --border: #e5e5e5;
+  --sidebar-link: #666666;
 }
 
 /* Dark theme values */
 [data-theme="dark"] {
-  --background: #16181f;
-  --foreground: #e6e9f0;
-  --accent: #a5a8ea;
-  --accent-foreground: #16181f;
-  --accent-muted: #2b2f4a;
-  --sky: #8fd2f0;
-  --sky-muted: #1c2a35;
-  --link: #c9cedb;
-  --quote-foreground: #a8b0c2;
-  --muted: #232733;
-  --muted-foreground: #9aa1b2;
-  --border: #2e3342;
-  --sidebar-link: #9aa1b2;
+  --background: #171717;
+  --foreground: #e5e5e5;
+  --accent: #767bd0;
+  --accent-foreground: #e5e5e5;
+  --accent-muted: #232536;
+  --sky: #6e96d9;
+  --sky-muted: #1a2229;
+  --link: #d4d4d4;
+  --quote-foreground: #a3a3a3;
+  --muted: #212121;
+  --muted-foreground: #a3a3a3;
+  --border: #333333;
+  --sidebar-link: #a3a3a3;
 }
 
 /* Layout widths — single source, referenced by shell and TOC */
