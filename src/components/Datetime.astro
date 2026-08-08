@@ -9,14 +9,12 @@ dayjs.extend(timezone);
 
 type Props = {
   class?: string;
-  size?: "sm" | "lg";
   pubDatetime: string | Date;
   timezone?: string;
 };
 
 const {
   pubDatetime,
-  size = "sm",
   class: className = "",
   timezone: postTimezone,
 } = Astro.props;
@@ -30,10 +28,7 @@ const date = datetime.format("YYYY[년] M[월] D[일]");
 <div
   class:list={["text-muted-foreground flex items-center gap-x-2", className]}
 >
-  <time
-    class:list={["text-sm", { "sm:text-base": size === "lg" }]}
-    datetime={datetime.toISOString()}
-  >
+  <time class="text-sm" datetime={datetime.toISOString()}>
     {date}
   </time>
 </div>
