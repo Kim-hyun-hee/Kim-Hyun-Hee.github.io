@@ -25,10 +25,6 @@ export default defineAstroPaperConfig({
     dynamicOgImage: true,
     showArchives: true,
     showBackButton: true,
-    editPost: {
-      enabled: true,
-      url: "https://github.com/Kim-hyun-hee/astro-paper/edit/main/",
-    },
     search: "pagefind",
   },
   socials: [
