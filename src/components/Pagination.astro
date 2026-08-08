@@ -25,46 +25,50 @@ const prevUrl = page.currentPage > 1 ? urlFor(page.currentPage - 1) : null;
 const nextUrl =
   page.currentPage < page.lastPage ? urlFor(page.currentPage + 1) : null;
 
+/** 01, 02 … 두 자리로 채운다. */
+const pad = (n: number) => String(n).padStart(2, "0");
+
 const cell =
-  "grid size-11 place-items-center rounded-md text-sm transition-colors";
+  "grid size-9 place-items-center rounded-md text-xs font-bold transition-colors";
 const inactive = "text-muted-foreground hover:bg-muted hover:text-foreground";
-const disabled = "text-muted-foreground pointer-events-none opacity-40";
+const disabled = "text-muted-foreground opacity-40";
 ---
 
 {
   page.lastPage > 1 && (
     <nav
-      class="mt-auto mb-8 flex items-center justify-center gap-1"
+      class="mt-auto mb-8 flex items-center justify-center gap-2"
       aria-label="Pagination Navigation"
     >
-      <a
-        href={prevUrl ?? "#"}
-        class:list={[cell, prevUrl ? inactive : disabled]}
-        aria-label={t.a11y.goToPreviousPage}
-        aria-disabled={prevUrl ? undefined : "true"}
-        tabindex={prevUrl ? undefined : -1}
-      >
-        <IconArrowLeft class="inline-block size-5 rtl:rotate-180" />
-      </a>
+      {prevUrl ? (
+        <a
+          href={prevUrl}
+          class:list={[cell, inactive]}
+          aria-label={t.a11y.goToPreviousPage}
+        >
+          <IconArrowLeft class="size-5 rtl:rotate-180" />
+        </a>
+      ) : (
+        <span class:list={[cell, disabled]} aria-hidden="true">
+          <IconArrowLeft class="size-5 rtl:rotate-180" />
+        </span>
+      )}
 
       {items.map(item =>
         item === "dots" ? (
           <span
-            class="text-muted-foreground grid size-11 place-items-center text-sm"
+            class="text-muted-foreground grid size-9 place-items-center text-xs"
             aria-hidden="true"
           >
             &hellip;
           </span>
         ) : item === page.currentPage ? (
           <span
-            class:list={[
-              cell,
-              "bg-accent text-accent-foreground font-semibold",
-            ]}
+            class:list={[cell, "bg-accent-muted text-accent"]}
             aria-current="page"
             aria-label={tplStr(t.a11y.paginationCurrent, { page: item })}
           >
-            {item}
+            {pad(item)}
           </span>
         ) : (
           <a
@@ -72,20 +76,24 @@ const disabled = "text-muted-foreground pointer-events-none opacity-40";
             class:list={[cell, inactive]}
             aria-label={tplStr(t.a11y.paginationGoTo, { page: item })}
           >
-            {item}
+            {pad(item)}
           </a>
         )
       )}
 
-      <a
-        href={nextUrl ?? "#"}
-        class:list={[cell, nextUrl ? inactive : disabled]}
-        aria-label={t.a11y.goToNextPage}
-        aria-disabled={nextUrl ? undefined : "true"}
-        tabindex={nextUrl ? undefined : -1}
-      >
-        <IconArrowRight class="inline-block size-5 rtl:rotate-180" />
-      </a>
+      {nextUrl ? (
+        <a
+          href={nextUrl}
+          class:list={[cell, inactive]}
+          aria-label={t.a11y.goToNextPage}
+        >
+          <IconArrowRight class="size-5 rtl:rotate-180" />
+        </a>
+      ) : (
+        <span class:list={[cell, disabled]} aria-hidden="true">
+          <IconArrowRight class="size-5 rtl:rotate-180" />
+        </span>
+      )}
     </nav>
   )
 }
