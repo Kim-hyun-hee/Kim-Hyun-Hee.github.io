@@ -9,8 +9,11 @@
 | 대분류 | 보여주는 것 | 조건 |
 |---|---|---|
 | `deep-dive`, `study` | 소분류별 3개씩 + "더 보기" | `groups.length > 0` |
-| 시리즈를 가진 대분류 | 시리즈 목록 | `groups.length === 0 && series.length > 0` |
-| `project`, `troubleshooting`, `etc` | **글 전체** | `groups.length === 0 && series.length === 0` |
+| `project` | 시리즈 목록 | `groups.length === 0 && series.length > 0` |
+| `troubleshooting`, `etc` | **글 전체** | `groups.length === 0 && series.length === 0` |
+
+`project`는 소분류가 없지만 `series.ts`에 시리즈 둘이 걸려 있어 시리즈 목록을
+그린다. 페이지네이션이 필요한 것은 `troubleshooting`과 `etc` 둘뿐이다.
 
 세 번째가 문제다. 글을 전부 한 화면에 쏟는다. 파일 이름이 `index.astro`라
 페이지 번호를 받을 자리가 없어 페이지네이션을 붙일 수 없다.
@@ -126,12 +129,13 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 
 **실물.**
 
-1. `project`·`troubleshooting`·`etc`에 페이지네이션이 뜨는지
+1. `troubleshooting`·`etc`에 페이지네이션이 뜨는지
 2. `deep-dive`·`study`가 지금 모습 그대로인지 (소분류 섹션 3개씩 + "더 보기")
-3. 소분류 페이지가 영향받지 않았는지
+3. `project`가 시리즈 목록 그대로인지
+4. 소분류 페이지가 영향받지 않았는지
 
-지금 더미 글이 `deep-dive`에만 있어 `project` 쪽은 글이 부족해 페이지네이션이
-안 보일 수 있다. 필요하면 `project`에 더미를 몇 개 넣어 확인한다.
+지금 더미 글이 `deep-dive`에만 있어 `troubleshooting`·`etc`는 글이 부족해
+페이지네이션이 안 보일 수 있다. 필요하면 그쪽에 더미를 넣어 확인한다.
 
 ## 8. 범위 밖
 
