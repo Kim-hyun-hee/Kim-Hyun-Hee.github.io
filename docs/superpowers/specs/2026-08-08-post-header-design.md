@@ -71,8 +71,11 @@ Unity SRP에서 배치가 깨지는 이유
 
 - `<h1>` 블록과 날짜 `<div>` → `PostHeader`로 이동
 - `<SeriesBadge>` 호출 → `PostHeader`로 이동
-- `EditPost` import와 마크업(141-150행 부근) → **삭제**. #6 이후 죽은 코드다
-- `categoryLabel` 계산(84-87행) → `PostHeader`로 이동. 헤더 전용이다
+- `EditPost` import와 마크업 → **삭제**. #6 이후 죽은 코드다. 렌더가 **두
+  군데**다 — 141-150행(데스크톱)과 176행(모바일, 본문 아래 `<hr>` 다음).
+  둘 다 지우면 `hideEditPost`도 쓰는 곳이 없어진다
+- `categoryLabel` 계산(84-87행)은 **그대로 둔다.** 헤더 전용이 아니라 186행의
+  `<CategoryPosts label={categoryLabel} />`가 쓴다
 
 `_components/EditPost.astro` **파일 자체는 남긴다.** 호출부가 사라져 죽은
 파일이 되지만, 업스트림에서 내려온 컴포넌트라 지우면 다음 병합 때 충돌
