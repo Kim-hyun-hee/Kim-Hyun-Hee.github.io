@@ -21,13 +21,20 @@ import {
 } from "@/utils/getPostsByCategory";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { listsPostsDirectly } from "@/utils/listsPostsDirectly";
 import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
+/**
+ * 소분류나 시리즈로 안내하는 대분류만 맡는다. 글을 직접 나열하는 대분류는
+ * [...page].astro가 페이지네이션과 함께 그린다.
+ */
 export const getStaticPaths = (() =>
-  CATEGORY_IDS.map(category => ({
-    params: { category },
-  }))) satisfies GetStaticPaths;
+  CATEGORY_IDS.filter(category => !listsPostsDirectly(category)).map(
+    category => ({
+      params: { category },
+    })
+  )) satisfies GetStaticPaths;
 
 const category = Astro.params.category as CategoryId;
 const meta = CATEGORIES[category];
@@ -112,16 +119,6 @@ const series = getSeriesByCategory(category).map(s => ({
                 {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
               </p>
             </li>
-          ))}
-        </ul>
-      )
-    }
-
-    {
-      groups.length === 0 && series.length === 0 && (
-        <ul>
-          {posts.map(post => (
-            <Card {...post} />
           ))}
         </ul>
       )

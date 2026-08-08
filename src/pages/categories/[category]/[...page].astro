@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPathsOptions } from "astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Main from "@/components/Main.astro";
+import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
+import Pagination from "@/components/Pagination.astro";
+import { CATEGORIES, CATEGORY_IDS, type CategoryId } from "@/categories";
+import { filterByCategory } from "@/utils/getPostsByCategory";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { listsPostsDirectly } from "@/utils/listsPostsDirectly";
+import config from "@/config";
+
+/**
+ * 소분류도 시리즈도 없는 대분류의 글 목록. 나머지 대분류는 index.astro가 맡는다.
+ * 두 파일의 담당이 겹치면 같은 경로가 두 번 생성되어 빌드가 멈춘다.
+ */
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const posts = getSortedPosts(await getCollection("posts"));
+
+  return CATEGORY_IDS.filter(listsPostsDirectly).flatMap(category =>
+    paginate(filterByCategory(posts, category), {
+      params: { category },
+      pageSize: config.posts.perPage,
+    })
+  );
+}
+
+const { page } = Astro.props;
+const category = Astro.params.category as CategoryId;
+const meta = CATEGORIES[category];
+---
+
+<Layout title={`${meta.label} | ${config.site.title}`}>
+  <Header />
+  <Main pageTitle={meta.label} pageDesc={meta.description}>
+    <ul>
+      {page.data.map(post => <Card {...post} />)}
+    </ul>
+  </Main>
+  <Pagination {page} />
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>
