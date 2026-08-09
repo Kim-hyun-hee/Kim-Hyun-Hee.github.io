@@ -21,9 +21,9 @@ const currentYear = new Date().getFullYear();
   <div
     class="border-border flex items-center justify-center border-t py-6 sm:py-4"
   >
-    <span class="whitespace-nowrap">
-      &#169; {currentYear}
-      {site.title} &middot; {t.footer.allRightsReserved}
+    <span class="text-muted-foreground text-xs whitespace-nowrap">
+      {/* 표현식 사이의 줄바꿈은 컴파일 때 사라진다. 공백은 같은 줄에 둔다. */}
+      &#169; {currentYear} {site.title} &middot; {t.footer.allRightsReserved}
     </span>
   </div>
 </footer>

@@ -118,7 +118,7 @@ const ogImage = ogImageUrl
   <main
     id="main-content"
     class:list={[
-      "app-layout relative",
+      "app-layout relative pb-8",
       { "mt-8": !config.features.showBackButton },
     ]}
     data-pagefind-body
@@ -161,12 +161,15 @@ const ogImage = ogImageUrl
 
 <script is:inline data-astro-rerun>
   function createProgressBar() {
+    // 배경 없이 선만 그린다. bg-background로 트랙을 깔면 상단 바 위 4px를
+    // 불투명하게 덮어, 가운데 정렬된 바 안의 글씨가 보이는 영역 기준으로
+    // 위쪽에 치우쳐 보인다.
     const progressContainer = document.createElement("div");
     progressContainer.className =
-      "progress-container fixed top-0 z-30 h-1 w-full bg-background";
+      "progress-container fixed top-0 z-30 h-0.5 w-full";
 
     const progressBar = document.createElement("div");
-    progressBar.className = "progress-bar h-1 w-0 bg-accent";
+    progressBar.className = "progress-bar h-0.5 w-0 bg-accent";
     progressBar.id = "myBar";
 
     progressContainer.appendChild(progressBar);
