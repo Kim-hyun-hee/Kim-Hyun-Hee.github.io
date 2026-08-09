@@ -22,10 +22,6 @@
       @apply text-foreground mb-3;
     }
 
-    h3 {
-      @apply italic;
-    }
-
     p,
     strong,
     ol,
