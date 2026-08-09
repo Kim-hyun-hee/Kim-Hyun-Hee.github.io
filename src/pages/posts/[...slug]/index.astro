@@ -161,15 +161,15 @@ const ogImage = ogImageUrl
 
 <script is:inline data-astro-rerun>
   function createProgressBar() {
-    // 배경 없이 선만 그린다. bg-background로 트랙을 깔면 상단 바 위 4px를
-    // 불투명하게 덮어, 가운데 정렬된 바 안의 글씨가 보이는 영역 기준으로
-    // 위쪽에 치우쳐 보인다.
+    // 이 4px 트랙이 상단 바의 위 4px를 불투명하게 덮는다. 그래서 바 안의
+    // 글씨는 56px가 아니라 아래 52px를 기준으로 가운데를 잡아야 한다.
+    // TopBar.astro 의 pt-1 이 그 몫이다 - 높이를 바꾸면 거기도 같이 바꿔야 한다.
     const progressContainer = document.createElement("div");
     progressContainer.className =
-      "progress-container fixed top-0 z-30 h-0.5 w-full";
+      "progress-container fixed top-0 z-30 h-1 w-full bg-background";
 
     const progressBar = document.createElement("div");
-    progressBar.className = "progress-bar h-0.5 w-0 bg-accent";
+    progressBar.className = "progress-bar h-1 w-0 bg-accent";
     progressBar.id = "myBar";
 
     progressContainer.appendChild(progressBar);
