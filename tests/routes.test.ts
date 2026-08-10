@@ -392,3 +392,20 @@ describe("list section flow", () => {
     expect(header).not.toMatch(/<p\b[^>]*>\s*<\/p>/);
   });
 });
+
+describe("home All posts action", () => {
+  it("renders one direct post-list action after the home post sections", () => {
+    const html = readFileSync(page(), "utf-8");
+    const actions = [
+      ...html.matchAll(
+        /<a\b(?=[^>]*\bdata-all-posts\b)[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g
+      ),
+    ];
+
+    expect(actions).toHaveLength(1);
+    expect(actions[0][1]).toBe("/posts/");
+    expect(html.indexOf("data-all-posts-region")).toBeGreaterThan(
+      html.lastIndexOf("data-post-row")
+    );
+  });
+});

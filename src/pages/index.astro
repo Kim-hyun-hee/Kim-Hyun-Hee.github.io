@@ -78,10 +78,21 @@ const homePath = getRelativeLocaleUrl(locale, "");
       )
     }
 
-    <div class="my-8 text-center">
-      <LinkButton href={getRelativeLocaleUrl(locale, "posts")}>
+    <div
+      data-all-posts-region
+      class="border-border mt-8 flex justify-end border-t pt-4"
+    >
+      <LinkButton
+        data-all-posts
+        href={getRelativeLocaleUrl(locale, "posts")}
+        variant="quiet"
+      >
         {t.home.allPosts}
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
+        <IconArrowRight
+          aria-hidden="true"
+          class="size-4 rtl:-rotate-180"
+          focusable="false"
+        />
       </LinkButton>
     </div>
   </main>
