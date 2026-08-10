@@ -270,3 +270,44 @@ describe("post title transitions", () => {
     );
   });
 });
+
+describe("ruled post rows", () => {
+  const representativeLists = () => {
+    const tag = listHtmlFiles(join(DIST, "tags")).find(
+      file => file !== page("tags")
+    );
+    const category = page("categories", "etc");
+
+    expect(tag).toBeDefined();
+    expect(existsSync(category)).toBe(true);
+
+    return [
+      page(),
+      page("posts"),
+      tag!,
+      category,
+    ];
+  };
+
+  it("renders shared semantic rows with dates before linked headings", () => {
+    for (const file of representativeLists()) {
+      const html = readFileSync(file, "utf-8");
+      const rows = [
+        ...html.matchAll(
+          /<li\b(?=[^>]*\bdata-post-row\b)[^>]*>([\s\S]*?)<\/li>/g
+        ),
+      ];
+
+      expect(rows.length, file).toBeGreaterThan(0);
+      for (const [, row] of rows) {
+        const date = row.indexOf("<time");
+        const heading = row.search(/<h[23]\b/);
+        const link = row.match(/<a\b[^>]*href="(\/posts\/[^\"]+)"/);
+
+        expect(date, file).toBeGreaterThanOrEqual(0);
+        expect(heading, file).toBeGreaterThan(date);
+        expect(link?.[1], file).toBeDefined();
+      }
+    }
+  });
+});
