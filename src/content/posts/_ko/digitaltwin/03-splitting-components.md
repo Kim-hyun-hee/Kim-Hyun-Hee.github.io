@@ -2,7 +2,6 @@
 title: "설비 데이터를 컴포넌트로 쪼개기"
 description: "무엇을 한 컴포넌트에 묶고 무엇을 떼어낼지, 순회 빈도를 기준으로 나눈 기록."
 pubDatetime: 2026-03-23T09:00:00+09:00
-category: project
 series: dod-digitaltwin-unity
 seriesOrder: 3
 tags:

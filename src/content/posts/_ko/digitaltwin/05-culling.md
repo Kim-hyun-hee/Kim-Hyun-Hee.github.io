@@ -2,7 +2,6 @@
 title: "화면 밖 설비를 지우기"
 description: "프러스텀 컬링을 잡으로 돌려 그릴 후보 자체를 줄인 과정."
 pubDatetime: 2026-04-06T09:00:00+09:00
-category: project
 series: dod-digitaltwin-unity
 seriesOrder: 5
 tags:

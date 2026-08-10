@@ -2,7 +2,6 @@
 title: "원본 테마와 계속 병합하며 살기"
 description: "주석으로 표시만 남기는 것으로는 부족했다. 병합 표면을 실제로 줄인 방법."
 pubDatetime: 2026-07-27T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 6
 tags:

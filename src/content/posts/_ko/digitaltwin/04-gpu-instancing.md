@@ -2,7 +2,6 @@
 title: "GPU 인스턴싱으로 드로우콜 6,400에서 12로"
 description: "같은 메시를 6,400번 그리는 일을 한 번의 명령으로 바꾸기까지."
 pubDatetime: 2026-03-30T09:00:00+09:00
-category: project
 series: dod-digitaltwin-unity
 seriesOrder: 4
 tags:

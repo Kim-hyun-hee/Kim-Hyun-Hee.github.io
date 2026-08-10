@@ -2,7 +2,6 @@
 title: "목차: 인라인에서 sticky로"
 description: "본문 위 목차로 시작했다가 우측 고정 방식으로 바꾼 이유와 스크롤 스파이 구현."
 pubDatetime: 2026-07-13T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 4
 tags:

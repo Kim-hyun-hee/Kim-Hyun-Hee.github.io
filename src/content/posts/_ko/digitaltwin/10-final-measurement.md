@@ -2,7 +2,6 @@
 title: "6,400개를 60fps로: 최종 측정"
 description: "처음 12fps에서 시작한 프로토타입이 어디까지 왔는지, 각 단계가 얼마씩 기여했는지 정리한다."
 pubDatetime: 2026-05-11T09:00:00+09:00
-category: project
 series: dod-digitaltwin-unity
 seriesOrder: 10
 tags:

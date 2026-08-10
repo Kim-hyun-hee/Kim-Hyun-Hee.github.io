@@ -2,7 +2,6 @@
 title: "Job System으로 업데이트 병렬화하기"
 description: "순회를 워커 스레드로 나누면서 만난 의존성 문제와 Burst 적용 결과."
 pubDatetime: 2026-04-27T09:00:00+09:00
-category: project
 series: dod-digitaltwin-unity
 seriesOrder: 8
 tags:

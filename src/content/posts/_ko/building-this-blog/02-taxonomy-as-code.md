@@ -2,7 +2,6 @@
 title: "카테고리와 시리즈를 코드로 고정하기"
 description: "분류 목록을 파일 하나에 두고, 거기 없는 값을 쓰면 빌드가 실패하게 만든 과정."
 pubDatetime: 2026-06-29T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 2
 tags:

@@ -2,7 +2,6 @@
 title: "좌측 고정 사이드바와 레이아웃 골격"
 description: "분류가 항상 보이는 3단 레이아웃을 만들면서 정한 폭 기준과 반응형 처리."
 pubDatetime: 2026-07-06T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 3
 tags:

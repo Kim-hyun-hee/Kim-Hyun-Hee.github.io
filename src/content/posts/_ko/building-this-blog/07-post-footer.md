@@ -2,7 +2,6 @@
 title: "글 하단 재구성: 태그 칩과 관련 글"
 description: "다 읽은 독자를 막다른 길에 두지 않기 위해 글 아래를 다시 짠 기록."
 pubDatetime: 2026-08-03T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 7
 tags:

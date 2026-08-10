@@ -2,7 +2,6 @@
 title: "블로그를 새로 짓기로 한 이유"
 description: "쓰던 블로그 서비스를 떠나 정적 사이트 테마를 포크하기까지. 무엇이 아쉬웠고, 무엇을 지키고 싶었는지 정리한다."
 pubDatetime: 2026-06-22T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 1
 tags:

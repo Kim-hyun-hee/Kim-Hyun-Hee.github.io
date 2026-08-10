@@ -2,7 +2,6 @@
 title: "설비 6,400개를 GameObject로 그리면 벌어지는 일"
 description: "디지털트윈의 첫 프로토타입이 12fps에서 멈췄다. 원인을 프로파일러로 좁혀가며, 왜 이 규모에서는 접근 자체를 바꿔야 하는지 확인한다."
 pubDatetime: 2026-03-09T09:00:00+09:00
-category: project
 series: dod-digitaltwin-unity
 seriesOrder: 1
 tags:

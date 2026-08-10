@@ -2,7 +2,6 @@
 title: "색을 쓰지 않는 팔레트 설계"
 description: "UI에서 유채색을 걷어내고 굵기·크기·밑줄로만 강조하기로 한 결정과, 그래도 파랑을 남겨둔 이유."
 pubDatetime: 2026-07-20T09:00:00+09:00
-category: project
 series: building-this-blog
 seriesOrder: 5
 tags:
