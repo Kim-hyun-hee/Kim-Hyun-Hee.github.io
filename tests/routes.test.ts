@@ -72,17 +72,21 @@ describe("껍데기", () => {
 
   it("contains one localized skip link before the main content target", () => {
     const html = home();
-    const skipLinks = [
+    const targetLinks = [
+      ...html.matchAll(/<a\b[^>]*href="#main-content"[^>]*>[\s\S]*?<\/a>/g),
+    ];
+    const shellLinks = [
       ...html.matchAll(
         /<body\b[^>]*>\s*<a\b[^>]*href="#main-content"[^>]*>([\s\S]*?)<\/a>/g
       ),
     ];
 
-    expect(skipLinks).toHaveLength(1);
-    expect(skipLinks[0][1].replace(/<[^>]+>/g, "").trim()).toBe(
+    expect(targetLinks).toHaveLength(1);
+    expect(shellLinks).toHaveLength(1);
+    expect(shellLinks[0][1].replace(/<[^>]+>/g, "").trim()).toBe(
       "본문으로 건너뛰기"
     );
-    expect(skipLinks[0].index).toBeLessThan(html.indexOf('id="main-content"'));
+    expect(shellLinks[0].index).toBeLessThan(html.indexOf('id="main-content"'));
   });
 
   it("사이드바가 렌더된다", () => {
