@@ -45,7 +45,7 @@ const trail = category ? getCategoryTrail(category, subcategory) : [];
       ))
     }
 
-    <span aria-hidden="true">·</span>
+    {trail.length > 0 && <span aria-hidden="true">·</span>}
     <Datetime {pubDatetime} {timezone} />
   </div>
 
