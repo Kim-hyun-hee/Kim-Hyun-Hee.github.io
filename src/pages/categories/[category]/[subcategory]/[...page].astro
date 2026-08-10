@@ -46,11 +46,19 @@ const t = useTranslations(Astro.currentLocale ?? config.site.lang);
   <Header
     barTitle={tplStr(t.bar.postsIn, { name: subLabel ?? categoryLabel })}
   />
-  <Main pageTitle={`${categoryLabel} › ${subLabel}`}>
-    <ul>
-      {page.data.map(post => <Card {...post} />)}
-    </ul>
+  <Main isList pageTitle={`${categoryLabel} › ${subLabel}`}>
+    <section data-post-list>
+      <ul>
+        {page.data.map(post => <Card {...post} />)}
+      </ul>
+    </section>
+    {
+      page.lastPage > 1 && (
+        <div data-list-pagination class="mt-10">
+          <Pagination {page} />
+        </div>
+      )
+    }
   </Main>
-  <Pagination {page} />
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>

@@ -25,13 +25,20 @@ const t = useTranslations(locale);
 <Layout title={`${t.pages.postsTitle} | ${config.site.title}`}>
   <Header barTitle={t.bar.allPosts} />
 
-  <Main pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
-    <ul>
-      {page.data.map(data => <Card {...data} />)}
-    </ul>
+  <Main isList pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
+    <section data-post-list>
+      <ul>
+        {page.data.map(data => <Card {...data} />)}
+      </ul>
+    </section>
+    {
+      page.lastPage > 1 && (
+        <div data-list-pagination class="mt-10">
+          <Pagination {page} />
+        </div>
+      )
+    }
   </Main>
-
-  <Pagination {page} />
 
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>

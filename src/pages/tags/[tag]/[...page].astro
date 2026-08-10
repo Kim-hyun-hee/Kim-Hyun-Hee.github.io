@@ -40,15 +40,23 @@ const t = useTranslations(locale);
   <Header barTitle={tplStr(t.bar.tag, { name: tagName })} />
 
   <Main
+    isList
     pageTitle={`${t.pages.tagTitle}: ${tagName}`}
     pageDesc={`${t.pages.tagDesc} "${tagName}".`}
   >
-    <ul>
-      {page.data.map(data => <Card {...data} />)}
-    </ul>
+    <section data-post-list>
+      <ul>
+        {page.data.map(data => <Card {...data} />)}
+      </ul>
+    </section>
+    {
+      page.lastPage > 1 && (
+        <div data-list-pagination class="mt-10">
+          <Pagination {page} />
+        </div>
+      )
+    }
   </Main>
-
-  <Pagination {page} />
 
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>

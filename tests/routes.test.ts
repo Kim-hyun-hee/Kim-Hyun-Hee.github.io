@@ -311,3 +311,47 @@ describe("ruled post rows", () => {
     }
   });
 });
+
+describe("list section flow", () => {
+  const listPages = () => [
+    page("posts"),
+    page("tags", "astro"),
+    page("categories", "etc"),
+    page("categories", "deep-dive", "architecture"),
+  ];
+
+  it("keeps each listing header before its post rows", () => {
+    for (const file of listPages()) {
+      const html = readFileSync(file, "utf-8");
+      const header = html.indexOf("data-list-header");
+      const list = html.indexOf("data-post-list");
+
+      expect(header, file).toBeGreaterThanOrEqual(0);
+      expect(list, file).toBeGreaterThan(header);
+    }
+  });
+
+  it("keeps rendered pagination after the post list inside main content", () => {
+    const html = readFileSync(page("posts"), "utf-8");
+    const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? "";
+    const list = main.indexOf("data-post-list");
+    const pagination = main.indexOf("data-list-pagination");
+
+    expect(list).toBeGreaterThanOrEqual(0);
+    expect(pagination).toBeGreaterThan(list);
+  });
+
+  it("does not render an empty description for a leaf category", () => {
+    const html = readFileSync(
+      page("categories", "deep-dive", "architecture"),
+      "utf-8"
+    );
+    const header = html.match(
+      /<header\b[^>]*data-list-header[^>]*>([\s\S]*?)<\/header>/
+    )?.[1];
+
+    expect(header).toBeDefined();
+    expect(header).toMatch(/<h1\b/);
+    expect(header).not.toMatch(/<p\b[^>]*>\s*<\/p>/);
+  });
+});

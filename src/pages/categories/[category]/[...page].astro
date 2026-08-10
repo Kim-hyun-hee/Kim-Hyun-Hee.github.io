@@ -39,11 +39,19 @@ const t = useTranslations(Astro.currentLocale ?? config.site.lang);
 
 <Layout title={`${meta.label} | ${config.site.title}`}>
   <Header barTitle={tplStr(t.bar.postsIn, { name: meta.label })} />
-  <Main pageTitle={meta.label} pageDesc={meta.description}>
-    <ul>
-      {page.data.map(post => <Card {...post} />)}
-    </ul>
+  <Main isList pageTitle={meta.label} pageDesc={meta.description}>
+    <section data-post-list>
+      <ul>
+        {page.data.map(post => <Card {...post} />)}
+      </ul>
+    </section>
+    {
+      page.lastPage > 1 && (
+        <div data-list-pagination class="mt-10">
+          <Pagination {page} />
+        </div>
+      )
+    }
   </Main>
-  <Pagination {page} />
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>
