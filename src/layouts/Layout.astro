@@ -4,6 +4,7 @@ import { ClientRouter } from "astro:transitions";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
+import { useTranslations } from "@/i18n";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const { site } = config;
+const t = useTranslations(Astro.currentLocale ?? site.lang);
 
 const {
   title = site.title,
@@ -123,6 +125,12 @@ const rssHref = getRelativeLocaleUrl(
   <body
     class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col lg:ps-(--sidebar-width)"
   >
+    <a
+      href="#main-content"
+      class="bg-background text-foreground focus:outline-accent fixed start-4 top-2 z-50 -translate-y-20 rounded px-3 py-2 focus:translate-y-0 focus:outline-2"
+    >
+      {t.a11y.skipToContent}
+    </a>
     <slot />
     <script>
       import "@/scripts/theme";
