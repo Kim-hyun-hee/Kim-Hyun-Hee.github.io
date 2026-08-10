@@ -44,3 +44,6 @@ jobs:
 
       - name: "🚀 Build the project"
         run: pnpm run build
+
+      - name: Run tests against build output
+        run: pnpm test
