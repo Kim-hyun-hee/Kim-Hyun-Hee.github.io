@@ -3,6 +3,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, sep } from "node:path";
 import { CATEGORY_IDS, getSubcategoryIds } from "@/categories";
 import { SERIES_IDS } from "@/series";
+import siteConfig from "../astro-paper.config";
 
 const DIST = "dist";
 
@@ -80,7 +81,9 @@ describe("껍데기", () => {
       .replace(/\s+/g, " ")
       .trim();
 
-    expect(text).toContain("© 2026 Dev groot ·");
+    const expectedPrefix =
+      "© " + new Date().getFullYear() + " " + siteConfig.site.title + " ·";
+    expect(text).toContain(expectedPrefix);
   });
 
   it("contains one localized skip link before the main content target", () => {
