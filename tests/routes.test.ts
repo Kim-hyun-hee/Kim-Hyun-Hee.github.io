@@ -66,6 +66,24 @@ describe("시리즈 라우트", () => {
   it("시리즈 목록 페이지가 생성된다", () => {
     expect(existsSync(page("series"))).toBe(true);
   });
+
+  it("시리즈 인덱스가 네이티브 아코디언과 번호가 있는 글 링크를 렌더한다", () => {
+    const html = readFileSync(page("series"), "utf-8");
+    const accordions = [
+      ...html.matchAll(
+        /<details\b(?=[^>]*\bdata-series-accordion\b)[^>]*>([\s\S]*?)<\/details>/g
+      ),
+    ];
+
+    expect(accordions).toHaveLength(SERIES_IDS.length);
+    accordions.forEach(([markup]) => {
+      expect(markup).toMatch(/<summary\b[^>]*>/);
+      expect(markup).toMatch(/>\s*01\s*</);
+    });
+    for (const id of SERIES_IDS) {
+      expect(html).toContain(`href="/series/${id}/"`);
+    }
+  });
 });
 
 describe("껍데기", () => {

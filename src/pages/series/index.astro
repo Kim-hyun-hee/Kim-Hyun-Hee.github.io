@@ -5,8 +5,8 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
-import LinkCard from "@/components/LinkCard.astro";
 import { SERIES, SERIES_IDS } from "@/series";
+import { getPostUrl } from "@/utils/getPostPaths";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
 import { postFilter } from "@/utils/postFilter";
 import { useTranslations, tplStr } from "@/i18n";
@@ -19,30 +19,103 @@ const t = useTranslations(locale);
 const list = SERIES_IDS.map(id => ({
   id,
   ...SERIES[id],
-  count: getSeriesPosts(all, id).length,
+  posts: getSeriesPosts(all, id),
 }));
 ---
 
 <Layout title={`${t.series.title} | ${config.site.title}`}>
   <Header barTitle={t.series.title} />
   <Main pageTitle={t.series.title} pageDesc={t.series.desc}>
-    <ul class="space-y-4">
+    <div class="border-border border-t border-dashed">
       {
         list.map(s => (
-          <LinkCard
-            href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
-            title={s.label}
+          <details
+            data-series-accordion
+            class="group border-border border-b border-dashed"
           >
-            <p class="text-muted-foreground mt-1 text-sm">{s.description}</p>
-            <p class="text-muted-foreground mt-2 text-sm">
-              {tplStr(t.category.seriesCount, { count: s.count })}
-              {" · "}
-              {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
-            </p>
-          </LinkCard>
+            <summary class="flex cursor-pointer list-none items-center gap-4 py-5 [&::-webkit-details-marker]:hidden">
+              <span class="min-w-0 flex-1">
+                <span class="text-foreground block text-lg font-semibold">
+                  {s.label}
+                </span>
+                <span class="text-muted-foreground mt-1 flex flex-wrap items-center gap-2 text-sm">
+                  <span class="bg-accent/10 text-accent rounded-full px-2 py-0.5 font-medium">
+                    {tplStr(t.category.seriesCount, {
+                      count: s.posts.length,
+                    })}
+                  </span>
+                  <span>
+                    {s.status === "ongoing"
+                      ? t.series.ongoing
+                      : t.series.completed}
+                  </span>
+                </span>
+              </span>
+              <svg
+                data-series-chevron
+                class="text-muted-foreground group-open:text-accent size-5 shrink-0 bg-transparent transition-[transform,color] duration-200 group-open:rotate-180"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </summary>
+
+            <div data-series-content>
+              <div class="pb-6">
+                <p class="text-muted-foreground mb-4 text-sm leading-relaxed">
+                  {s.description}
+                </p>
+                {s.posts.length === 0 ? (
+                  <p class="text-muted-foreground text-sm">{t.series.empty}</p>
+                ) : (
+                  <ol class="space-y-1">
+                    {s.posts.map(post => (
+                      <li>
+                        <a
+                          href={getPostUrl(post.id, post.filePath, locale)}
+                          class="hover:bg-accent/10 focus-visible:bg-accent/10 flex items-baseline gap-3 rounded px-2 py-2 transition-colors"
+                        >
+                          <span
+                            class="text-accent w-6 shrink-0 text-sm font-semibold tabular-nums"
+                            aria-hidden="true"
+                          >
+                            {String(post.data.seriesOrder).padStart(2, "0")}
+                          </span>
+                          <span class="text-foreground">{post.data.title}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                <a
+                  href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
+                  class="text-accent mt-4 inline-flex text-sm font-medium underline-offset-4 hover:underline"
+                >
+                  {t.category.allPosts}
+                </a>
+              </div>
+            </div>
+          </details>
         ))
       }
-    </ul>
+    </div>
   </Main>
   <Footer />
 </Layout>
+
+<script>
+  import { initSeriesAccordions } from "@/scripts/seriesAccordion";
+
+  let cleanup = () => {};
+  document.addEventListener("astro:page-load", () => {
+    cleanup();
+    cleanup = initSeriesAccordions();
+  });
+  document.addEventListener("astro:before-swap", () => cleanup());
+</script>
