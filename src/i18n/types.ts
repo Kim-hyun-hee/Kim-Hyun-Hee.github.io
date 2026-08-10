@@ -13,7 +13,6 @@ export interface UIStrings {
     publishedAt: string;
     backToTop: string;
     goBack: string;
-    editPage: string;
     // previousPost/nextPost: 시간순 이전/다음 글 이동은 삭제됐지만 나중에
     // 되살릴 수 있어 의도적으로 남겨둔다. 지금은 호출부가 없다.
     previousPost: string;

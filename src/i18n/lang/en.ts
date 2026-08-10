@@ -15,7 +15,6 @@ export default {
     publishedAt: "Published at",
     backToTop: "Back to top",
     goBack: "Go back",
-    editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
   },

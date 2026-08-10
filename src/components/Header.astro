@@ -8,8 +8,8 @@
  *
  * 업스트림이 Header.astro를 고쳐 충돌이 나면: 업스트림 변경을 살펴보고
  * 필요한 것만 Sidebar.astro / TopBar.astro 로 옮긴 뒤, 이 파일은 아래 6줄을
- * 유지하면 됩니다. 원본 헤더가 하던 일(skip-to-content, 내비게이션, 검색,
- * 아카이브 링크, 테마 토글)은 전부 Sidebar.astro 에 옮겨져 있습니다.
+ * 유지하면 됩니다. 원본 헤더의 skip-to-content는 Layout.astro에,
+ * 내비게이션·검색·아카이브 링크·테마 토글은 Sidebar.astro에 옮겨져 있습니다.
  */
 import Sidebar from "./layout/Sidebar.astro";
 import TopBar from "./layout/TopBar.astro";

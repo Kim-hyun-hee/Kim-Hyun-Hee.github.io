@@ -15,7 +15,6 @@ export default {
     publishedAt: "작성일",
     backToTop: "맨 위로",
     goBack: "뒤로",
-    editPage: "이 글 수정",
     previousPost: "이전 글",
     nextPost: "다음 글",
   },
