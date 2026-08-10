@@ -1,42 +1,23 @@
-import { describe, it, expect } from "vitest";
-import { hasSubcategories } from "@/categories";
-import { SERIES, SERIES_IDS, getSeriesByCategory } from "@/series";
+import { describe, expect, it } from "vitest";
+import { SERIES, SERIES_IDS } from "@/series";
 
 describe("SERIES_IDS", () => {
-  it("정의된 시리즈 id를 담는다", () => {
+  it("includes defined series ids", () => {
     expect(SERIES_IDS).toContain("dod-digitaltwin-unity");
   });
 });
 
-describe("SERIES 정의", () => {
-  it("모든 시리즈가 project 대분류에 속한다", () => {
-    for (const id of SERIES_IDS) {
-      expect(SERIES[id].category).toBe("project");
-    }
+describe("SERIES metadata", () => {
+  it("has unique ids", () => {
+    expect(new Set(SERIES_IDS).size).toBe(SERIES_IDS.length);
   });
 
-  it("status는 ongoing 또는 completed다", () => {
+  it("has label, description, and a valid status without category coupling", () => {
     for (const id of SERIES_IDS) {
+      expect(SERIES[id].label.trim()).not.toBe("");
+      expect(SERIES[id].description.trim()).not.toBe("");
       expect(["ongoing", "completed"]).toContain(SERIES[id].status);
+      expect(SERIES[id]).not.toHaveProperty("category");
     }
-  });
-
-  it("모든 시리즈는 소분류가 없는 대분류에 속한다 (시리즈 카드가 노출되려면 필요)", () => {
-    for (const id of SERIES_IDS) {
-      expect(hasSubcategories(SERIES[id].category)).toBe(false);
-    }
-  });
-});
-
-describe("getSeriesByCategory", () => {
-  it("해당 대분류의 시리즈를 반환한다", () => {
-    const result = getSeriesByCategory("project");
-    expect(result.map(s => s.id)).toContain("dod-digitaltwin-unity");
-    expect(result[0]).toHaveProperty("label");
-    expect(result[0]).toHaveProperty("status");
-  });
-
-  it("시리즈가 없는 대분류에는 빈 배열을 반환한다", () => {
-    expect(getSeriesByCategory("etc")).toEqual([]);
   });
 });

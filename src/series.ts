@@ -1,5 +1,3 @@
-import type { CategoryId } from "./categories";
-
 export type SeriesStatus = "ongoing" | "completed";
 
 /**
@@ -11,13 +9,11 @@ export const SERIES = {
   "dod-digitaltwin-unity": {
     label: "DOD로 만드는 디지털트윈",
     description: "Unity에서 데이터 지향 설계로 설비 6,400개를 그리기까지",
-    category: "project",
     status: "ongoing",
   },
   "building-this-blog": {
     label: "이 블로그를 만든 기록",
     description: "정적 사이트 테마를 포크해 내 정보 구조로 뜯어고치기까지",
-    category: "project",
     status: "ongoing",
   },
 } as const satisfies Record<
@@ -25,7 +21,6 @@ export const SERIES = {
   {
     label: string;
     description: string;
-    category: CategoryId;
     status: SeriesStatus;
   }
 >;
@@ -33,19 +28,3 @@ export const SERIES = {
 export type SeriesId = keyof typeof SERIES;
 
 export const SERIES_IDS = Object.keys(SERIES) as [SeriesId, ...SeriesId[]];
-
-export type SeriesSummary = {
-  id: SeriesId;
-  label: string;
-  description: string;
-  status: SeriesStatus;
-};
-
-export function getSeriesByCategory(category: CategoryId): SeriesSummary[] {
-  return SERIES_IDS.filter(id => SERIES[id].category === category).map(id => ({
-    id,
-    label: SERIES[id].label,
-    description: SERIES[id].description,
-    status: SERIES[id].status,
-  }));
-}

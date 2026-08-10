@@ -24,7 +24,7 @@ const locale = Astro.currentLocale ?? config.site.lang;
 const { title, pubDatetime, timezone, category, subcategory, series } =
   post.data;
 
-const trail = getCategoryTrail(category, subcategory);
+const trail = category ? getCategoryTrail(category, subcategory) : [];
 ---
 
 <header>

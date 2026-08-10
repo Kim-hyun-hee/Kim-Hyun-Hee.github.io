@@ -77,10 +77,11 @@ const nearbyCategoryPosts = getNearbyCategoryPosts(
   post,
   4
 );
-const categoryLabel =
-  (post.data.subcategory &&
-    getSubcategoryLabel(post.data.category, post.data.subcategory)) ||
-  CATEGORIES[post.data.category].label;
+const categoryLabel = post.data.category
+  ? (post.data.subcategory &&
+      getSubcategoryLabel(post.data.category, post.data.subcategory)) ||
+    CATEGORIES[post.data.category].label
+  : undefined;
 
 let ogImageUrl: string | undefined;
 
@@ -147,9 +148,9 @@ const ogImage = ogImageUrl
           posts={seriesPosts}
           currentOrder={seriesOrder}
         />
-      ) : (
+      ) : categoryLabel ? (
         <CategoryPosts posts={nearbyCategoryPosts} label={categoryLabel} />
-      )
+      ) : null
     }
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">

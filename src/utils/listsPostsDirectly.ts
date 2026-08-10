@@ -1,5 +1,4 @@
 import { hasSubcategories, type CategoryId } from "@/categories";
-import { getSeriesByCategory } from "@/series";
 
 /**
  * 대분류 페이지가 글을 직접 나열하는가, 아니면 소분류·시리즈로 안내하는가.
@@ -12,7 +11,5 @@ import { getSeriesByCategory } from "@/series";
  * `categories.ts`를 참조한다.
  */
 export function listsPostsDirectly(category: CategoryId): boolean {
-  return (
-    !hasSubcategories(category) && getSeriesByCategory(category).length === 0
-  );
+  return !hasSubcategories(category);
 }

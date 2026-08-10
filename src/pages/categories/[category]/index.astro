@@ -7,7 +7,6 @@ import Header from "@/components/Header.astro";
 import Main from "@/components/Main.astro";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
-import LinkCard from "@/components/LinkCard.astro";
 import {
   CATEGORIES,
   CATEGORY_IDS,
@@ -15,12 +14,10 @@ import {
   hasSubcategories,
   type CategoryId,
 } from "@/categories";
-import { getSeriesByCategory } from "@/series";
 import {
   filterByCategory,
   groupBySubcategory,
 } from "@/utils/getPostsByCategory";
-import { getSeriesPosts } from "@/utils/getSeriesPosts";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { listsPostsDirectly } from "@/utils/listsPostsDirectly";
 import { useTranslations, tplStr } from "@/i18n";
@@ -51,10 +48,6 @@ const groups = hasSubcategories(category)
   : [];
 
 // getSeriesPosts는 중복 seriesOrder를 만나면 예외를 던져 빌드를 세운다.
-const series = getSeriesByCategory(category).map(s => ({
-  ...s,
-  count: getSeriesPosts(allPosts, s.id).length,
-}));
 ---
 
 <Layout title={`${meta.label} | ${config.site.title}`}>
@@ -99,26 +92,6 @@ const series = getSeriesByCategory(category).map(s => ({
             </section>
           ))}
         </div>
-      )
-    }
-
-    {
-      groups.length === 0 && series.length > 0 && (
-        <ul class="space-y-4">
-          {series.map(s => (
-            <LinkCard
-              href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
-              title={s.label}
-            >
-              <p class="text-muted-foreground mt-1 text-sm">{s.description}</p>
-              <p class="text-muted-foreground mt-2 text-sm">
-                {tplStr(t.category.seriesCount, { count: s.count })}
-                {" · "}
-                {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
-              </p>
-            </LinkCard>
-          ))}
-        </ul>
       )
     }
   </Main>

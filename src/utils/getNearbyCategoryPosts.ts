@@ -24,6 +24,8 @@ export function getNearbyCategoryPosts<T extends NearbyPost>(
 ): T[] {
   const { category, subcategory, series } = current.data;
 
+  if (!category) return [];
+
   const scoped = subcategory
     ? filterBySubcategory(sortedPosts, category, subcategory)
     : filterByCategory(sortedPosts, category);

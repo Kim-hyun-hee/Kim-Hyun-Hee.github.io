@@ -14,7 +14,7 @@ export type ActiveTaxonomy = {
 /** 글 하나의 위치 정보. 호출부가 getPostUrl()로 url을 채워 넘긴다. */
 export type TaxonomyLocation = {
   url: string;
-  category: CategoryId;
+  category?: CategoryId;
   subcategory?: string;
 };
 
@@ -46,7 +46,7 @@ export function resolveActiveTaxonomy(
   if (segments[0] === "posts") {
     const target = stripTrailingSlash(currentPath);
     const post = posts.find(p => stripTrailingSlash(p.url) === target);
-    if (!post) return null;
+    if (!post?.category) return null;
     return {
       category: post.category,
       subcategory: post.subcategory,

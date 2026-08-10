@@ -11,7 +11,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import LinkCard from "@/components/LinkCard.astro";
-import { getSeriesByCategory } from "@/series";
+import { SERIES, SERIES_IDS } from "@/series";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
 import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
@@ -28,9 +28,10 @@ const t = useTranslations(locale);
 
 // getSeriesPosts는 같은 시리즈에 중복된 seriesOrder가 있으면 예외를 던져
 // 빌드를 세웁니다. 잡지 마세요 — 그게 이 함수의 역할입니다.
-const projectSeries = getSeriesByCategory("project").map(s => ({
-  ...s,
-  count: getSeriesPosts(posts, s.id).length,
+const projectSeries = SERIES_IDS.map(id => ({
+  id,
+  ...SERIES[id],
+  count: getSeriesPosts(posts, id).length,
 }));
 ---
 

@@ -7,7 +7,7 @@ import { getSubcategoryIds, type CategoryId } from "@/categories";
  */
 export type TaxonomyPost = {
   data: {
-    category: CategoryId;
+    category?: CategoryId;
     subcategory?: string;
     series?: string;
     seriesOrder?: number;
