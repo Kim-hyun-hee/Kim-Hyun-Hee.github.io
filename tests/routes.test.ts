@@ -407,22 +407,6 @@ describe("list section flow", () => {
     expect(iconHrefs(secondNav!)).toEqual(["/posts/", "/posts/3"]);
   });
 
-  it("omits pagination markup for a single-page listing", () => {
-    const singlePageListing = findBuiltPage(
-      listHtmlFiles(join(DIST, "tags")),
-      file =>
-        file !== page("tags") &&
-        hasPostRows(file) &&
-        !mainContent(file).includes("data-list-pagination"),
-      "at least one built single-page tag listing with post rows"
-    );
-    const main = mainContent(singlePageListing);
-
-    expect(main).toContain("data-post-list");
-    expect(main).not.toContain("data-list-pagination");
-    expect(main).not.toMatch(/<nav\b[^>]*aria-label="Pagination Navigation"/);
-  });
-
   it("does not render an empty description for a leaf category", () => {
     const html = readHtml(leafCategoryListing());
     const header = html.match(

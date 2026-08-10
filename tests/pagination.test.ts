@@ -3,6 +3,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import type { Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import Pagination from "@/components/Pagination.astro";
+import ListPagination from "@/components/ListPagination.astro";
 import { getPaginationItems, getPageBasePath } from "@/utils/pagination";
 
 const paginationPage = (
@@ -33,6 +34,33 @@ const renderPagination = async (currentPage: number, lastPage: number) => {
     props: { page: paginationPage(currentPage, lastPage) },
   });
 };
+
+const renderListPagination = async (
+  currentPage: number,
+  lastPage: number
+) => {
+  const container = await AstroContainer.create();
+
+  return container.renderToString(ListPagination, {
+    props: { page: paginationPage(currentPage, lastPage) },
+  });
+};
+
+describe("ListPagination component", () => {
+  it("renders no wrapper or navigation for a single page", async () => {
+    const html = await renderListPagination(1, 1);
+
+    expect(html).not.toContain("data-list-pagination");
+    expect(html).not.toMatch(/<nav\b/);
+  });
+
+  it("wraps real pagination navigation only when multiple pages exist", async () => {
+    const html = await renderListPagination(1, 2);
+
+    expect(html).toMatch(/<div\b[^>]*data-list-pagination[^>]*>/);
+    expect(html).toMatch(/<nav\b[^>]*aria-label="Pagination Navigation"/);
+  });
+});
 
 describe("Pagination component", () => {
   it("marks the current first page as a non-link and hides unavailable previous control", async () => {

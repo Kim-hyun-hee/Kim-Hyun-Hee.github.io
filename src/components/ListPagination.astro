@@ -1,0 +1,19 @@
+---
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Pagination from "@/components/Pagination.astro";
+
+type Props = {
+  page: Page<CollectionEntry<"posts">>;
+};
+
+const { page } = Astro.props;
+---
+
+{
+  page.lastPage > 1 && (
+    <div data-list-pagination class="mt-10">
+      <Pagination {page} />
+    </div>
+  )
+}
