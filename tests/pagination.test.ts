@@ -81,6 +81,19 @@ describe("Pagination component", () => {
       /<span\b[^>]*aria-hidden="true"[^>]*>\s*<svg[\s\S]*?<\/svg>\s*<\/span>\s*<\/nav>/
     );
   });
+
+  it("keeps all middle-page controls navigable when both ellipses are shown", async () => {
+    const html = await renderPagination(10, 20);
+    const nav = html.match(/<nav\b[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+
+    expect([...nav.matchAll(/<a\b/g)]).toHaveLength(6);
+    expect([...nav.matchAll(/aria-hidden="true"/g)]).toHaveLength(2);
+    expect(nav).toMatch(
+      /<span\b[^>]*aria-current="page"[^>]*>\s*10\s*<\/span>/
+    );
+    expect(nav).toMatch(/<a\b[^>]*href="\/posts\/9"[^>]*aria-label="Go to previous page"/);
+    expect(nav).toMatch(/<a\b[^>]*href="\/posts\/11"[^>]*aria-label="Go to next page"/);
+  });
 });
 
 describe("getPaginationItems", () => {
