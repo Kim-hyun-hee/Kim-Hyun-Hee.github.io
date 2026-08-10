@@ -19,13 +19,20 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
 
+const isLegacyProjectRedirect = (page: string) => {
+  const segments = new URL(page).pathname.split("/").filter(Boolean);
+  return segments.at(-2) === "categories" && segments.at(-1) === "project";
+};
+
 export default defineConfig({
   site: config.site.url,
   integrations: [
     mdx(),
     sitemap({
       filter: page =>
-        config.features?.showArchives !== false || !page.endsWith("/archives/"),
+        (config.features?.showArchives !== false ||
+          !new URL(page).pathname.endsWith("/archives/")) &&
+        !isLegacyProjectRedirect(page),
     }),
   ],
   // [CUSTOM] 업스트림은 ["en"] / "en" 입니다. 기본 로케일만 ko로 바꿨고

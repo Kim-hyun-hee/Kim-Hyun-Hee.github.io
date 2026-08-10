@@ -222,6 +222,13 @@ describe("legacy Project category route", () => {
 
     expect(legacy).toMatch(/http-equiv="refresh"[^>]*url=\/series\//i);
   });
+
+  it("keeps the redirect out of the sitemap while retaining Series", () => {
+    const sitemap = readFileSync(join(DIST, "sitemap-0.xml"), "utf-8");
+
+    expect(sitemap).not.toContain("/categories/project/");
+    expect(sitemap).toContain("/series/");
+  });
 });
 
 describe("About taxonomy links", () => {
