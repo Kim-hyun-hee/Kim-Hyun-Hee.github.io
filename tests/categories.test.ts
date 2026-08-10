@@ -8,10 +8,9 @@ import {
 } from "@/categories";
 
 describe("CATEGORY_IDS", () => {
-  it("정의된 대분류 5개를 순서대로 담는다", () => {
+  it("정의된 대분류를 순서대로 담는다", () => {
     expect(CATEGORY_IDS).toEqual([
       "deep-dive",
-      "project",
       "troubleshooting",
       "study",
       "etc",
@@ -26,7 +25,6 @@ describe("hasSubcategories", () => {
   });
 
   it("소분류가 없는 대분류에 false를 반환한다", () => {
-    expect(hasSubcategories("project")).toBe(false);
     expect(hasSubcategories("troubleshooting")).toBe(false);
     expect(hasSubcategories("etc")).toBe(false);
   });

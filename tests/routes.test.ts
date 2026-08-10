@@ -71,6 +71,10 @@ describe("시리즈 라우트", () => {
 describe("껍데기", () => {
   const home = () => readFileSync(page(), "utf-8");
 
+  const sidebar = () =>
+    home().match(/<aside\b[^>]*id="site-sidebar"[^>]*>([\s\S]*?)<\/aside>/)?.[1] ??
+    "";
+
   it("renders footer copyright spacing", () => {
     const html = home();
     const footer = html.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] ?? "";
@@ -107,6 +111,11 @@ describe("껍데기", () => {
 
   it("사이드바가 렌더된다", () => {
     expect(home()).toContain('id="site-sidebar"');
+  });
+
+  it("exposes Series navigation without the retired Project category", () => {
+    expect(sidebar()).toMatch(/<a\b[^>]*href="\/series\/"[^>]*>\s*Series\s*<\/a>/);
+    expect(sidebar()).not.toContain(">Project<");
   });
 
   it("테마 버튼이 정확히 하나다", () => {
@@ -157,5 +166,13 @@ describe("내부 링크", () => {
         `${file}에서 발견된 링크 ${href}가 실제 페이지를 가리키지 않습니다`
       ).toBe(true);
     }
+  });
+});
+
+describe("legacy Project category route", () => {
+  it("builds a redirect document to Series", () => {
+    const legacy = readFileSync(page("categories", "project"), "utf-8");
+
+    expect(legacy).toMatch(/http-equiv="refresh"[^>]*url=\/series\//i);
   });
 });

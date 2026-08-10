@@ -13,7 +13,7 @@ vi.mock("@/config", () => ({
   },
 }));
 
-const post = (category?: "project") => ({
+const post = (category?: "etc") => ({
   id: "building-this-blog/01-why-rebuild",
   data: {
     title: "Why rebuild this blog",
@@ -26,7 +26,7 @@ const post = (category?: "project") => ({
   },
 });
 
-const renderHeader = async (category?: "project") => {
+const renderHeader = async (category?: "etc") => {
   const container = await AstroContainer.create();
 
   return container.renderToString(PostHeader, {
@@ -44,7 +44,7 @@ describe("PostHeader category trail", () => {
   });
 
   it("keeps the category separator before the date for categorized posts", async () => {
-    const html = await renderHeader("project");
+    const html = await renderHeader("etc");
 
     expect(html).toContain("·");
     expect(html.indexOf("·")).toBeLessThan(html.indexOf("<time"));

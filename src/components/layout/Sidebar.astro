@@ -92,6 +92,16 @@ const activeUtilLinkClass = "text-foreground";
 
   <div class="border-border mt-8 space-y-0.5 border-t pt-4">
     <a
+      href={getRelativeLocaleUrl(locale, "series")}
+      class:list={[
+        utilLinkClass,
+        { [activeUtilLinkClass]: activeSegment === "series" },
+      ]}
+      aria-current={activeSegment === "series" ? "page" : undefined}
+    >
+      {t.nav.series}
+    </a>
+    <a
       href={getRelativeLocaleUrl(locale, "tags")}
       class:list={[
         utilLinkClass,

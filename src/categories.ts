@@ -15,11 +15,6 @@ export const CATEGORIES = {
       memory: "Memory",
     },
   },
-  project: {
-    label: "Project",
-    description: "만든 것들",
-    subcategories: null,
-  },
   troubleshooting: {
     label: "Troubleshooting",
     description: "짧고 실전적인 이슈 기록",

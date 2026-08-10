@@ -8,8 +8,7 @@ describe("listsPostsDirectly", () => {
     expect(listsPostsDirectly("study")).toBe(false);
   });
 
-  it("lists categories without subcategories directly, including Project", () => {
-    expect(listsPostsDirectly("project")).toBe(true);
+  it("lists categories without subcategories directly", () => {
     expect(listsPostsDirectly("troubleshooting")).toBe(true);
   });
 });

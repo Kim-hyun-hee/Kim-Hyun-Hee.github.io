@@ -9,7 +9,7 @@ export default {
     archives: "아카이브",
     search: "검색",
     categories: "카테고리",
-    series: "시리즈",
+    series: "Series",
   },
   post: {
     publishedAt: "작성일",

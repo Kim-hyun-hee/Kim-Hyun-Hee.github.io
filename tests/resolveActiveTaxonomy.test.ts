@@ -10,7 +10,7 @@ const posts: TaxonomyLocation[] = [
     category: "deep-dive",
     subcategory: "rendering",
   },
-  { url: "/posts/digitaltwin/05-culling/", category: "project" },
+  { url: "/posts/digitaltwin/05-culling/" },
 ];
 
 describe("resolveActiveTaxonomy — 분류 페이지", () => {
@@ -59,7 +59,7 @@ describe("resolveActiveTaxonomy — 글 페이지", () => {
         "/posts/digitaltwin/05-culling/",
         posts
       )
-    ).toEqual({ category: "project", subcategory: undefined, kind: "section" });
+    ).toBeNull();
   });
 
   it("끝 슬래시가 달라도 같은 글로 본다", () => {
@@ -69,7 +69,7 @@ describe("resolveActiveTaxonomy — 글 페이지", () => {
         "/posts/digitaltwin/05-culling",
         posts
       )
-    ).toEqual({ category: "project", subcategory: undefined, kind: "section" });
+    ).toBeNull();
   });
 
   it("목록에 없는 글 경로면 null", () => {

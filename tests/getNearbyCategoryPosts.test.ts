@@ -84,7 +84,7 @@ describe("getNearbyCategoryPosts — 범위", () => {
   });
 
   it("범위 안에 현재 글뿐이면 빈 배열", () => {
-    const solo = post("solo", "project");
+    const solo = post("solo", "troubleshooting");
     expect(getNearbyCategoryPosts([...all, solo], solo)).toEqual([]);
   });
 
@@ -97,11 +97,11 @@ describe("getNearbyCategoryPosts — 범위", () => {
 describe("getNearbyCategoryPosts — 시리즈", () => {
   // 시리즈 UI가 이미 같은 편들을 보여주므로 같은 연재는 뺀다.
   const seriesList = [
-    post("s1", "project", undefined, "alpha"),
-    post("s2", "project", undefined, "alpha"),
-    post("s3", "project", undefined, "alpha"),
-    post("p1", "project"),
-    post("p2", "project"),
+    post("s1", "troubleshooting", undefined, "alpha"),
+    post("s2", "troubleshooting", undefined, "alpha"),
+    post("s3", "troubleshooting", undefined, "alpha"),
+    post("p1", "troubleshooting"),
+    post("p2", "troubleshooting"),
   ];
 
   it("같은 연재의 다른 편을 빼고 연재 밖 글로만 채운다", () => {
@@ -112,7 +112,10 @@ describe("getNearbyCategoryPosts — 시리즈", () => {
   });
 
   it("다른 연재의 글은 남긴다", () => {
-    const withBeta = [...seriesList, post("b1", "project", undefined, "beta")];
+    const withBeta = [
+      ...seriesList,
+      post("b1", "troubleshooting", undefined, "beta"),
+    ];
     expect(ids(getNearbyCategoryPosts(withBeta, withBeta[1]))).toContain("b1");
   });
 

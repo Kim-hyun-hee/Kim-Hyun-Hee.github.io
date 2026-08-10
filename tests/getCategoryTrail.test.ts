@@ -10,8 +10,8 @@ describe("getCategoryTrail", () => {
   });
 
   it("소분류를 갖지 않는 대분류는 대분류만 담는다", () => {
-    expect(getCategoryTrail("project")).toEqual([
-      { label: "Project", path: "categories/project" },
+    expect(getCategoryTrail("etc")).toEqual([
+      { label: "Etc", path: "categories/etc" },
     ]);
   });
 
