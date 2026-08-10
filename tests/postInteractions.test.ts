@@ -32,12 +32,11 @@ class FakeElement {
   clientWidth = 100;
   currentSrc = "";
   id = "";
-  innerHTML = "";
-  innerText = "";
   parentNode: FakeElement | null = null;
   src = "";
   type = "";
   private readonly listeners = new Map<string, Set<FakeListener>>();
+  private text = "";
 
   constructor(
     readonly tagName: string,
@@ -66,6 +65,7 @@ class FakeElement {
   }
 
   appendChild(child: FakeElement) {
+    child.remove();
     child.parentNode = this;
     this.children.push(child);
     return child;
@@ -98,9 +98,26 @@ class FakeElement {
     this.ownerDocument.activeElement = this;
   }
 
+  get innerHTML() {
+    return this.text;
+  }
+
+  set innerHTML(value: string) {
+    this.text = value;
+  }
+
+  get innerText() {
+    return this.text;
+  }
+
+  set innerText(value: string) {
+    this.text = value;
+  }
+
   insertBefore(child: FakeElement, before: FakeElement) {
     const index = this.children.indexOf(before);
     if (index < 0) return this.appendChild(child);
+    child.remove();
     child.parentNode = this;
     this.children.splice(index, 0, child);
     return child;
@@ -118,6 +135,7 @@ class FakeElement {
     const matches = (element: FakeElement) => {
       if (selector === "img") return element.tagName === "IMG";
       if (selector === "code") return element.tagName === "CODE";
+      if (selector === "pre") return element.tagName === "PRE";
       if (selector === ".copy-code") {
         return element.className.split(" ").includes("copy-code");
       }
@@ -237,6 +255,15 @@ class FakeDocument {
 
 function installBrowserGlobals(fakeDocument: FakeDocument) {
   let nextTimer = 1;
+  let now = 0;
+  let deferNextClipboardWrite = false;
+  let pendingClipboardWrite: Promise<void> | undefined;
+  let resolveClipboardWrite: (() => void) | undefined;
+  const clipboardWrites: string[] = [];
+  const timers = new Map<
+    number,
+    { callback: () => void; runAt: number }
+  >();
   vi.stubGlobal("document", fakeDocument);
   vi.stubGlobal("Element", FakeElement);
   vi.stubGlobal("HTMLImageElement", FakeImageElement);
@@ -247,11 +274,66 @@ function installBrowserGlobals(fakeDocument: FakeDocument) {
   vi.stubGlobal("getComputedStyle", () => ({
     getPropertyValue: () => "",
   }));
-  vi.stubGlobal("window", {
-    clearTimeout: () => {},
-    matchMedia: () => ({ matches: false }),
-    setTimeout: () => nextTimer++,
+  vi.stubGlobal("navigator", {
+    clipboard: {
+      writeText: (text: string) => {
+        clipboardWrites.push(text);
+        if (!deferNextClipboardWrite) return Promise.resolve();
+        deferNextClipboardWrite = false;
+        pendingClipboardWrite = new Promise<void>(resolve => {
+          resolveClipboardWrite = resolve;
+        });
+        return pendingClipboardWrite;
+      },
+    },
   });
+  vi.stubGlobal("window", {
+    clearTimeout: (timer: number) => timers.delete(timer),
+    matchMedia: () => ({ matches: false }),
+    setTimeout: (callback: () => void, delay = 0) => {
+      const timer = nextTimer++;
+      timers.set(timer, { callback, runAt: now + delay });
+      return timer;
+    },
+  });
+
+  return {
+    advanceTime(milliseconds: number) {
+      now += milliseconds;
+      const ready = [...timers.entries()]
+        .filter(([, timer]) => timer.runAt <= now)
+        .sort(([, left], [, right]) => left.runAt - right.runAt);
+      ready.forEach(([id, timer]) => {
+        timers.delete(id);
+        timer.callback();
+      });
+    },
+    clipboardWrites,
+    deferClipboardWrite() {
+      deferNextClipboardWrite = true;
+    },
+    finishClipboardWrite() {
+      resolveClipboardWrite?.();
+      resolveClipboardWrite = undefined;
+      return pendingClipboardWrite ?? Promise.resolve();
+    },
+  };
+}
+
+function appendPostArticle(fakeDocument: FakeDocument) {
+  const article = fakeDocument.createElement("article");
+  article.id = "article";
+  fakeDocument.body.appendChild(article);
+  return article;
+}
+
+function appendCodeBlock(article: FakeElement, fakeDocument: FakeDocument) {
+  const pre = fakeDocument.createElement("pre");
+  const code = fakeDocument.createElement("code");
+  code.innerText = "const answer = 42;";
+  pre.appendChild(code);
+  article.appendChild(pre);
+  return pre;
 }
 
 afterEach(() => {
@@ -261,6 +343,7 @@ afterEach(() => {
 describe("initPostInteractions", () => {
   it("replaces the current page lifecycle instead of accumulating UI and listeners", () => {
     const fakeDocument = new FakeDocument();
+    appendPostArticle(fakeDocument);
     installBrowserGlobals(fakeDocument);
 
     initPostInteractions();
@@ -283,14 +366,40 @@ describe("initPostInteractions", () => {
     expect(fakeDocument.listenerCount("scroll")).toBe(0);
   });
 
+  it("stays inactive between post routes and initializes again on the next post", () => {
+    const fakeDocument = new FakeDocument();
+    appendPostArticle(fakeDocument);
+    installBrowserGlobals(fakeDocument);
+
+    initPostInteractions();
+    expect(fakeDocument.listenerCount("scroll")).toBe(1);
+
+    fakeDocument.body.children.splice(0);
+    initPostInteractions();
+    expect(
+      fakeDocument.count(element =>
+        element.className.split(" ").includes("progress-container")
+      )
+    ).toBe(0);
+    expect(fakeDocument.listenerCount("scroll")).toBe(0);
+
+    appendPostArticle(fakeDocument);
+    const cleanup = initPostInteractions();
+    expect(
+      fakeDocument.count(element =>
+        element.className.split(" ").includes("progress-container")
+      )
+    ).toBe(1);
+    expect(fakeDocument.listenerCount("scroll")).toBe(1);
+    cleanup();
+  });
+
   it("immediately removes an open lightbox and restores page state on cleanup", () => {
     const fakeDocument = new FakeDocument();
-    const article = fakeDocument.createElement("article");
-    article.id = "article";
+    const article = appendPostArticle(fakeDocument);
     const image = fakeDocument.createElement("img");
     image.src = "/image.png";
     article.appendChild(image);
-    fakeDocument.body.appendChild(article);
     fakeDocument.body.style.overflow = "clip";
     installBrowserGlobals(fakeDocument);
 
@@ -309,5 +418,69 @@ describe("initPostInteractions", () => {
     expect(
       fakeDocument.count(element => element.attributes.get("role") === "dialog")
     ).toBe(0);
+  });
+
+  it("reuses one copy button and resets its label 700 ms after each copied value", async () => {
+    const fakeDocument = new FakeDocument();
+    const article = appendPostArticle(fakeDocument);
+    const codeBlock = appendCodeBlock(article, fakeDocument);
+    const browser = installBrowserGlobals(fakeDocument);
+
+    initPostInteractions();
+    const copyButton = codeBlock.querySelector(".copy-code");
+    expect(copyButton).not.toBeNull();
+    expect(
+      fakeDocument.count(element =>
+        element.className.split(" ").includes("copy-code")
+      )
+    ).toBe(1);
+
+    const cleanup = initPostInteractions();
+    expect(
+      fakeDocument.count(element =>
+        element.className.split(" ").includes("copy-code")
+      )
+    ).toBe(1);
+
+    copyButton!.dispatch("click");
+    await Promise.resolve();
+    expect(browser.clipboardWrites).toEqual(["const answer = 42;"]);
+    expect(copyButton!.innerText).toBe("Copied");
+
+    browser.advanceTime(699);
+    expect(copyButton!.innerText).toBe("Copied");
+    browser.advanceTime(1);
+    expect(copyButton!.innerText).toBe("Copy");
+
+    copyButton!.dispatch("click");
+    await Promise.resolve();
+    expect(browser.clipboardWrites).toEqual([
+      "const answer = 42;",
+      "const answer = 42;",
+    ]);
+    expect(copyButton!.innerText).toBe("Copied");
+
+    cleanup();
+    browser.advanceTime(700);
+    expect(copyButton!.innerText).toBe("Copied");
+  });
+
+  it("does not update copy UI when cleanup wins a pending clipboard write", async () => {
+    const fakeDocument = new FakeDocument();
+    const article = appendPostArticle(fakeDocument);
+    const codeBlock = appendCodeBlock(article, fakeDocument);
+    const browser = installBrowserGlobals(fakeDocument);
+    browser.deferClipboardWrite();
+
+    const cleanup = initPostInteractions();
+    const copyButton = codeBlock.querySelector(".copy-code");
+    copyButton!.dispatch("click");
+    expect(browser.clipboardWrites).toEqual(["const answer = 42;"]);
+
+    cleanup();
+    await browser.finishClipboardWrite();
+    expect(copyButton!.innerText).toBe("Copy");
+    browser.advanceTime(700);
+    expect(copyButton!.innerText).toBe("Copy");
   });
 });

@@ -395,6 +395,10 @@ function setupLightbox({ signal, timers }: CopySetupOptions) {
 
 export function initPostInteractions(): () => void {
   cleanupCurrent?.();
+  if (!document.getElementById("article")) {
+    cleanupCurrent = undefined;
+    return () => {};
+  }
 
   const controller = new AbortController();
   const { signal } = controller;
