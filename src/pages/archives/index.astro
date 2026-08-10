@@ -8,7 +8,7 @@ import Footer from "@/components/Footer.astro";
 import Card from "@/components/Card.astro";
 import { postFilter } from "@/utils/postFilter";
 import { getPostsByGroupCondition } from "./_utils/getPostsByGroupCondition";
-import { useTranslations } from "@/i18n";
+import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
 const locale = Astro.currentLocale ?? config.site.lang;
@@ -24,44 +24,66 @@ const t = useTranslations(locale);
 const posts = await getCollection("posts");
 const filteredPosts = posts.filter(postFilter);
 const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long" });
+const archiveYears = Object.entries(
+  getPostsByGroupCondition(filteredPosts, post =>
+    post.data.pubDatetime.getFullYear()
+  )
+)
+  .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
+  .map(([year, posts]) => ({
+    year,
+    posts,
+    months: Object.entries(
+      getPostsByGroupCondition(
+        posts,
+        post => post.data.pubDatetime.getMonth() + 1
+      )
+    )
+      .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA))
+      .map(([month, posts]) => ({ month, posts })),
+  }));
 ---
 
 <Layout title={`${t.pages.archivesTitle} | ${config.site.title}`}>
   <Header barTitle={t.pages.archivesTitle} />
 
   <Main pageTitle={t.pages.archivesTitle} pageDesc={t.pages.archivesDesc}>
-    {
-      Object.entries(
-        getPostsByGroupCondition(filteredPosts, post =>
-          post.data.pubDatetime.getFullYear()
-        )
-      )
-        .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
-        .map(([year, yearGroup]) => (
-          <div>
-            <span class="text-xl font-semibold">{year}</span>
-            <sup class="text-muted-foreground text-sm">{yearGroup.length}</sup>
-            {Object.entries(
-              getPostsByGroupCondition(
-                yearGroup,
-                post => post.data.pubDatetime.getMonth() + 1
-              )
-            )
-              .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA))
-              .map(([month, monthGroup]) => (
-                <div class="flex flex-col sm:flex-row">
-                  <div class="mt-8 min-w-36 text-lg sm:my-8">
-                    <span class="font-semibold">
+    <div class="mt-10 space-y-12">
+      {
+        archiveYears.map(({ year, posts, months }) => (
+          <section
+            data-archive-year={year}
+            data-post-count={posts.length}
+            class="border-border border-s ps-4 sm:ps-6"
+          >
+            <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 class="text-xl font-semibold">{year}</h2>
+              <p data-post-count class="text-muted-foreground text-sm">
+                {tplStr(t.archives.yearPostCount, { count: posts.length })}
+              </p>
+            </header>
+
+            <div class="mt-6 space-y-10">
+              {months.map(({ month, posts }) => (
+                <section
+                  data-archive-parent-year={year}
+                  data-archive-month={month}
+                  data-post-count={posts.length}
+                >
+                  <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 class="text-lg font-semibold">
                       {monthFormatter.format(
                         new Date(2000, Number(month) - 1, 1)
                       )}
-                    </span>
-                    <sup class="text-muted-foreground text-xs">
-                      {monthGroup.length}
-                    </sup>
-                  </div>
-                  <ul>
-                    {monthGroup
+                    </h3>
+                    <p data-post-count class="text-accent text-sm font-medium">
+                      {tplStr(t.archives.monthPostCount, {
+                        count: posts.length,
+                      })}
+                    </p>
+                  </header>
+                  <ul class="mt-3">
+                    {posts
                       .sort(
                         (a, b) =>
                           Math.floor(
@@ -75,11 +97,13 @@ const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long" });
                         <Card {...data} />
                       ))}
                   </ul>
-                </div>
+                </section>
               ))}
-          </div>
+            </div>
+          </section>
         ))
-    }
+      }
+    </div>
   </Main>
 
   <Footer />

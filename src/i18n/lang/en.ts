@@ -82,6 +82,10 @@ export default {
     count: "{{count}} parts",
     viewAll: "View all",
   },
+  archives: {
+    yearPostCount: "{{count}} posts total",
+    monthPostCount: "{{count}} posts",
+  },
   toc: {
     title: "Table of contents",
   },

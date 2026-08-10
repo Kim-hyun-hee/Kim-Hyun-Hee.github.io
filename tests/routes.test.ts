@@ -3,6 +3,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, sep } from "node:path";
 import { CATEGORY_IDS, getSubcategoryIds } from "@/categories";
 import { SERIES_IDS } from "@/series";
+import { useTranslations } from "@/i18n";
 import siteConfig from "../astro-paper.config";
 
 const DIST = "dist";
@@ -407,5 +408,77 @@ describe("home All posts action", () => {
     expect(html.indexOf("data-all-posts-region")).toBeGreaterThan(
       html.lastIndexOf("data-post-row")
     );
+  });
+});
+
+describe("Archives", () => {
+  const archive = () => readFileSync(page("archives"), "utf-8");
+
+  it("shows a text-only English Archives link in every supported locale", () => {
+    const sidebar = archive().match(
+      /<aside\b[^>]*id="site-sidebar"[^>]*>([\s\S]*?)<\/aside>/
+    )?.[1];
+    const archivesLink = sidebar?.match(
+      /<a\b(?=[^>]*href="\/archives\/")[^>]*>([\s\S]*?)<\/a>/
+    );
+
+    expect(useTranslations("ko").nav.archives).toBe("Archives");
+    expect(useTranslations("en").nav.archives).toBe("Archives");
+    expect(archivesLink?.[1].replace(/<[^>]+>/g, "").trim()).toBe(
+      "Archives"
+    );
+    expect(archivesLink?.[0]).toContain('aria-current="page"');
+    expect(archivesLink?.[1]).not.toMatch(/<svg\b/);
+  });
+
+  it("groups real archive rows by descending year and month with matching totals", () => {
+    const html = archive();
+    const years = [
+      ...html.matchAll(
+        /<section\b(?=[^>]*\bdata-archive-year="(\d{4})")(?=[^>]*\bdata-post-count="(\d+)")[^>]*>/g
+      ),
+    ].map(([, year, count]) => ({ year, count: Number(count) }));
+    const months = [
+      ...html.matchAll(
+        /<section\b(?=[^>]*\bdata-archive-parent-year="(\d{4})")(?=[^>]*\bdata-archive-month="(\d{1,2})")(?=[^>]*\bdata-post-count="(\d+)")[^>]*>([\s\S]*?)<\/section>/g
+      ),
+    ].map(([, year, month, count, markup]) => ({
+      year,
+      month: Number(month),
+      count: Number(count),
+      markup,
+    }));
+
+    expect(years.length).toBeGreaterThan(0);
+    expect(months.length).toBeGreaterThan(0);
+    expect(years.map(({ year }) => Number(year))).toEqual(
+      [...years.map(({ year }) => Number(year))].sort((a, b) => b - a)
+    );
+
+    for (const year of years) {
+      const yearMonths = months.filter(month => month.year === year.year);
+      expect(yearMonths.length, year.year).toBeGreaterThan(0);
+      expect(yearMonths.map(({ month }) => month)).toEqual(
+        [...yearMonths.map(({ month }) => month)].sort((a, b) => b - a)
+      );
+      expect(year.count).toBe(
+        yearMonths.reduce((total, month) => total + month.count, 0)
+      );
+    }
+
+    for (const month of months) {
+      expect(month.markup).toMatch(/<h3\b/);
+      expect(
+        month.markup.match(/<li\b(?=[^>]*\bdata-post-row\b)[^>]*>/g)
+          ?.length
+      ).toBe(month.count);
+      expect(month.markup).toMatch(/<time\b[\s\S]*?<h2\b/);
+      const countText = month.markup.match(
+        /<p\b(?=[^>]*\bdata-post-count\b)[^>]*>([^<]+)<\/p>/
+      )?.[1];
+
+      expect(countText).toContain(String(month.count));
+      expect(countText?.trim()).not.toBe(String(month.count));
+    }
   });
 });

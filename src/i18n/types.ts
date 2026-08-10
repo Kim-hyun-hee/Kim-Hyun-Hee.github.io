@@ -83,6 +83,10 @@ export interface UIStrings {
     count: string;
     viewAll: string;
   };
+  archives: {
+    yearPostCount: string;
+    monthPostCount: string;
+  };
   toc: {
     title: string;
   };

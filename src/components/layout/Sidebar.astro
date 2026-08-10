@@ -2,7 +2,6 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Image } from "astro:assets";
 import profileImage from "@/assets/images/profile.png";
-import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconRss from "@/assets/icons/IconRss.svg";
 import { getCollection } from "astro:content";
@@ -126,12 +125,11 @@ const activeUtilLinkClass = "text-foreground";
         <a
           href={getRelativeLocaleUrl(locale, "archives")}
           class:list={[
-            "text-sidebar-link hover:text-foreground focus-outline flex items-center gap-2 rounded px-2 py-1.5 text-sm",
+            utilLinkClass,
             { [activeUtilLinkClass]: activeSegment === "archives" },
           ]}
           aria-current={activeSegment === "archives" ? "page" : undefined}
         >
-          <IconArchive class="size-4" />
           {t.nav.archives}
         </a>
       )

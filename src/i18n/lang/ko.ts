@@ -6,7 +6,7 @@ export default {
     allByCategory: "분류 전체보기",
     tags: "Tags",
     about: "About",
-    archives: "아카이브",
+    archives: "Archives",
     search: "검색",
     categories: "카테고리",
     series: "Series",
@@ -68,6 +68,10 @@ export default {
     empty: "아직 글이 없습니다.",
     count: "{{count}}편",
     viewAll: "전체 보기",
+  },
+  archives: {
+    yearPostCount: "총 {{count}}개 글",
+    monthPostCount: "{{count}}개 글",
   },
   toc: {
     title: "목차",
