@@ -313,6 +313,15 @@ describe("ruled post rows", () => {
 });
 
 describe("list section flow", () => {
+  const mainContent = (file: string) =>
+    readFileSync(file, "utf-8").match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] ??
+    "";
+
+  const paginationNav = (file: string) =>
+    mainContent(file).match(
+      /<div\b[^>]*data-list-pagination[^>]*>([\s\S]*?<nav\b[^>]*aria-label="Pagination Navigation"[^>]*>[\s\S]*?<\/nav>)[\s\S]*?<\/div>/
+    )?.[1];
+
   const listPages = () => [
     page("posts"),
     page("tags", "astro"),
@@ -332,13 +341,41 @@ describe("list section flow", () => {
   });
 
   it("keeps rendered pagination after the post list inside main content", () => {
-    const html = readFileSync(page("posts"), "utf-8");
-    const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? "";
+    const main = mainContent(page("posts"));
     const list = main.indexOf("data-post-list");
     const pagination = main.indexOf("data-list-pagination");
 
     expect(list).toBeGreaterThanOrEqual(0);
     expect(pagination).toBeGreaterThan(list);
+  });
+
+  it("keeps multi-page navigation in the list flow with working post-page URLs", () => {
+    const firstPage = page("posts");
+    const secondPage = page("posts", "2");
+    const firstNav = paginationNav(firstPage);
+    const secondNav = paginationNav(secondPage);
+    const iconHrefs = (nav: string) =>
+      [
+        ...nav.matchAll(
+          /<a\b[^>]*href="([^"]+)"[^>]*>\s*<svg\b[\s\S]*?<\/svg>\s*<\/a>/g
+        ),
+      ].map(([, href]) => href);
+
+    expect(existsSync(secondPage)).toBe(true);
+    expect(firstNav).toBeDefined();
+    expect(firstNav).toMatch(/<span\b[^>]*aria-current="page"[^>]*>01<\/span>/);
+    expect(iconHrefs(firstNav!)).toEqual(["/posts/2"]);
+    expect(secondNav).toBeDefined();
+    expect(secondNav).toMatch(/<span\b[^>]*aria-current="page"[^>]*>02<\/span>/);
+    expect(iconHrefs(secondNav!)).toEqual(["/posts/", "/posts/3"]);
+  });
+
+  it("omits pagination markup for a single-page listing", () => {
+    const main = mainContent(page("tags", "astro"));
+
+    expect(main).toContain("data-post-list");
+    expect(main).not.toContain("data-list-pagination");
+    expect(main).not.toMatch(/<nav\b[^>]*aria-label="Pagination Navigation"/);
   });
 
   it("does not render an empty description for a leaf category", () => {
