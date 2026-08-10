@@ -244,10 +244,27 @@ describe("About taxonomy links", () => {
 describe("post title transitions", () => {
   it("does not give post list or article headings a view-transition name", () => {
     const list = readFileSync(page("posts"), "utf-8");
-    const article = readFileSync(listHtmlFiles(join(DIST, "posts"))[0], "utf-8");
+    const firstPost = list.match(
+      /<a href="(?<href>\/posts\/[^"]+\/)"[^>]*>\s*(?<heading><h[23]\b[^>]*>)/
+    );
 
-    expect(list).not.toMatch(/<h[23]\b[^>]*data-astro-transition-scope/i);
-    expect(article).not.toMatch(/<h1\b[^>]*view-transition-name/i);
+    expect(firstPost?.groups?.href).toBeDefined();
+    expect(firstPost?.groups?.heading).toBeDefined();
+
+    const articlePath = join(
+      DIST,
+      firstPost!.groups!.href.replace(/^\/|\/$/g, ""),
+      "index.html"
+    );
+    const article = readFileSync(articlePath, "utf-8");
+    const articleHeading = article.match(/<h1\b[^>]*>/);
+
+    expect(firstPost!.groups!.heading).not.toMatch(
+      /data-astro-transition-scope/i
+    );
+    expect(article).toContain('<article id="article"');
+    expect(articleHeading).not.toBeNull();
+    expect(articleHeading![0]).not.toMatch(/view-transition-name/i);
     expect(list).toContain(
       '<meta name="astro-view-transitions-enabled" content="true">'
     );
