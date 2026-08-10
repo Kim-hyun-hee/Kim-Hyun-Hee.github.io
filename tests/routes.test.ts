@@ -176,3 +176,13 @@ describe("legacy Project category route", () => {
     expect(legacy).toMatch(/http-equiv="refresh"[^>]*url=\/series\//i);
   });
 });
+
+describe("About taxonomy links", () => {
+  const about = () => readFileSync(page("about"), "utf-8");
+
+  it("links directly to Series without exposing the retired Project category", () => {
+    expect(about()).toMatch(/<a\b[^>]*href="\/series\/"[^>]*>Series<\/a>/);
+    expect(about()).not.toContain('href="/categories/project/"');
+    expect(about()).not.toContain(">Project<");
+  });
+});

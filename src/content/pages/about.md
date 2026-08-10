@@ -14,7 +14,7 @@ Unity에서 그래픽스와 데이터 지향 설계(DOD)를 다룹니다. 지금
 분류는 다섯 갈래입니다.
 
 - **[Deep Dive](/categories/deep-dive/)** — 렌더링·아키텍처·메모리를 파고든 기록
-- **[Project](/categories/project/)** — 만든 것들
+- **[Series](/series/)** — 연재 글 모음
 - **[Troubleshooting](/categories/troubleshooting/)** — 짧고 실전적인 이슈 기록
 - **[Study](/categories/study/)** — 기초를 다시 훑는 기록
 - **[Etc](/categories/etc/)** — 잡담·회고·커리어
