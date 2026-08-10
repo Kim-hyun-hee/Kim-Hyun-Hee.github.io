@@ -65,9 +65,7 @@ export default {
   },
   category: {
     desc: "Posts grouped by category.",
-    allPosts: "All posts",
     seeMore: "See more",
-    seriesCount: "{{count}} parts",
     postCount: "{{count}} posts",
     otherPosts: "More in '{{label}}'",
   },
@@ -81,6 +79,8 @@ export default {
     nextPart: "Next part",
     inThisSeries: "In this series",
     empty: "No posts yet.",
+    count: "{{count}} parts",
+    viewAll: "View all",
   },
   toc: {
     title: "Table of contents",

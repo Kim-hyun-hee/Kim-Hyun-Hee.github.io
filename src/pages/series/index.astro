@@ -40,7 +40,7 @@ const list = SERIES_IDS.map(id => ({
                 </span>
                 <span class="text-muted-foreground mt-1 flex flex-wrap items-center gap-2 text-sm">
                   <span class="bg-accent/10 text-accent rounded-full px-2 py-0.5 font-medium">
-                    {tplStr(t.category.seriesCount, {
+                    {tplStr(t.series.count, {
                       count: s.posts.length,
                     })}
                   </span>
@@ -97,7 +97,7 @@ const list = SERIES_IDS.map(id => ({
                   href={getRelativeLocaleUrl(locale, `series/${s.id}`)}
                   class="text-accent mt-4 inline-flex text-sm font-medium underline-offset-4 hover:underline"
                 >
-                  {t.category.allPosts}
+                  {t.series.viewAll}
                 </a>
               </div>
             </div>

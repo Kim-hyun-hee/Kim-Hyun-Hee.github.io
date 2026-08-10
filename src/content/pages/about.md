@@ -11,15 +11,14 @@ Unity에서 그래픽스와 데이터 지향 설계(DOD)를 다룹니다. 지금
 
 ## 이 블로그
 
-분류는 다섯 갈래입니다.
+카테고리는 네 갈래입니다.
 
 - **[Deep Dive](/categories/deep-dive/)** — 렌더링·아키텍처·메모리를 파고든 기록
-- **[Series](/series/)** — 연재 글 모음
 - **[Troubleshooting](/categories/troubleshooting/)** — 짧고 실전적인 이슈 기록
 - **[Study](/categories/study/)** — 기초를 다시 훑는 기록
 - **[Etc](/categories/etc/)** — 잡담·회고·커리어
 
-여러 편으로 이어지는 글은 [시리즈](/series/)로 묶어둡니다.
+여러 편으로 이어지는 글은 [Series](/series/)로 따로 묶습니다.
 
 ## 연락
 

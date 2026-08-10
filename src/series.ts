@@ -1,10 +1,6 @@
 export type SeriesStatus = "ongoing" | "completed";
 
-/**
- * 시리즈 단일 소스.
- * 프로젝트 하나가 시리즈 하나에 1:1 대응한다. 시리즈 제목을 글마다 반복
- * 기입하지 않아도 되고, 오타로 시리즈가 둘로 쪼개지는 것을 막는다.
- */
+/** Series metadata is defined independently from categories. */
 export const SERIES = {
   "dod-digitaltwin-unity": {
     label: "DOD로 만드는 디지털트윈",

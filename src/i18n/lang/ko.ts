@@ -52,9 +52,7 @@ export default {
   },
   category: {
     desc: "글을 분류별로 모아 봅니다.",
-    allPosts: "전체 보기",
     seeMore: "더 보기",
-    seriesCount: "{{count}}편",
     postCount: "{{count}}개의 글",
     otherPosts: "'{{label}}' 카테고리의 다른 글",
   },
@@ -68,6 +66,8 @@ export default {
     nextPart: "다음 편",
     inThisSeries: "이 시리즈의 글",
     empty: "아직 글이 없습니다.",
+    count: "{{count}}편",
+    viewAll: "전체 보기",
   },
   toc: {
     title: "목차",

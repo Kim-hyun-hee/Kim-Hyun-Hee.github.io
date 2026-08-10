@@ -46,8 +46,6 @@ const t = useTranslations(locale);
 const groups = hasSubcategories(category)
   ? groupBySubcategory(posts, category)
   : [];
-
-// getSeriesPosts는 중복 seriesOrder를 만나면 예외를 던져 빌드를 세운다.
 ---
 
 <Layout title={`${meta.label} | ${config.site.title}`}>

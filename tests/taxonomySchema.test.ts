@@ -5,6 +5,21 @@ import { taxonomyFields, validateTaxonomy } from "@/taxonomySchema";
 const schema = z.object(taxonomyFields).superRefine(validateTaxonomy);
 
 describe("taxonomy schema", () => {
+  it.each([
+    ["neither", {}],
+    ["category only", { category: "etc" }],
+    [
+      "series only",
+      { series: "building-this-blog", seriesOrder: 1 },
+    ],
+    [
+      "category and series",
+      { category: "etc", series: "building-this-blog", seriesOrder: 1 },
+    ],
+  ])("accepts %s", (_, input) => {
+    expect(schema.safeParse(input).success).toBe(true);
+  });
+
   it("accepts a complete series without a category", () => {
     expect(
       schema.safeParse({ series: "building-this-blog", seriesOrder: 1 }).success

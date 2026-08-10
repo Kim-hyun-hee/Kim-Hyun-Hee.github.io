@@ -66,9 +66,7 @@ export interface UIStrings {
   };
   category: {
     desc: string;
-    allPosts: string;
     seeMore: string;
-    seriesCount: string;
     postCount: string;
     otherPosts: string;
   };
@@ -82,6 +80,8 @@ export interface UIStrings {
     nextPart: string;
     inThisSeries: string;
     empty: string;
+    count: string;
+    viewAll: string;
   };
   toc: {
     title: string;

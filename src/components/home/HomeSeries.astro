@@ -72,7 +72,7 @@ const seriesList = SERIES_IDS.map(id => ({
               </ol>
             )}
             <p class="text-muted-foreground mt-3 text-sm">
-              {tplStr(t.category.seriesCount, { count: s.posts.length })}
+              {tplStr(t.series.count, { count: s.posts.length })}
               {" · "}
               {s.status === "ongoing" ? t.series.ongoing : t.series.completed}
             </p>
