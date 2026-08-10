@@ -24,8 +24,8 @@ import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 /**
- * 소분류나 시리즈로 안내하는 대분류만 맡는다. 글을 직접 나열하는 대분류는
- * [...page].astro가 페이지네이션과 함께 그린다.
+ * 소분류가 있는 대분류의 안내 페이지. 소분류 없는 대분류는
+ * [...page].astro가 페이지네이션 목록을 그린다.
  */
 export const getStaticPaths = (() =>
   CATEGORY_IDS.filter(category => !listsPostsDirectly(category)).map(

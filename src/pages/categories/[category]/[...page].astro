@@ -15,7 +15,8 @@ import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 /**
- * 소분류도 시리즈도 없는 대분류의 글 목록. 나머지 대분류는 index.astro가 맡는다.
+ * 소분류가 없는 대분류의 페이지네이션 글 목록. 소분류가 있는 대분류는
+ * index.astro가 안내한다.
  * 두 파일의 담당이 겹치면 같은 경로가 두 번 생성되어 빌드가 멈춘다.
  */
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {

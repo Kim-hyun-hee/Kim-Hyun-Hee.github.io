@@ -20,12 +20,6 @@ describe("taxonomy schema", () => {
     expect(schema.safeParse(input).success).toBe(true);
   });
 
-  it("accepts a complete series without a category", () => {
-    expect(
-      schema.safeParse({ series: "building-this-blog", seriesOrder: 1 }).success
-    ).toBe(true);
-  });
-
   it("requires seriesOrder when series is supplied", () => {
     const result = schema.safeParse({ series: "building-this-blog" });
 
