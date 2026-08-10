@@ -240,3 +240,16 @@ describe("About taxonomy links", () => {
     expect(about()).not.toContain(">Project<");
   });
 });
+
+describe("post title transitions", () => {
+  it("does not give post list or article headings a view-transition name", () => {
+    const list = readFileSync(page("posts"), "utf-8");
+    const article = readFileSync(listHtmlFiles(join(DIST, "posts"))[0], "utf-8");
+
+    expect(list).not.toMatch(/<h[23]\b[^>]*data-astro-transition-scope/i);
+    expect(article).not.toMatch(/<h1\b[^>]*view-transition-name/i);
+    expect(list).toContain(
+      '<meta name="astro-view-transitions-enabled" content="true">'
+    );
+  });
+});

@@ -6,7 +6,6 @@ import Datetime from "@/components/Datetime.astro";
 import SeriesBadge from "@/components/series/SeriesBadge.astro";
 import profileImage from "@/assets/images/profile.png";
 import { getCategoryTrail } from "@/utils/getCategoryTrail";
-import { toTransitionName } from "@/utils/toTransitionName";
 import config from "@/config";
 
 /**
@@ -49,10 +48,7 @@ const trail = category ? getCategoryTrail(category, subcategory) : [];
     <Datetime {pubDatetime} {timezone} />
   </div>
 
-  <h1
-    style={{ viewTransitionName: toTransitionName(post.id) }}
-    class="text-foreground mt-2 inline-block text-2xl font-bold sm:text-3xl"
-  >
+  <h1 class="text-foreground mt-2 inline-block text-2xl font-bold sm:text-3xl">
     {title}
   </h1>
 
