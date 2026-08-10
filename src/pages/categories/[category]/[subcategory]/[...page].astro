@@ -43,7 +43,9 @@ const t = useTranslations(Astro.currentLocale ?? config.site.lang);
 ---
 
 <Layout title={`${categoryLabel} › ${subLabel} | ${config.site.title}`}>
-  <Header barTitle={tplStr(t.bar.postsIn, { name: subLabel ?? categoryLabel })} />
+  <Header
+    barTitle={tplStr(t.bar.postsIn, { name: subLabel ?? categoryLabel })}
+  />
   <Main pageTitle={`${categoryLabel} › ${subLabel}`}>
     <ul>
       {page.data.map(post => <Card {...post} />)}

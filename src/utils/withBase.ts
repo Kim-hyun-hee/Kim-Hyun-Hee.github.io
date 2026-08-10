@@ -41,9 +41,7 @@ export function stripBase(pathname: string): string {
 /* [CUSTOM] 아래 함수는 업스트림에 없습니다. Sidebar/SidebarNav가 현재 경로를
    각자 파싱하지 않도록 한 곳으로 모은 것입니다. */
 export function getPathSegments(pathname: string, locale: string): string[] {
-  return stripLocale(stripBase(pathname), locale)
-    .split("/")
-    .filter(Boolean);
+  return stripLocale(stripBase(pathname), locale).split("/").filter(Boolean);
 }
 
 /**

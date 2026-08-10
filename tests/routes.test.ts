@@ -70,6 +70,19 @@ describe("시리즈 라우트", () => {
 describe("껍데기", () => {
   const home = () => readFileSync(page(), "utf-8");
 
+  it("renders footer copyright spacing", () => {
+    const html = home();
+    const footer = html.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] ?? "";
+    const text = footer
+      .replace(/<[^>]+>/g, "")
+      .replace(/&#169;/g, "©")
+      .replace(/&middot;/g, "·")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    expect(text).toContain("© 2026 Dev groot ·");
+  });
+
   it("contains one localized skip link before the main content target", () => {
     const html = home();
     const targetLinks = [

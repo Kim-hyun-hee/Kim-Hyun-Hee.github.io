@@ -22,7 +22,7 @@ const t = useTranslations(locale);
 }
 <header
   id="top-bar"
-  class="sticky top-0 z-20 border-b border-transparent transition-colors duration-200 data-[stuck]:border-border data-[stuck]:bg-background/80 data-[stuck]:backdrop-blur"
+  class="data-[stuck]:border-border data-[stuck]:bg-background/80 sticky top-0 z-20 border-b border-transparent transition-colors duration-200 data-[stuck]:backdrop-blur"
 >
   {
     /*
@@ -46,7 +46,9 @@ const t = useTranslations(locale);
       <IconMenuDeep />
     </button>
 
-    {/* 좁은 화면에서 위에 있을 때만 보이는 사이트 이름. 스크롤하면 문구가 대신한다. */}
+    {
+      /* 좁은 화면에서 위에 있을 때만 보이는 사이트 이름. 스크롤하면 문구가 대신한다. */
+    }
     <a
       href={getRelativeLocaleUrl(locale, "")}
       class="decoration-accent font-semibold underline-offset-4 hover:underline lg:hidden"

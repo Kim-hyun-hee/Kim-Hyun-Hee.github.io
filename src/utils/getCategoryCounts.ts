@@ -24,7 +24,11 @@ export function getCategoryCounts<T extends TaxonomyPost>(
   for (const id of CATEGORY_IDS) {
     byCategory[id] = filterByCategory(posts, id).length;
     for (const sub of getSubcategoryIds(id)) {
-      bySubcategory[`${id}/${sub}`] = filterBySubcategory(posts, id, sub).length;
+      bySubcategory[`${id}/${sub}`] = filterBySubcategory(
+        posts,
+        id,
+        sub
+      ).length;
     }
   }
 
