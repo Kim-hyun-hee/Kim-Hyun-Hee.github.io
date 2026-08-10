@@ -58,13 +58,11 @@ describe("groupProjects", () => {
       project("first", 1, true),
     ];
     const originalOrder = projects.map(item => item.id);
-    const originalEntries = [...projects];
+    const originalEntries = structuredClone(projects);
 
     groupProjects(projects);
 
     expect(projects.map(item => item.id)).toEqual(originalOrder);
     expect(projects).toEqual(originalEntries);
-    expect(projects[0]).toBe(originalEntries[0]);
-    expect(projects[1]).toBe(originalEntries[1]);
   });
 });

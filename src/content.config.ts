@@ -50,8 +50,8 @@ const projects = defineCollection({
     role: z.string().min(1),
     stack: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
-    repository: z.string().url().optional(),
-    website: z.string().url().optional(),
+    repository: z.url().optional(),
+    website: z.url().optional(),
     order: z.number().int().nonnegative(),
   }),
 });
