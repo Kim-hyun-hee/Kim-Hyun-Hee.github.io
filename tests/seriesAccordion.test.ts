@@ -235,4 +235,23 @@ describe("initSeriesAccordions", () => {
     expect(closing.cancelled).toBe(true);
     expect(details.open).toBe(false);
   });
+
+  it("ignores a stale finish callback after cleanup and re-init", () => {
+    const details = new FakeDetails();
+    installBrowser(details);
+
+    initSeriesAccordions();
+    details.summary.click();
+    const oldOpening = details.content.records[0].animation;
+
+    cleanup = initSeriesAccordions();
+    details.content.currentHeight = 120;
+    details.content.opacity = "1";
+    details.summary.click();
+    details.content.records[1].animation.finish();
+    expect(details.open).toBe(false);
+
+    oldOpening.finish();
+    expect(details.open).toBe(false);
+  });
 });

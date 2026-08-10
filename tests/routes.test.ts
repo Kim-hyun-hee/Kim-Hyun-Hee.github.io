@@ -78,10 +78,39 @@ describe("시리즈 라우트", () => {
     expect(accordions).toHaveLength(SERIES_IDS.length);
     accordions.forEach(([markup]) => {
       expect(markup).toMatch(/<summary\b[^>]*>/);
-      expect(markup).toMatch(/>\s*01\s*</);
+      if (/href="\/posts\//.test(markup)) {
+        expect(markup).toMatch(/>\s*01\s*</);
+      } else {
+        expect(markup).toContain("아직 글이 없습니다.");
+      }
     });
     for (const id of SERIES_IDS) {
       expect(html).toContain(`href="/series/${id}/"`);
+    }
+  });
+
+  it("시리즈 글 목록의 보이는 편 번호를 중복 낭독하지 않는다", () => {
+    const seriesPostPages = listHtmlFiles(join(DIST, "posts"))
+      .map(file => ({ file, html: readFileSync(file, "utf-8") }))
+      .filter(({ html }) => html.includes("이 시리즈의 글"));
+
+    expect(seriesPostPages.length).toBeGreaterThan(0);
+    for (const { file, html } of seriesPostPages) {
+      const related = [
+        ...html.matchAll(/<aside\b[^>]*>[\s\S]*?<\/aside>/g),
+      ]
+        .map(([markup]) => markup)
+        .find(markup => markup.includes("이 시리즈의 글"));
+      const numbers = [
+        ...(related ?? "").matchAll(
+          /<span\b([^>]*)>\s*\d{2}\s*<\/span>/g
+        ),
+      ];
+
+      expect(numbers.length, file).toBeGreaterThan(0);
+      numbers.forEach(([, attributes]) => {
+        expect(attributes).toMatch(/\baria-hidden="true"/);
+      });
     }
   });
 });

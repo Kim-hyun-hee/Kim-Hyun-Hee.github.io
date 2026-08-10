@@ -42,7 +42,10 @@ const { prev, next } = getSeriesPosition(posts, seriesId, currentOrder);
             <span class="text-accent w-3 shrink-0 text-end" aria-hidden="true">
               {p.data.seriesOrder === currentOrder ? "▸" : ""}
             </span>
-            <span class="text-accent w-5 shrink-0 text-end font-semibold tabular-nums">
+            <span
+              class="text-accent w-5 shrink-0 text-end font-semibold tabular-nums"
+              aria-hidden="true"
+            >
               {String(p.data.seriesOrder).padStart(2, "0")}
             </span>
             {p.data.seriesOrder === currentOrder ? (

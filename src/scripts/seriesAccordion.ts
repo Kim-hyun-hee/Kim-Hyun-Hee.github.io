@@ -33,6 +33,8 @@ export function initSeriesAccordions(): () => void {
     let expanded = details.open;
     let activeAnimation: Animation | undefined;
     settle.add(() => {
+      if (activeAnimation) activeAnimation.onfinish = null;
+      activeAnimation = undefined;
       details.open = expanded;
       resetContentStyle(content);
     });
