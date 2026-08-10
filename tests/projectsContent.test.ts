@@ -1,4 +1,5 @@
 import { readdir, readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
@@ -10,7 +11,7 @@ const field = (frontmatter: string, name: string) =>
   frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, "m"))?.[1]?.trim() ?? "";
 
 const readProject = async (filename: string) => {
-  const source = await readFile(new URL(filename, `file://${projectsDirectory}/`), "utf8");
+  const source = await readFile(join(projectsDirectory, filename), "utf8");
   const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
   const stack = frontmatter
     .match(/^stack:\s*\r?\n((?:\s+- .+\r?\n?)*)/m)?.[1]
@@ -23,16 +24,22 @@ const readProject = async (filename: string) => {
     period: field(frontmatter, "period"),
     role: field(frontmatter, "role"),
     order: Number(field(frontmatter, "order")),
+    filenameOrder: Number(filename.match(/^(\d+)-/)?.[1]),
     featured: field(frontmatter, "featured") === "true",
     stack,
+    body: source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, ""),
     hasOptionalUrl: /^(repository|website):/m.test(frontmatter),
+    hasExternalReference:
+      /https?:\/\//i.test(source) ||
+      /mailto:/i.test(source) ||
+      /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(source),
   };
 };
 
 describe("sample project content", () => {
   it("keeps ten complete editable samples in their intended featured order", async () => {
     const filenames = (await readdir(projectsDirectory)).filter(filename =>
-      filename.endsWith(".md")
+      /\.(?:md|mdx)$/i.test(filename)
     );
     const projects = await Promise.all(filenames.map(readProject));
     const orders = projects.map(project => project.order).sort((a, b) => a - b);
@@ -66,7 +73,12 @@ describe("sample project content", () => {
       expect(project.period).not.toBe("");
       expect(project.role).not.toBe("");
       expect(project.stack.length).toBeGreaterThan(0);
+      expect(project.filenameOrder).toBe(project.order);
+      expect(`${project.summary} ${project.role} ${project.body}`).toMatch(
+        /예시|샘플|편집용/
+      );
       expect(project.hasOptionalUrl).toBe(false);
+      expect(project.hasExternalReference).toBe(false);
     }
   });
 });
