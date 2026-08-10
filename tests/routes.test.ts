@@ -27,6 +27,49 @@ const listHtmlFiles = (dir: string): string[] =>
     .map(entry => join(entry.parentPath, entry.name))
     .filter(file => !file.split(sep).includes("pagefind"));
 
+const readHtml = (file: string) => readFileSync(file, "utf-8");
+const hasPostRows = (file: string) => readHtml(file).includes("data-post-row");
+const hasListFlow = (file: string) => {
+  const html = readHtml(file);
+  return html.includes("data-list-header") && html.includes("data-post-list");
+};
+
+const findBuiltPage = (
+  files: string[],
+  matches: (file: string) => boolean,
+  label: string
+) => {
+  const file = files.find(matches);
+
+  expect(file, label).toBeDefined();
+  return file!;
+};
+
+const tagListing = () =>
+  findBuiltPage(
+    listHtmlFiles(join(DIST, "tags")),
+    file => file !== page("tags") && hasPostRows(file),
+    "at least one built tag listing with post rows"
+  );
+
+const directCategoryListing = () =>
+  findBuiltPage(
+    CATEGORY_IDS.map(id => page("categories", id)).filter(existsSync),
+    file => hasListFlow(file) && hasPostRows(file),
+    "at least one direct category listing with post rows"
+  );
+
+const leafCategoryListing = () =>
+  findBuiltPage(
+    CATEGORY_IDS.flatMap(category =>
+      getSubcategoryIds(category).map(subcategory =>
+        page("categories", category, subcategory)
+      )
+    ).filter(existsSync),
+    file => hasListFlow(file) && hasPostRows(file),
+    "at least one leaf category listing with post rows"
+  );
+
 describe("카테고리 라우트", () => {
   it("대분류 목록이 비어있지 않다", () => {
     expect(CATEGORY_IDS.length).toBeGreaterThan(0);
@@ -274,19 +317,11 @@ describe("post title transitions", () => {
 
 describe("ruled post rows", () => {
   const representativeLists = () => {
-    const tag = listHtmlFiles(join(DIST, "tags")).find(
-      file => file !== page("tags")
-    );
-    const category = page("categories", "etc");
-
-    expect(tag).toBeDefined();
-    expect(existsSync(category)).toBe(true);
-
     return [
       page(),
       page("posts"),
-      tag!,
-      category,
+      tagListing(),
+      directCategoryListing(),
       page("archives"),
     ];
   };
@@ -326,9 +361,9 @@ describe("list section flow", () => {
 
   const listPages = () => [
     page("posts"),
-    page("tags", "astro"),
-    page("categories", "etc"),
-    page("categories", "deep-dive", "architecture"),
+    tagListing(),
+    directCategoryListing(),
+    leafCategoryListing(),
   ];
 
   it("keeps each listing header before its post rows", () => {
@@ -373,7 +408,15 @@ describe("list section flow", () => {
   });
 
   it("omits pagination markup for a single-page listing", () => {
-    const main = mainContent(page("tags", "astro"));
+    const singlePageListing = findBuiltPage(
+      listHtmlFiles(join(DIST, "tags")),
+      file =>
+        file !== page("tags") &&
+        hasPostRows(file) &&
+        !mainContent(file).includes("data-list-pagination"),
+      "at least one built single-page tag listing with post rows"
+    );
+    const main = mainContent(singlePageListing);
 
     expect(main).toContain("data-post-list");
     expect(main).not.toContain("data-list-pagination");
@@ -381,10 +424,7 @@ describe("list section flow", () => {
   });
 
   it("does not render an empty description for a leaf category", () => {
-    const html = readFileSync(
-      page("categories", "deep-dive", "architecture"),
-      "utf-8"
-    );
+    const html = readHtml(leafCategoryListing());
     const header = html.match(
       /<header\b[^>]*data-list-header[^>]*>([\s\S]*?)<\/header>/
     )?.[1];

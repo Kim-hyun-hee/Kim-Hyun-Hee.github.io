@@ -46,13 +46,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
 
     {
       featuredPosts.length > 0 && (
-        <section
-          id="featured"
-          class:list={[
-            "pt-12 pb-6",
-            { "border-border border-b": recentPosts.length > 0 },
-          ]}
-        >
+        <section id="featured" class="pt-12 pb-6">
           <h2 class="text-xl font-semibold tracking-wide">{t.home.featured}</h2>
           <ul>
             {featuredPosts.map(data => (
