@@ -25,7 +25,6 @@ const posts = defineCollection({
         ogImage: image().or(z.string()).optional(),
         description: z.string(),
         canonicalURL: z.string().optional(),
-        hideEditPost: z.boolean().optional(),
         timezone: z.string().optional(),
       })
       // [CUSTOM] 필드 간 교차 검증. 규칙 본문은 taxonomySchema.ts 참고.

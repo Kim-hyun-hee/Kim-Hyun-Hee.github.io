@@ -53,7 +53,6 @@ export default defineAstroPaperConfig({
     dynamicOgImage: true,
     showArchives: true,
     showBackButton: true,
-    editPost: { enabled: true, url: "https://github.com/…/edit/main/" },
     search: "pagefind",
   },
   socials: [{ name: "github", url: "https://github.com/…" }],
