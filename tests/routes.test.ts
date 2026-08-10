@@ -287,6 +287,7 @@ describe("ruled post rows", () => {
       page("posts"),
       tag!,
       category,
+      page("archives"),
     ];
   };
 
@@ -302,7 +303,7 @@ describe("ruled post rows", () => {
       expect(rows.length, file).toBeGreaterThan(0);
       for (const [, row] of rows) {
         const date = row.indexOf("<time");
-        const heading = row.search(/<h[23]\b/);
+        const heading = row.search(/<h[2-4]\b/);
         const link = row.match(/<a\b[^>]*href="(\/posts\/[^\"]+)"/);
 
         expect(date, file).toBeGreaterThanOrEqual(0);
@@ -433,11 +434,19 @@ describe("Archives", () => {
 
   it("groups real archive rows by descending year and month with matching totals", () => {
     const html = archive();
-    const years = [
+    const yearMatches = [
       ...html.matchAll(
         /<section\b(?=[^>]*\bdata-archive-year="(\d{4})")(?=[^>]*\bdata-post-count="(\d+)")[^>]*>/g
       ),
-    ].map(([, year, count]) => ({ year, count: Number(count) }));
+    ];
+    const years = yearMatches.map((match, index) => ({
+      year: match[1],
+      count: Number(match[2]),
+      markup: html.slice(
+        match.index,
+        yearMatches[index + 1]?.index ?? html.length
+      ),
+    }));
     const months = [
       ...html.matchAll(
         /<section\b(?=[^>]*\bdata-archive-parent-year="(\d{4})")(?=[^>]*\bdata-archive-month="(\d{1,2})")(?=[^>]*\bdata-post-count="(\d+)")[^>]*>([\s\S]*?)<\/section>/g
@@ -451,13 +460,27 @@ describe("Archives", () => {
 
     expect(years.length).toBeGreaterThan(0);
     expect(months.length).toBeGreaterThan(0);
+    expect(html).toMatch(/<h1\b/);
     expect(years.map(({ year }) => Number(year))).toEqual(
       [...years.map(({ year }) => Number(year))].sort((a, b) => b - a)
     );
 
     for (const year of years) {
       const yearMonths = months.filter(month => month.year === year.year);
+      const yearHeader = year.markup.slice(
+        0,
+        year.markup.indexOf("data-archive-parent-year")
+      );
+      const yearCountText = yearHeader.match(
+        /<p\b(?=[^>]*\bdata-post-count\b)[^>]*>([^<]+)<\/p>/
+      )?.[1];
+
       expect(yearMonths.length, year.year).toBeGreaterThan(0);
+      expect(yearHeader).toMatch(
+        new RegExp(`<h2\\b[^>]*>\\s*${year.year}\\s*<\\/h2>`)
+      );
+      expect(yearCountText).toContain(String(year.count));
+      expect(yearCountText?.trim()).not.toBe(String(year.count));
       expect(yearMonths.map(({ month }) => month)).toEqual(
         [...yearMonths.map(({ month }) => month)].sort((a, b) => b - a)
       );
@@ -472,7 +495,7 @@ describe("Archives", () => {
         month.markup.match(/<li\b(?=[^>]*\bdata-post-row\b)[^>]*>/g)
           ?.length
       ).toBe(month.count);
-      expect(month.markup).toMatch(/<time\b[\s\S]*?<h2\b/);
+      expect(month.markup).toMatch(/<time\b[\s\S]*?<h4\b/);
       const countText = month.markup.match(
         /<p\b(?=[^>]*\bdata-post-count\b)[^>]*>([^<]+)<\/p>/
       )?.[1];
