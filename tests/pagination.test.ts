@@ -1,5 +1,87 @@
 import { describe, it, expect } from "vitest";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Pagination from "@/components/Pagination.astro";
 import { getPaginationItems, getPageBasePath } from "@/utils/pagination";
+
+const paginationPage = (
+  currentPage: number,
+  lastPage: number
+): Page<CollectionEntry<"posts">> =>
+  ({
+    data: [],
+    start: (currentPage - 1) * 10,
+    end: currentPage * 10 - 1,
+    size: 10,
+    total: lastPage * 10,
+    currentPage,
+    lastPage,
+    url: {
+      current: currentPage === 1 ? "/posts/" : `/posts/${currentPage}`,
+      prev: currentPage > 1 ? `/posts/${currentPage - 1}` : undefined,
+      next: currentPage < lastPage ? `/posts/${currentPage + 1}` : undefined,
+      first: currentPage > 1 ? "/posts/" : undefined,
+      last: currentPage < lastPage ? `/posts/${lastPage}` : undefined,
+    },
+  }) as Page<CollectionEntry<"posts">>;
+
+const renderPagination = async (currentPage: number, lastPage: number) => {
+  const container = await AstroContainer.create();
+
+  return container.renderToString(Pagination, {
+    props: { page: paginationPage(currentPage, lastPage) },
+  });
+};
+
+describe("Pagination component", () => {
+  it("marks the current first page as a non-link and hides unavailable previous control", async () => {
+    const html = await renderPagination(1, 3);
+
+    expect(html).toMatch(
+      /<span\b[^>]*aria-current="page"[^>]*aria-label="Page 1, current page"[^>]*>\s*01\s*<\/span>/
+    );
+    expect(html).not.toMatch(
+      /<a\b[^>]*href="\/posts\/"[^>]*>\s*01\s*<\/a>/
+    );
+    expect(html).toMatch(
+      /<span\b[^>]*aria-hidden="true"[^>]*>\s*<svg[\s\S]*?<\/svg>\s*<\/span>/
+    );
+  });
+
+  it("uses navigable first, middle, and last page URLs with localized labels", async () => {
+    const html = await renderPagination(2, 3);
+
+    expect(html).toMatch(/<a\b[^>]*href="\/posts\/"[^>]*aria-label="Go to previous page"/);
+    expect(html).toMatch(/<a\b[^>]*href="\/posts\/3"[^>]*aria-label="Go to next page"/);
+    expect(html).toMatch(/<a\b[^>]*href="\/posts\/"[^>]*aria-label="Go to page 1"[^>]*>\s*01\s*<\/a>/);
+    expect(html).toMatch(/<span\b[^>]*aria-current="page"[^>]*>\s*02\s*<\/span>/);
+    expect(html).toMatch(/<a\b[^>]*href="\/posts\/3"[^>]*aria-label="Go to page 3"[^>]*>\s*03\s*<\/a>/);
+  });
+
+  it("gives selectable numbered pages the selected-cell focus recipe", async () => {
+    const html = await renderPagination(2, 3);
+    const firstPageLink = html.match(
+      /<a\b(?=[^>]*href="\/posts\/")(?=[^>]*aria-label="Go to page 1")[^>]*>/
+    )?.[0];
+
+    expect(firstPageLink).toContain("focus-visible:bg-accent-muted");
+    expect(firstPageLink).toContain("focus-visible:text-accent");
+    expect(firstPageLink).toContain("hover:bg-accent-muted");
+    expect(firstPageLink).toContain("hover:text-accent");
+  });
+
+  it("hides unavailable next control on the last page", async () => {
+    const html = await renderPagination(3, 3);
+
+    expect(html).toMatch(
+      /<span\b[^>]*aria-current="page"[^>]*>\s*03\s*<\/span>/
+    );
+    expect(html).toMatch(
+      /<span\b[^>]*aria-hidden="true"[^>]*>\s*<svg[\s\S]*?<\/svg>\s*<\/span>\s*<\/nav>/
+    );
+  });
+});
 
 describe("getPaginationItems", () => {
   it("전체가 7페이지 이하면 전부 보여준다", () => {
