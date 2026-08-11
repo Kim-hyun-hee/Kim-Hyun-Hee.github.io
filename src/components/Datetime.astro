@@ -11,24 +11,36 @@ type Props = {
   class?: string;
   pubDatetime: string | Date;
   timezone?: string;
+  format?: "long" | "compact";
 };
 
 const {
   pubDatetime,
   class: className = "",
   timezone: postTimezone,
+  format = "long",
 } = Astro.props;
 
 // 수정 여부와 관계없이 쓴 날짜를 보여준다. 목록·아카이브의 정렬 기준과 같다.
 const datetime = dayjs(pubDatetime).tz(postTimezone ?? config.site.timezone);
 
-const date = datetime.format("YYYY[년] M[월] D[일]");
+const date =
+  format === "compact"
+    ? datetime.format("YYYY.MM.DD")
+    : datetime.format("YYYY[년] M[월] D[일]");
 ---
 
 <div
   class:list={["text-muted-foreground flex items-center gap-x-2", className]}
 >
-  <time class="text-sm" datetime={datetime.toISOString()}>
+  <time
+    class:list={[
+      format === "compact"
+        ? "text-[13px] leading-none font-medium whitespace-nowrap"
+        : "text-sm",
+    ]}
+    datetime={datetime.toISOString()}
+  >
     {date}
   </time>
 </div>

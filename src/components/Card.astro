@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { CATEGORIES, getSubcategoryLabel } from "@/categories";
 import { getPostUrl } from "@/utils/getPostPaths";
 import Datetime from "./Datetime.astro";
 
@@ -10,23 +11,45 @@ type Props = {
 const { variant: Heading = "h2", id, data, filePath } = Astro.props;
 
 const { title, description, ...props } = data;
+const taxonomyLabel = data.category
+  ? (data.subcategory &&
+      getSubcategoryLabel(data.category, data.subcategory)) ||
+    CATEGORIES[data.category].label
+  : undefined;
 ---
 
 <li
   data-post-row
-  class="border-border grid border-b py-5 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-6"
+  class:list={[
+    "border-b-border grid border-b py-[15px]",
+    "first:border-t-accent first:border-t",
+    "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]",
+    "sm:grid-cols-[4.875rem_minmax(0,1fr)] sm:gap-[13px]",
+  ]}
 >
-  <Datetime {...props} class="mb-2 sm:mb-0" />
+  <Datetime {...props} format="compact" class="mb-1 sm:mb-0" />
   <div class="min-w-0">
     <a
       href={getPostUrl(id, filePath, Astro.currentLocale)}
       class:list={[
-        "text-foreground decoration-accent inline-block text-lg font-semibold underline-offset-4 hover:underline",
+        "text-foreground decoration-accent inline-block text-base leading-[1.35] font-[750] underline-offset-4 hover:underline",
         "focus-visible:no-underline focus-visible:underline-offset-0",
       ]}
     >
       <Heading>{title}</Heading>
     </a>
-    <p>{description}</p>
+    {
+      taxonomyLabel && (
+        <p
+          data-post-taxonomy
+          class="text-accent mt-0.5 text-[11px] leading-[1.45] font-bold"
+        >
+          {taxonomyLabel}
+        </p>
+      )
+    }
+    <p class="text-foreground/80 mt-1 text-[13px] leading-[1.55]">
+      {description}
+    </p>
   </div>
 </li>

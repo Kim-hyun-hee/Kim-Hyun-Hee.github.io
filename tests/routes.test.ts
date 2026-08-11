@@ -424,34 +424,76 @@ describe("post title transitions", () => {
 describe("ruled post rows", () => {
   const representativeLists = () => {
     return [
-      page(),
-      page("posts"),
-      tagListing(),
-      directCategoryListing(),
-      page("archives"),
+      { file: page(), heading: "h3" },
+      { file: page("posts"), heading: "h2" },
+      { file: tagListing(), heading: "h2" },
+      { file: directCategoryListing(), heading: "h2" },
+      { file: leafCategoryListing(), heading: "h2" },
+      { file: page("archives"), heading: "h4" },
     ];
   };
 
-  it("renders shared semantic rows with dates before linked headings", () => {
-    for (const file of representativeLists()) {
+  it("renders the compact ordered row contract in every shared consumer", () => {
+    for (const { file, heading } of representativeLists()) {
       const html = readFileSync(file, "utf-8");
       const rows = [
         ...html.matchAll(
-          /<li\b(?=[^>]*\bdata-post-row\b)[^>]*>([\s\S]*?)<\/li>/g
+          /<li\b(?=[^>]*\bdata-post-row\b)([^>]*)>([\s\S]*?)<\/li>/g
         ),
       ];
 
       expect(rows.length, file).toBeGreaterThan(0);
-      for (const [, row] of rows) {
-        const date = row.indexOf("<time");
-        const heading = row.search(/<h[2-4]\b/);
+      for (const [, attributes, row] of rows) {
+        const date = row.search(
+          /<time\b[^>]*datetime="[^"]+"[^>]*>\s*\d{4}\.\d{2}\.\d{2}\s*<\/time>/
+        );
+        const title = row.indexOf(`<${heading}`);
+        const taxonomies = [...row.matchAll(/data-post-taxonomy/g)];
+        const taxonomy = row.indexOf("data-post-taxonomy");
+        const description = row.lastIndexOf("<p");
         const link = row.match(/<a\b[^>]*href="(\/posts\/[^\"]+)"/);
 
         expect(date, file).toBeGreaterThanOrEqual(0);
-        expect(heading, file).toBeGreaterThan(date);
+        expect(title, file).toBeGreaterThan(date);
         expect(link?.[1], file).toBeDefined();
+        expect(taxonomies.length, file).toBeLessThanOrEqual(1);
+        if (taxonomy >= 0) {
+          expect(taxonomy, file).toBeGreaterThan(title);
+          expect(description, file).toBeGreaterThan(taxonomy);
+        } else {
+          expect(description, file).toBeGreaterThan(title);
+        }
+        expect(row, file).not.toMatch(/min read|minute|분 읽기/i);
+        expect(attributes, file).toContain("border-b-border");
+        expect(attributes, file).toContain("first:border-t-accent");
+        expect(attributes, file).toContain("py-[15px]");
+        expect(attributes, file).toContain(
+          "sm:grid-cols-[4.875rem_minmax(0,1fr)]"
+        );
+        expect(attributes, file).toContain("sm:gap-[13px]");
+        expect(attributes, file).toContain(
+          "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
+        );
       }
     }
+  });
+
+  it("keeps the post-header date in the default long format", () => {
+    const list = readFileSync(page("posts"), "utf-8");
+    const href = list.match(/href="(\/posts\/[^"]+\/)"/)?.[1];
+
+    expect(href).toBeDefined();
+    const article = readFileSync(
+      join(DIST, href!.replace(/^\/|\/$/g, ""), "index.html"),
+      "utf-8"
+    );
+    const header = [
+      ...article.matchAll(/<header\b[^>]*>([\s\S]*?)<\/header>/g),
+    ].find(([, markup]) => markup.includes("<h1"))?.[1];
+
+    expect(header).toMatch(
+      /<time\b[^>]*>\s*\d{4}년 \d{1,2}월 \d{1,2}일\s*<\/time>/
+    );
   });
 });
 
