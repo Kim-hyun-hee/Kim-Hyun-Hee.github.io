@@ -12,11 +12,11 @@ export const horizonLight: RawTheme = {
   name: "horizon-b-light",
   type: "light",
   colors: {
-    "editor.background": "#fbfafb",
+    "editor.background": "#fafafa",
     "editor.foreground": "#36373d",
   },
   settings: [
-    { settings: { background: "#fbfafb", foreground: "#36373d" } },
+    { settings: { background: "#fafafa", foreground: "#36373d" } },
     {
       scope: ["comment", "punctuation.definition.comment"],
       settings: { foreground: "#767277" },

@@ -68,9 +68,10 @@ describe("Horizon B Shiki themes", () => {
     expect(horizonLight.name).toBe("horizon-b-light");
     expect(horizonDark.name).toBe("horizon-b-dark");
     expect(horizonLight.colors).toMatchObject({
-      "editor.background": "#fbfafb",
+      "editor.background": "#fafafa",
       "editor.foreground": "#36373d",
     });
+    expect(horizonLight.settings[0]?.settings.background).toBe("#fafafa");
     expect(horizonDark.colors).toMatchObject({
       "editor.background": "#1c1e26",
       "editor.foreground": "#cbced0",
@@ -155,7 +156,7 @@ Plain prose, with punctuation.
     for (const color of [
       "--shiki-light:#36373d",
       "--shiki-dark:#cbced0",
-      "--shiki-light-bg:#fbfafb",
+      "--shiki-light-bg:#fafafa",
       "--shiki-dark-bg:#1c1e26",
       "--shiki-light:#3f75a9",
       "--shiki-dark:#8fb4dd",

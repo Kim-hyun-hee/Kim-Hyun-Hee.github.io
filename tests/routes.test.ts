@@ -830,6 +830,11 @@ describe("code blocks", () => {
     expect((unnamed.match(/class="code-frame-header"/g) ?? []).length).toBe(1);
     expect((unnamed.match(/class="code-frame-light /g) ?? []).length).toBe(3);
     expect((unnamed.match(/class="code-frame-title"/g) ?? []).length).toBe(0);
+    const blocks = [...html.matchAll(/<pre\b[^>]*class="[^"]*astro-code[^"]*"[^>]*>/g)];
+    expect(blocks.length).toBeGreaterThan(0);
+    expect(blocks.every(([pre]) => /\bdata-language="[^"]+"/.test(pre))).toBe(
+      true
+    );
     expect(builtScripts()).toContain("copy-code");
     expect(html).not.toMatch(/\bline-number\b/);
     expect(css).not.toMatch(/counter-(?:reset|increment)/);
@@ -846,7 +851,10 @@ describe("code blocks", () => {
     const css = builtStyles();
 
     expect(css).toMatch(
-      /\.astro-code\{(?=[^}]*overflow:hidden)(?=[^}]*background-color:var\(--shiki-light-bg\))/
+      /\.astro-code\{[^}]*overflow:hidden/
+    );
+    expect(css).toMatch(
+      /\.astro-code\{[^}]*background-color:var\(--shiki-light-bg\)/
     );
     expect(css).toMatch(
       /\.astro-code>code\{(?=[^}]*display:block)(?=[^}]*max-height:550px)(?=[^}]*overflow:auto)/
@@ -858,7 +866,13 @@ describe("code blocks", () => {
       /\.astro-code>code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*#3ac3d0)(?=[^}]*#c08ae5)(?=[^}]*#f06689)(?=[^}]*#ffd0aa)(?=[^}]*border:4px solid #fbfafb)(?=[^}]*border-radius:999px)/
+      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*border:5px solid #fafafa)(?=[^}]*border-radius:10px)/
+    );
+    expect(css).toMatch(
+      /\.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#3ac3d0,#c08ae5,#f06689,#ffd0aa\)/
+    );
+    expect(css).toMatch(
+      /\.astro-code>code::-webkit-scrollbar-thumb:vertical\{[^}]*linear-gradient\(#3ac3d0,#c08ae5,#f06689,#ffd0aa\)/
     );
     expect(css).toMatch(
       /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1c1e26/
@@ -866,6 +880,30 @@ describe("code blocks", () => {
     expect(css).toMatch(/\.astro-code>code\{[^}]*scrollbar-color:/);
     expect(css).toMatch(
       /\.astro-code>code:focus-visible\{(?=[^}]*outline[^}]*var\(--accent\))/
+    );
+    expect(css).toMatch(
+      /\.astro-code\{(?=[^}]*border-color:#dedede)(?=[^}]*border-radius:10px)(?=[^}]*background-color:var\(--shiki-light-bg\))(?=[^}]*box-shadow:0 8px 24px)/
+    );
+    expect(css).toMatch(
+      /html\[data-theme=dark\] \.astro-code\{(?=[^}]*border-color:#34353d)(?=[^}]*background-color:var\(--shiki-dark-bg\))(?=[^}]*box-shadow:0 8px 24px)/
+    );
+    expect(css).toMatch(
+      /\.code-frame-header\{(?=[^}]*height:40px)(?=[^}]*background-color:#f0f0f1)/
+    );
+    expect(css).toMatch(
+      /html\[data-theme=dark\] \.code-frame-header\{(?=[^}]*border-color:#2e303e)(?=[^}]*background-color:#232530)/
+    );
+    expect(css).toMatch(/\.code-frame-light\{[^}]*width:11px[^}]*height:11px/);
+    expect(css).toMatch(/\.astro-code \.code-frame-title\{[^}]*font-size:11px/);
+    expect(css).toMatch(/\.astro-code>code\{[^}]*margin-bottom:30px/);
+    expect(css).toMatch(
+      /\.astro-code>code \.line:hover\{[^}]*background-color:#f1f1f2/
+    );
+    expect(css).toMatch(
+      /html\[data-theme=dark\] \.astro-code>code \.line:hover\{[^}]*background-color:#262830/
+    );
+    expect(css).toMatch(
+      /\.astro-code:after\{(?=[^}]*content:attr\(data-language\))(?=[^}]*inset-inline-end:12px)(?=[^}]*bottom:8px)(?=[^}]*color:#3ac3d0)(?=[^}]*font-size:11px)/
     );
   });
 

@@ -159,10 +159,16 @@
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
     @apply outline-border relative block overflow-hidden rounded-lg border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
+    border-color: #dedede;
+    border-radius: 10px;
+    background-color: var(--shiki-light-bg);
+    box-shadow: 0 8px 24px rgb(60 35 55 / 9%);
   }
 
   .astro-code > code {
-    @apply block max-h-[550px] overflow-auto px-4 pt-11 pb-4;
+    @apply block max-h-[550px] overflow-auto;
+    margin-bottom: 30px;
+    padding: 55px 17px 18px;
     scrollbar-color: #c08ae5 transparent;
   }
 
@@ -173,19 +179,28 @@
 
   html[data-theme="dark"] .astro-code {
     @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
+    border-color: #34353d;
+    background-color: var(--shiki-dark-bg);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
   }
 
   .code-frame-header {
-    @apply border-border pointer-events-none absolute inset-x-0 top-0 z-10 flex h-9 items-center gap-2 border-b px-4;
-    background-color: var(--shiki-light-bg);
+    @apply pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center gap-2 border-b;
+    height: 40px;
+    padding-inline: 14px;
+    border-color: #dedede;
+    background-color: #f0f0f1;
   }
 
   html[data-theme="dark"] .code-frame-header {
-    background-color: var(--shiki-dark-bg);
+    border-color: #2e303e;
+    background-color: #232530;
   }
 
   .code-frame-light {
-    @apply size-3 rounded-full;
+    @apply rounded-full;
+    width: 11px;
+    height: 11px;
   }
 
   .code-frame-light-red {
@@ -217,6 +232,7 @@
     background: transparent;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: 11px;
   }
 
   .astro-code .code-frame-title::before {
@@ -229,13 +245,47 @@
   }
 
   .astro-code > code::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #3ac3d0, #c08ae5, #f06689, #ffd0aa);
-    border: 4px solid #fbfafb;
-    border-radius: 999px;
+    border: 5px solid #fafafa;
+    border-radius: 10px;
+  }
+
+  .astro-code > code::-webkit-scrollbar-thumb:horizontal {
+    background: linear-gradient(to right, #3ac3d0, #c08ae5, #f06689, #ffd0aa);
+  }
+
+  .astro-code > code::-webkit-scrollbar-thumb:vertical {
+    background: linear-gradient(to bottom, #3ac3d0, #c08ae5, #f06689, #ffd0aa);
   }
 
   [data-theme="dark"] .astro-code > code::-webkit-scrollbar-thumb {
     border-color: #1c1e26;
+  }
+
+  .astro-code > code .line {
+    display: inline-block;
+    min-width: 100%;
+    border-radius: 3px;
+  }
+
+  .astro-code > code .line:hover {
+    background-color: #f1f1f2;
+  }
+
+  html[data-theme="dark"] .astro-code > code .line:hover {
+    background-color: #262830;
+  }
+
+  .astro-code::after {
+    position: absolute;
+    inset-inline-end: 12px;
+    bottom: 8px;
+    color: #3ac3d0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+    text-transform: uppercase;
+    pointer-events: none;
+    content: attr(data-language);
   }
 
   /* Styles for Shiki transformers */
