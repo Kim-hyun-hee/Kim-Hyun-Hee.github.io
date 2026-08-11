@@ -74,4 +74,28 @@ describe("Card", () => {
       "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
     );
   });
+
+  it("uses the approved compact editorial typography hierarchy", async () => {
+    const html = await renderCard();
+    const dateWrapper = html.match(/<div\b([^>]*)>\s*<time\b/)?.[1];
+    const date = html.match(/<time\b([^>]*)>/)?.[1];
+    const title = html.match(/<a\b([^>]*)>\s*<h2>/)?.[1];
+    const taxonomy = html.match(/<p\b([^>]*data-post-taxonomy[^>]*)>/)?.[1];
+    const description = html.match(
+      /<p\b([^>]*)>Controlled description\.<\/p>/
+    )?.[1];
+
+    expect(dateWrapper).toContain("sm:mt-0.5");
+    expect(date).toContain("text-[11px]");
+    expect(date).toContain("leading-[1.45]");
+    expect(date).toContain("font-medium");
+    expect(title).toContain("text-base");
+    expect(title).toContain("leading-[1.35]");
+    expect(title).toContain("font-[750]");
+    expect(taxonomy).toContain("text-[11px]");
+    expect(taxonomy).toContain("leading-[1.45]");
+    expect(taxonomy).toContain("font-bold");
+    expect(description).toContain("text-[13px]");
+    expect(description).toContain("leading-[1.55]");
+  });
 });
