@@ -679,6 +679,15 @@ describe("markdown elements", () => {
     expect(css).toMatch(
       /\.app-prose table (?:th|td),\.app-prose table (?:th|td)\{[^}]*border[^}]*width:0/
     );
+    expect(css).toMatch(
+      /(?:^|})table\{(?=[^}]*border-collapse:collapse)/
+    );
+    expect(css).not.toMatch(
+      /\.app-prose table\{[^}]*border-collapse:separate/
+    );
+    expect(css).toMatch(
+      /\.app-prose table tbody tr:not\(:last-child\)\{(?=[^}]*border-bottom-width:1px)(?=[^}]*border-color:var\(--border\))/
+    );
   });
 
   it("wraps raw Markdown tables without changing native table display semantics", () => {

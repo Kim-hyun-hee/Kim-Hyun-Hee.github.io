@@ -88,9 +88,6 @@
     }
 
     table {
-      border-collapse: separate;
-      border-spacing: 0;
-
       th,
       td {
         @apply border-0 p-2;
