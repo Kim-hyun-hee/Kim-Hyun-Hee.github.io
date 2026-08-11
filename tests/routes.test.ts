@@ -433,7 +433,7 @@ describe("ruled post rows", () => {
     ];
   };
 
-  it("renders the compact ordered row contract in every shared consumer", () => {
+  it("renders the thumbnail-first whole-link row in every shared consumer", () => {
     for (const { file, heading } of representativeLists()) {
       const html = readFileSync(file, "utf-8");
       const rows = [
@@ -444,38 +444,48 @@ describe("ruled post rows", () => {
 
       expect(rows.length, file).toBeGreaterThan(0);
       for (const [, attributes, row] of rows) {
+        const thumbnail = row.indexOf("data-post-thumbnail");
+        const title = row.indexOf(`<${heading}`);
         const date = row.search(
           /<time\b[^>]*datetime="[^"]+"[^>]*>\s*\d{4}\.\d{2}\.\d{2}\s*<\/time>/
         );
-        const title = row.indexOf(`<${heading}`);
-        const taxonomies = [...row.matchAll(/data-post-taxonomy/g)];
         const taxonomy = row.indexOf("data-post-taxonomy");
         const description = row.lastIndexOf("<p");
-        const link = row.match(/<a\b[^>]*href="(\/posts\/[^\"]+)"/);
+        const links = [
+          ...row.matchAll(/<a\b[^>]*href="(\/posts\/[^"]+)"/g),
+        ];
 
-        expect(date, file).toBeGreaterThanOrEqual(0);
-        expect(title, file).toBeGreaterThan(date);
-        expect(link?.[1], file).toBeDefined();
-        expect(taxonomies.length, file).toBeLessThanOrEqual(1);
-        if (taxonomy >= 0) {
-          expect(taxonomy, file).toBeGreaterThan(title);
-          expect(description, file).toBeGreaterThan(taxonomy);
-        } else {
-          expect(description, file).toBeGreaterThan(title);
-        }
-        expect(row, file).not.toMatch(/min read|minute|분 읽기/i);
-        expect(attributes, file).toContain("border-b-border");
-        expect(attributes, file).toContain("first:border-t-accent");
-        expect(attributes, file).toContain("py-[15px]");
-        expect(attributes, file).toContain(
-          "sm:grid-cols-[4.875rem_minmax(0,1fr)]"
+        expect(thumbnail, file).toBeGreaterThanOrEqual(0);
+        expect(title, file).toBeGreaterThan(thumbnail);
+        expect(date, file).toBeGreaterThan(title);
+        expect(links, file).toHaveLength(1);
+        expect([...row.matchAll(/data-post-taxonomy/g)].length, file).toBeLessThanOrEqual(1);
+        expect(description, file).toBeGreaterThan(
+          taxonomy >= 0 ? taxonomy : date
         );
-        expect(attributes, file).toContain("sm:gap-[13px]");
-        expect(attributes, file).toContain(
+        expect(row, file).toContain("data-post-meta");
+        expect(row, file).toContain("data-post-link");
+        expect(row, file).toContain(
           "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
         );
+        expect(row, file).not.toMatch(/min read|minute|분 읽기/i);
+        expect(attributes, file).toContain("border-b-border");
       }
     }
+  });
+
+  it("shows parent and child taxonomy together on a Deep Dive row", () => {
+    const html = readFileSync(leafCategoryListing(), "utf-8");
+    const row = [
+      ...html.matchAll(
+        /<li\b[^>]*data-post-row[^>]*>([\s\S]*?)<\/li>/g
+      ),
+    ].find(([, markup]) => markup.includes("data-post-taxonomy"))?.[1];
+
+    expect(row).toBeDefined();
+    expect(row).toMatch(
+      /Deep Dive\s*&gt;\s*(Rendering|Architecture|Memory)/
+    );
   });
 
   it("keeps the post-header date in the default long format", () => {
@@ -667,7 +677,7 @@ describe("Archives", () => {
         month.markup.match(/<li\b(?=[^>]*\bdata-post-row\b)[^>]*>/g)
           ?.length
       ).toBe(month.count);
-      expect(month.markup).toMatch(/<time\b[\s\S]*?<h4\b/);
+      expect(month.markup).toMatch(/<h4\b[\s\S]*?<time\b/);
       const countText = month.markup.match(
         /<p\b(?=[^>]*\bdata-post-count\b)[^>]*>([^<]+)<\/p>/
       )?.[1];

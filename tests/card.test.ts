@@ -22,35 +22,43 @@ const post = (
     },
   }) as CollectionEntry<"posts">;
 
-const renderCard = async (entry = post()) => {
+const renderCard = async (
+  entry = post(),
+  variant: "h2" | "h3" | "h4" = "h2"
+) => {
   const container = await AstroContainer.create();
-  return container.renderToString(Card, { props: entry });
+  return container.renderToString(Card, {
+    props: { ...entry, variant },
+  });
 };
 
 describe("Card", () => {
-  it("renders one compact date, title, most-specific taxonomy, and description in order", async () => {
+  it("links the whole thumbnail-first row and renders full compact metadata", async () => {
     const html = await renderCard();
+    const row = html.match(
+      /<li\b[^>]*data-post-row[^>]*>([\s\S]*?)<\/li>/
+    )?.[1];
+
+    expect(row).toBeDefined();
+    expect(row!.match(/<a\b/g)).toHaveLength(1);
+    expect(row).toMatch(
+      /<a\b[^>]*data-post-link[^>]*>[\s\S]*data-post-thumbnail[\s\S]*<h2\b[\s\S]*data-post-meta[\s\S]*<time/
+    );
+    expect(row).toContain("2026.06.29");
+    expect(row).toContain("Deep Dive &gt; Architecture");
+    expect(row).toContain("Controlled description.");
+    expect(row).toContain("data-default-post-thumbnail");
+    expect(row).not.toContain("hover:underline");
+    expect(row).not.toMatch(/min read|minute|분 읽기/i);
+  });
+
+  it("uses a supplied image instead of the default thumbnail", async () => {
+    const html = await renderCard(post({ ogImage: "/images/post.png" }));
 
     expect(html).toMatch(
-      /<time\b[^>]*datetime="[^"]+"[^>]*>\s*2026\.06\.29\s*<\/time>/
+      /<img\b(?=[^>]*data-post-thumbnail)(?=[^>]*data-post-image)(?=[^>]*src="\/images\/post\.png")(?=[^>]*alt="")/
     );
-    expect(html.match(/<time\b/g)).toHaveLength(1);
-    expect(html.match(/Controlled post/g)).toHaveLength(1);
-    expect(html.match(/data-post-taxonomy/g)).toHaveLength(1);
-    expect(html).toContain("Architecture");
-    expect(html).not.toContain("Deep Dive");
-    expect(html.match(/Controlled description\./g)).toHaveLength(1);
-
-    const date = html.indexOf("<time");
-    const title = html.indexOf("Controlled post");
-    const taxonomy = html.indexOf("data-post-taxonomy");
-    const description = html.indexOf("Controlled description.");
-
-    expect(date).toBeGreaterThanOrEqual(0);
-    expect(title).toBeGreaterThan(date);
-    expect(taxonomy).toBeGreaterThan(title);
-    expect(description).toBeGreaterThan(taxonomy);
-    expect(html).not.toMatch(/min read|minute|분 읽기/i);
+    expect(html).not.toContain("data-default-post-thumbnail");
   });
 
   it("falls back to the category label and omits absent taxonomy markup", async () => {
@@ -62,40 +70,11 @@ describe("Card", () => {
     ).not.toContain("data-post-taxonomy");
   });
 
-  it("exposes the approved full-width ruled row recipe", async () => {
-    const html = await renderCard();
-
-    expect(html).toContain("border-b-border");
-    expect(html).toContain("first:border-t-accent");
-    expect(html).toContain("py-[15px]");
-    expect(html).toContain("sm:grid-cols-[4.875rem_minmax(0,1fr)]");
-    expect(html).toContain("sm:gap-[13px]");
-    expect(html).toContain(
-      "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
-    );
-  });
-
-  it("uses the approved compact editorial typography hierarchy", async () => {
-    const html = await renderCard();
-    const dateWrapper = html.match(/<div\b([^>]*)>\s*<time\b/)?.[1];
-    const date = html.match(/<time\b([^>]*)>/)?.[1];
-    const title = html.match(/<a\b([^>]*)>\s*<h2>/)?.[1];
-    const taxonomy = html.match(/<p\b([^>]*data-post-taxonomy[^>]*)>/)?.[1];
-    const description = html.match(
-      /<p\b([^>]*)>Controlled description\.<\/p>/
-    )?.[1];
-
-    expect(dateWrapper).toContain("sm:mt-0.5");
-    expect(date).toContain("text-[11px]");
-    expect(date).toContain("leading-[1.45]");
-    expect(date).toContain("font-medium");
-    expect(title).toContain("text-base");
-    expect(title).toContain("leading-[1.35]");
-    expect(title).toContain("font-[750]");
-    expect(taxonomy).toContain("text-[11px]");
-    expect(taxonomy).toContain("leading-[1.45]");
-    expect(taxonomy).toContain("font-bold");
-    expect(description).toContain("text-[13px]");
-    expect(description).toContain("leading-[1.55]");
+  it("preserves every supported heading level", async () => {
+    for (const heading of ["h2", "h3", "h4"] as const) {
+      expect(await renderCard(post(), heading)).toMatch(
+        new RegExp(`<${heading}\\b`)
+      );
+    }
   });
 });

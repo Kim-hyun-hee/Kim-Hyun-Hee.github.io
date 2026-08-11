@@ -3,53 +3,79 @@ import type { CollectionEntry } from "astro:content";
 import { CATEGORIES, getSubcategoryLabel } from "@/categories";
 import { getPostUrl } from "@/utils/getPostPaths";
 import Datetime from "./Datetime.astro";
+import DefaultPostThumbnail from "./DefaultPostThumbnail.astro";
 
 type Props = {
   variant?: "h2" | "h3" | "h4";
 } & CollectionEntry<"posts">;
 
 const { variant: Heading = "h2", id, data, filePath } = Astro.props;
-
-const { title, description, ...props } = data;
-const taxonomyLabel = data.category
-  ? (data.subcategory &&
-      getSubcategoryLabel(data.category, data.subcategory)) ||
-    CATEGORIES[data.category].label
+const { title, description, ...dateProps } = data;
+const categoryLabel = data.category
+  ? CATEGORIES[data.category].label
   : undefined;
+const subcategoryLabel =
+  data.category && data.subcategory
+    ? getSubcategoryLabel(data.category, data.subcategory)
+    : undefined;
+const taxonomyLabel = [categoryLabel, subcategoryLabel]
+  .filter(Boolean)
+  .join(" > ");
+const imageSrc =
+  typeof data.ogImage === "string" ? data.ogImage : data.ogImage?.src;
 ---
 
 <li
   data-post-row
-  class:list={[
-    "border-b-border grid border-b py-[15px]",
-    "first:border-t-accent first:border-t",
-    "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]",
-    "sm:grid-cols-[4.875rem_minmax(0,1fr)] sm:gap-[13px]",
-  ]}
+  class="border-b-border first:border-t-accent border-b first:border-t"
 >
-  <Datetime {...props} format="compact" class="mb-1 sm:mt-0.5 sm:mb-0" />
-  <div class="min-w-0">
-    <a
-      href={getPostUrl(id, filePath, Astro.currentLocale)}
-      class:list={[
-        "text-foreground decoration-accent inline-block text-base leading-[1.35] font-[750] underline-offset-4 hover:underline",
-        "focus-visible:no-underline focus-visible:underline-offset-0",
-      ]}
-    >
-      <Heading>{title}</Heading>
-    </a>
+  <a
+    data-post-link
+    href={getPostUrl(id, filePath, Astro.currentLocale)}
+    class:list={[
+      "grid grid-cols-[82px_minmax(0,1fr)] gap-3 py-3.5",
+      "sm:grid-cols-[112px_minmax(0,1fr)] sm:gap-4",
+      "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]",
+      "focus-visible:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]",
+      "focus-visible:outline-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashed",
+    ]}
+  >
     {
-      taxonomyLabel && (
-        <p
-          data-post-taxonomy
-          class="text-accent mt-0.5 text-[11px] leading-[1.45] font-bold"
-        >
-          {taxonomyLabel}
-        </p>
+      imageSrc ? (
+        <img
+          data-post-thumbnail
+          data-post-image
+          src={imageSrc}
+          alt=""
+          class="aspect-4/3 w-full rounded-md object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <DefaultPostThumbnail />
       )
     }
-    <p class="text-foreground/80 mt-1 text-[13px] leading-[1.55]">
-      {description}
-    </p>
-  </div>
+    <div class="min-w-0 self-center">
+      <Heading class="text-foreground text-base leading-[1.35] font-[750]">
+        {title}
+      </Heading>
+      <div
+        data-post-meta
+        class="text-muted-foreground mt-1 flex min-w-0 flex-wrap items-center gap-x-1.5 text-[11px] leading-[1.45]"
+      >
+        <Datetime {...dateProps} format="compact" />
+        {
+          taxonomyLabel && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span data-post-taxonomy>{taxonomyLabel}</span>
+            </>
+          )
+        }
+      </div>
+      <p class="text-foreground/75 mt-1 text-[13px] leading-[1.55]">
+        {description}
+      </p>
+    </div>
+  </a>
 </li>
