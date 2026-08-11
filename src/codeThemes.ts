@@ -54,7 +54,18 @@ export const horizonLight: RawTheme = {
       scope: ["keyword", "storage.type", "storage.modifier"],
       settings: { foreground: "#8249a0" },
     },
-    { scope: "meta", settings: { foreground: "#a65b39" } },
+    {
+      scope: [
+        "meta.preprocessor",
+        "meta.directive",
+        "keyword.control.directive",
+      ],
+      settings: { foreground: "#a65b39" },
+    },
+    {
+      scope: ["punctuation", "keyword.operator"],
+      settings: { foreground: "#36373d" },
+    },
   ],
 };
 
@@ -104,6 +115,17 @@ export const horizonDark: RawTheme = {
       scope: ["keyword", "storage.type", "storage.modifier"],
       settings: { foreground: "#b072d1" },
     },
-    { scope: "meta", settings: { foreground: "#e4a382" } },
+    {
+      scope: [
+        "meta.preprocessor",
+        "meta.directive",
+        "keyword.control.directive",
+      ],
+      settings: { foreground: "#e4a382" },
+    },
+    {
+      scope: ["punctuation", "keyword.operator"],
+      settings: { foreground: "#cbced0" },
+    },
   ],
 };

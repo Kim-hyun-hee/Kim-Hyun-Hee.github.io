@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import { horizonDark, horizonLight } from "../src/codeThemes";
 
 type Theme = {
@@ -16,6 +17,30 @@ const foregroundFor = (theme: Theme, scope: string) =>
       scope
     )
   )?.settings.foreground;
+
+const blockFor = (html: string, language: string) =>
+  html.match(
+    new RegExp(
+      `<pre\\b(?=[^>]*data-language="${language}")[\\s\\S]*?<\\/pre>`
+    )
+  )?.[0] ?? "";
+
+const textForColors = (html: string, light: string, dark: string) =>
+  [...html.matchAll(/<span style="([^"]+)">([^<]*)<\/span>/g)]
+    .filter(
+      ([, style]) =>
+        style.includes(`--shiki-light:${light}`) &&
+        style.includes(`--shiki-dark:${dark}`)
+    )
+    .map(([, , text]) => text)
+    .join("");
+
+const scopesForColor = (theme: Theme, foreground: string) =>
+  theme.settings
+    .filter(setting => setting.settings.foreground === foreground)
+    .flatMap(setting =>
+      Array.isArray(setting.scope) ? setting.scope : [setting.scope]
+    );
 
 describe("Horizon B Shiki themes", () => {
   it("assigns every approved syntax role to its light and dark palette", () => {
@@ -33,7 +58,11 @@ describe("Horizon B Shiki themes", () => {
       ["support.function", "#3f75a9", "#8fb4dd"],
       ["keyword", "#8249a0", "#b072d1"],
       ["storage.type", "#8249a0", "#b072d1"],
-      ["meta", "#a65b39", "#e4a382"],
+      ["meta.preprocessor", "#a65b39", "#e4a382"],
+      ["meta.directive", "#a65b39", "#e4a382"],
+      ["keyword.control.directive", "#a65b39", "#e4a382"],
+      ["punctuation", "#36373d", "#cbced0"],
+      ["keyword.operator", "#36373d", "#cbced0"],
     ] as const;
 
     expect(horizonLight.name).toBe("horizon-b-light");
@@ -51,6 +80,65 @@ describe("Horizon B Shiki themes", () => {
       expect(foregroundFor(horizonLight, scope)).toBe(light);
       expect(foregroundFor(horizonDark, scope)).toBe(dark);
     }
+
+    expect(foregroundFor(horizonLight, "meta")).toBeUndefined();
+    expect(foregroundFor(horizonDark, "meta")).toBeUndefined();
+    expect(scopesForColor(horizonLight, "#a65b39")).toEqual([
+      "meta.preprocessor",
+      "meta.directive",
+      "keyword.control.directive",
+    ]);
+    expect(scopesForColor(horizonDark, "#e4a382")).toEqual([
+      "meta.preprocessor",
+      "meta.directive",
+      "keyword.control.directive",
+    ]);
+  });
+
+  it("keeps punctuation and prose neutral while coloring real directives", async () => {
+    const processor = await createMarkdownProcessor({
+      shikiConfig: {
+        themes: { light: horizonLight, dark: horizonDark },
+        defaultColor: false,
+      },
+    });
+    const { code } = await processor.render(`\
+\`\`\`ts
+const result = foo(a, b).bar;
+\`\`\`
+
+\`\`\`cpp
+#include <stdio.h>
+\`\`\`
+
+\`\`\`css
+@apply max-w-4xl;
+\`\`\`
+
+\`\`\`md
+Plain prose, with punctuation.
+\`\`\``);
+    const html = code.toLowerCase();
+    const foreground = ["#36373d", "#cbced0"] as const;
+    const orange = ["#a65b39", "#e4a382"] as const;
+
+    const typescriptForeground = textForColors(
+      blockFor(html, "ts"),
+      ...foreground
+    );
+    for (const punctuation of ["=", "(", ",", ")", "."]) {
+      expect(typescriptForeground).toContain(punctuation);
+    }
+
+    expect(textForColors(blockFor(html, "cpp"), ...orange)).toContain(
+      "include"
+    );
+    expect(textForColors(blockFor(html, "css"), ...foreground)).toContain(
+      "max-w-4xl;"
+    );
+    expect(textForColors(blockFor(html, "md"), ...foreground)).toContain(
+      "plain prose, with punctuation."
+    );
   });
 
   it("emits the Horizon backgrounds, foregrounds, and function colors in built code", () => {
