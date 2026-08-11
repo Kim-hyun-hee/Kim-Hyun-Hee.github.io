@@ -4,6 +4,7 @@ import { join, sep } from "node:path";
 import { CATEGORY_IDS, getSubcategoryIds } from "@/categories";
 import { SERIES_IDS } from "@/series";
 import { useTranslations } from "@/i18n";
+import { transformerFileName } from "../src/utils/transformers/fileName";
 import siteConfig from "../astro-paper.config";
 
 const DIST = "dist";
@@ -753,7 +754,7 @@ describe("callouts", () => {
 });
 
 describe("code blocks", () => {
-  it("renders one macOS frame for filename and unnamed Shiki blocks without line numbers", () => {
+  it("keeps each frame header before its code and marks filename-less frames decorative", () => {
     const html = readFileSync(
       page("posts", "adding-new-posts-in-astropaper-theme"),
       "utf-8"
@@ -764,13 +765,21 @@ describe("code blocks", () => {
         block[0].includes(`data-language="${language}"`)
       )?.[0] ?? "";
 
-    expect(codeBlock("ts")).toContain(
-      '<span class="code-frame-header" aria-hidden="true"><span class="code-frame-light code-frame-light-red"></span><span class="code-frame-light code-frame-light-yellow"></span><span class="code-frame-light code-frame-light-green"></span></span>'
+    const named = codeBlock("ts");
+    const unnamed = codeBlock("bash");
+
+    expect(named).toMatch(
+      /^<pre\b[^>]*><span class="code-frame-header"><span class="code-frame-light code-frame-light-red" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-yellow" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-green" aria-hidden="true"><\/span><span class="code-frame-title">src\/content\.config\.ts<\/span><\/span><code>/
     );
-    expect(codeBlock("ts")).toMatch(
-      /<span class="[^\"]*code-frame-title[^\"]*">src\/content\.config\.ts<\/span>/
+    expect(unnamed).toMatch(
+      /^<pre\b[^>]*><span class="code-frame-header" aria-hidden="true"><span class="code-frame-light code-frame-light-red" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-yellow" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-green" aria-hidden="true"><\/span><\/span><code>/
     );
-    expect(codeBlock("bash")).toContain('class="code-frame-header"');
+    expect((named.match(/class="code-frame-header"/g) ?? []).length).toBe(1);
+    expect((named.match(/class="code-frame-light /g) ?? []).length).toBe(3);
+    expect((named.match(/class="code-frame-title"/g) ?? []).length).toBe(1);
+    expect((unnamed.match(/class="code-frame-header"/g) ?? []).length).toBe(1);
+    expect((unnamed.match(/class="code-frame-light /g) ?? []).length).toBe(3);
+    expect((unnamed.match(/class="code-frame-title"/g) ?? []).length).toBe(0);
     expect(builtScripts()).toContain("copy-code");
     expect(html).not.toMatch(/\bline-number\b/);
     expect(css).not.toMatch(/counter-(?:reset|increment)/);
@@ -787,20 +796,75 @@ describe("code blocks", () => {
     const css = builtStyles();
 
     expect(css).toMatch(
-      /\.astro-code\{(?=[^}]*max-height:550px)(?=[^}]*overflow:auto)(?=[^}]*background-color:var\(--shiki-light-bg\))/
+      /\.astro-code\{(?=[^}]*overflow:hidden)(?=[^}]*background-color:var\(--shiki-light-bg\))/
+    );
+    expect(css).toMatch(
+      /\.astro-code>code\{(?=[^}]*display:block)(?=[^}]*max-height:550px)(?=[^}]*overflow:auto)/
     );
     expect(css).toMatch(
       /html\[data-theme=dark\] \.astro-code\{(?=[^}]*background-color:var\(--shiki-dark-bg\))/
     );
     expect(css).toMatch(
-      /\.astro-code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
+      /\.astro-code>code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
     );
     expect(css).toMatch(
-      /\.astro-code::-webkit-scrollbar-thumb\{(?=[^}]*#3ac3d0)(?=[^}]*#c08ae5)(?=[^}]*#f06689)(?=[^}]*#ffd0aa)(?=[^}]*border:4px solid #fbfafb)(?=[^}]*border-radius:999px)/
+      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*#3ac3d0)(?=[^}]*#c08ae5)(?=[^}]*#f06689)(?=[^}]*#ffd0aa)(?=[^}]*border:4px solid #fbfafb)(?=[^}]*border-radius:999px)/
     );
     expect(css).toMatch(
-      /\[data-theme=dark\] \.astro-code::-webkit-scrollbar-thumb\{[^}]*border-color:#1c1e26/
+      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1c1e26/
     );
-    expect(css).toMatch(/\.astro-code\{[^}]*scrollbar-color:/);
+    expect(css).toMatch(/\.astro-code>code\{[^}]*scrollbar-color:/);
+  });
+
+  it("reserves a clipped filename lane beside copy control at narrow widths", () => {
+    const html = readFileSync(
+      page("posts", "adding-new-posts-in-astropaper-theme"),
+      "utf-8"
+    );
+    const css = builtStyles();
+
+    expect(html).toContain("src/content/posts/sample-post.md");
+    expect(css).toMatch(
+      /\.astro-code \.code-frame-title\{(?=[^}]*inset-inline:4\.5rem)(?=[^}]*max-width:calc\(100% - 9rem\))(?=[^}]*white-space:nowrap)(?=[^}]*overflow:hidden)(?=[^}]*text-overflow:ellipsis)/
+    );
+  });
+
+  it("does not duplicate a frame when the filename transformer is reapplied", () => {
+    type FrameNode = {
+      type: string;
+      tagName: string;
+      properties: { class?: string[] };
+      children: FrameNode[];
+    };
+    const node: { properties: Record<string, string>; children: FrameNode[] } = {
+      properties: {},
+      children: [
+        {
+          type: "element",
+          tagName: "code",
+          properties: {},
+          children: [],
+        },
+      ],
+    };
+    const transformer = transformerFileName();
+    const context = {
+      options: { meta: { __raw: 'file="src/content/posts/sample-post.md"' } },
+      addClassToHast: () => {},
+    };
+
+    transformer.pre.call(context, node);
+    transformer.pre.call(context, node);
+
+    const header = node.children.filter(
+      child => child.properties.class?.[0] === "code-frame-header"
+    );
+    const title = header[0]?.children.filter(
+      child => child.properties.class?.[0] === "code-frame-title"
+    );
+
+    expect(header).toHaveLength(1);
+    expect(header[0]?.children).toHaveLength(4);
+    expect(title).toHaveLength(1);
   });
 });
