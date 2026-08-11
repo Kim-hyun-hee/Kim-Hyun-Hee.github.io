@@ -88,11 +88,11 @@
 [data-theme="dark"] {
   --background: #171717;
   --foreground: #e5e5e5;
-  --accent: #ff6b01;
-  --accent-foreground: #ffffff;
-  --accent-muted: #2b1e12;
-  --sky: #ffb703;
-  --sky-muted: #2a2413;
+  --accent: #e58d7d;
+  --accent-foreground: #1c1e26;
+  --accent-muted: #302321;
+  --sky: #efb993;
+  --sky-muted: #302820;
   --link: #d4d4d4;
   --quote-foreground: #a3a3a3;
   --muted: #212121;

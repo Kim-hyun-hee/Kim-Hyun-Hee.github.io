@@ -27,6 +27,12 @@ const listHtmlFiles = (dir: string): string[] =>
     .map(entry => join(entry.parentPath, entry.name))
     .filter(file => !file.split(sep).includes("pagefind"));
 
+const builtStyles = () =>
+  readdirSync(join(DIST, "_astro"), { recursive: true, withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.endsWith(".css"))
+    .map(entry => readFileSync(join(entry.parentPath, entry.name), "utf-8"))
+    .join("");
+
 const readHtml = (file: string) => readFileSync(file, "utf-8");
 const hasPostRows = (file: string) => readHtml(file).includes("data-post-row");
 const hasListFlow = (file: string) => {
@@ -589,5 +595,21 @@ describe("Archives", () => {
       expect(countText).toContain(String(month.count));
       expect(countText?.trim()).not.toBe(String(month.count));
     }
+  });
+});
+
+describe("dark site color tokens", () => {
+  it("keeps the approved light tokens and emits the Horizon dark accent family", () => {
+    const css = builtStyles();
+    const light = css.match(/:root,\[data-theme=light\]\{([^}]*)\}/)?.[1] ?? "";
+    const dark = css.match(/\[data-theme=dark\]\{([^}]*)\}/)?.[1] ?? "";
+
+    expect(light).toContain("--accent:#8387d3");
+    expect(light).toContain("--sky:#8fb4dd");
+    expect(dark).toContain("--accent:#e58d7d");
+    expect(dark).toContain("--sky:#efb993");
+    expect(dark).toContain("--accent-foreground:#1c1e26");
+    expect(dark).toContain("--accent-muted:#302321");
+    expect(dark).toContain("--sky-muted:#302820");
   });
 });
