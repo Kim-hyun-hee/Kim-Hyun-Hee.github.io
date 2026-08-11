@@ -17,6 +17,7 @@ import {
   transformerNotationHighlight,
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
+import { horizonDark, horizonLight } from "./src/codeThemes";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
 
@@ -54,7 +55,7 @@ export default defineConfig({
       rehypePlugins: [rehypeCallouts, rehypeWrapTables],
     }),
     shikiConfig: {
-      themes: { light: "min-light", dark: "night-owl" },
+      themes: { light: horizonLight, dark: horizonDark },
       defaultColor: false,
       wrap: false,
       transformers: [
