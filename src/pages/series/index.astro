@@ -5,6 +5,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import Datetime from "@/components/Datetime.astro";
 import { SERIES, SERIES_IDS } from "@/series";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
@@ -33,7 +34,7 @@ const list = SERIES_IDS.map(id => ({
             data-series-accordion
             class="group border-border border-b border-dashed"
           >
-            <summary class="flex cursor-pointer list-none items-center gap-4 py-5 [&::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer list-none items-center gap-4 py-5 hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)] focus-visible:bg-[linear-gradient(90deg,var(--accent-muted),transparent)] [&::-webkit-details-marker]:hidden">
               <span class="min-w-0 flex-1">
                 <span class="text-foreground block text-lg font-semibold">
                   {s.label}
@@ -87,7 +88,18 @@ const list = SERIES_IDS.map(id => ({
                           >
                             {String(post.data.seriesOrder).padStart(2, "0")}
                           </span>
-                          <span class="text-foreground">{post.data.title}</span>
+                          <span class="min-w-0 flex-1">
+                            <span class="text-foreground block">
+                              {post.data.title}
+                            </span>
+                            <span data-series-post-date class="mt-1 block">
+                              <Datetime
+                                pubDatetime={post.data.pubDatetime}
+                                timezone={post.data.timezone}
+                                format="compact"
+                              />
+                            </span>
+                          </span>
                         </a>
                       </li>
                     ))}

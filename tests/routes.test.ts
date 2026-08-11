@@ -150,15 +150,45 @@ describe("시리즈 라우트", () => {
 
     expect(accordions).toHaveLength(SERIES_IDS.length);
     accordions.forEach(([markup]) => {
-      expect(markup).toMatch(/<summary\b[^>]*>/);
+      const summary = markup.match(/<summary\b[^>]*>/)?.[0];
+      expect(summary).toContain(
+        "hover:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
+      );
+      expect(summary).toContain(
+        "focus-visible:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
+      );
       if (/href="\/posts\//.test(markup)) {
         expect(markup).toMatch(/>\s*01\s*</);
+        const rows = [
+          ...markup.matchAll(/<a\b[^>]*href="\/posts\/[^"]+"[^>]*>([\s\S]*?)<\/a>/g),
+        ];
+        expect(rows.length).toBeGreaterThan(0);
+        rows.forEach(([, row]) => {
+          expect(row).toMatch(
+            /data-series-post-date[\s\S]*?<time\b[^>]*>\s*\d{4}\.\d{2}\.\d{2}\s*<\/time>/
+          );
+        });
       } else {
         expect(markup).toContain("아직 글이 없습니다.");
       }
     });
     for (const id of SERIES_IDS) {
       expect(html).toContain(`href="/series/${id}/"`);
+    }
+  });
+
+  it("시리즈 상세 목록도 각 글의 전체 날짜를 렌더한다", () => {
+    for (const id of SERIES_IDS) {
+      const html = readFileSync(page("series", id), "utf-8");
+      const rows = [
+        ...html.matchAll(/<a\b[^>]*href="\/posts\/[^"]+"[^>]*>([\s\S]*?)<\/a>/g),
+      ];
+
+      rows.forEach(([, row]) => {
+        expect(row).toMatch(
+          /data-series-post-date[\s\S]*?<time\b[^>]*>\s*\d{4}\.\d{2}\.\d{2}\s*<\/time>/
+        );
+      });
     }
   });
 
@@ -395,7 +425,7 @@ describe("post title transitions", () => {
   it("does not give post list or article headings a view-transition name", () => {
     const list = readFileSync(page("posts"), "utf-8");
     const firstPost = list.match(
-      /<a href="(?<href>\/posts\/[^"]+\/)"[^>]*>\s*(?<heading><h[23]\b[^>]*>)/
+      /<a\b(?=[^>]*href="(?<href>\/posts\/[^"]+\/)")[^>]*>[\s\S]*?(?<heading><h[23]\b[^>]*>)/
     );
 
     expect(firstPost?.groups?.href).toBeDefined();
@@ -643,6 +673,12 @@ describe("Archives", () => {
     expect(years.length).toBeGreaterThan(0);
     expect(months.length).toBeGreaterThan(0);
     expect(html).toMatch(/<h1\b/);
+    expect(html).toMatch(
+      /data-archive-year-header[^>]*class="[^"]*border-t-accent[^"]*border-t-2/
+    );
+    expect(html).not.toMatch(
+      /data-archive-year-header[^>]*class="[^"]*\bbg-/
+    );
     expect(years.map(({ year }) => Number(year))).toEqual(
       [...years.map(({ year }) => Number(year))].sort((a, b) => b - a)
     );

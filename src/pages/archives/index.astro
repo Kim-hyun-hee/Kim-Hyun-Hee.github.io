@@ -51,19 +51,18 @@ const archiveYears = Object.entries(
     <div class="mt-10 space-y-12">
       {
         archiveYears.map(({ year, posts, months }) => (
-          <section
-            data-archive-year={year}
-            data-post-count={posts.length}
-            class="border-border border-s ps-4 sm:ps-6"
-          >
-            <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <section data-archive-year={year} data-post-count={posts.length}>
+            <header
+              data-archive-year-header
+              class="border-t-accent flex flex-wrap items-baseline justify-between gap-2 border-t-2 pt-3"
+            >
               <h2 class="text-xl font-semibold">{year}</h2>
               <p data-post-count class="text-muted-foreground text-sm">
                 {tplStr(t.archives.yearPostCount, { count: posts.length })}
               </p>
             </header>
 
-            <div class="mt-6 space-y-10">
+            <div class="mt-7 space-y-10">
               {months.map(({ month, posts }) => (
                 <section
                   data-archive-parent-year={year}

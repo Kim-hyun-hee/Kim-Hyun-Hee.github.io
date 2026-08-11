@@ -5,6 +5,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import Datetime from "@/components/Datetime.astro";
 import { SERIES, SERIES_IDS, type SeriesId } from "@/series";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { getSeriesPosts } from "@/utils/getSeriesPosts";
@@ -54,6 +55,13 @@ const t = useTranslations(locale);
                 <span class="min-w-0">
                   <span class="text-foreground block font-semibold">
                     {post.data.title}
+                  </span>
+                  <span data-series-post-date class="mt-1 block">
+                    <Datetime
+                      pubDatetime={post.data.pubDatetime}
+                      timezone={post.data.timezone}
+                      format="compact"
+                    />
                   </span>
                   <span class="text-muted-foreground mt-1 block text-sm leading-relaxed">
                     {post.data.description}
