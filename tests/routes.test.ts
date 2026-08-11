@@ -931,7 +931,7 @@ describe("code blocks", () => {
     const css = builtStyles();
 
     expect(css).toMatch(
-      /\.astro-code\{[^}]*overflow:hidden/
+      /\.astro-code\{(?=[^}]*overflow:hidden!important)(?=[^}]*padding:0)/
     );
     expect(css).toMatch(
       /\.astro-code\{[^}]*background-color:var\(--shiki-light-bg\)/
@@ -946,7 +946,7 @@ describe("code blocks", () => {
       /\.astro-code>code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*border:4px solid #fafafa)(?=[^}]*border-radius:10px)/
+      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*background:linear-gradient\(135deg,#3a9da5,#a97ac0,#dd6577,#d39a78\))(?=[^}]*border:5px solid #fafafa)(?=[^}]*border-radius:10px)/
     );
     expect(css).toMatch(
       /\.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#3a9da5,#a97ac0,#dd6577,#d39a78\)/
@@ -957,7 +957,9 @@ describe("code blocks", () => {
     expect(css).toMatch(
       /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1f1f20/
     );
-    expect(css).toMatch(/::-webkit-scrollbar-button\{[^}]*display:none/);
+    expect(css).toMatch(
+      /::-webkit-scrollbar-button\{(?=[^}]*width:0)(?=[^}]*height:0)(?=[^}]*display:none)/
+    );
     expect(css).toMatch(/::-webkit-scrollbar-track\{[^}]*background:0 0/);
     expect(css).toMatch(/::-webkit-scrollbar-corner\{[^}]*background:0 0/);
     expect(css).toMatch(/\.astro-code>code\{[^}]*scrollbar-color:/);
