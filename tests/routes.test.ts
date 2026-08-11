@@ -123,6 +123,40 @@ describe("카테고리 라우트", () => {
   it("카테고리 목록 페이지가 생성된다", () => {
     expect(existsSync(page("categories"))).toBe(true);
   });
+
+  it("Deep Dive 테스트 글이 소분류별 개수와 페이지네이션을 채운다", () => {
+    const expected = {
+      rendering: 13,
+      architecture: 10,
+      memory: 10,
+    } as const;
+
+    for (const [subcategory, count] of Object.entries(expected)) {
+      const files = [
+        page("categories", "deep-dive", subcategory),
+        page("categories", "deep-dive", subcategory, "2"),
+      ];
+      files.forEach(file => expect(existsSync(file), file).toBe(true));
+      const html = files.map(readHtml).join("");
+      const rows = [
+        ...html.matchAll(/<li\b[^>]*data-post-row[^>]*>([\s\S]*?)<\/li>/g),
+      ];
+      const testRows = rows.filter(([, row]) => row.includes("[테스트]"));
+
+      expect(rows).toHaveLength(count);
+      expect(testRows).toHaveLength(10);
+      testRows.forEach(([, row]) => {
+        expect(row).toContain("data-default-post-thumbnail");
+        expect(row).toContain(`Deep Dive &gt; ${
+          subcategory === "rendering"
+            ? "Rendering"
+            : subcategory === "architecture"
+              ? "Architecture"
+              : "Memory"
+        }`);
+      });
+    }
+  });
 });
 
 describe("시리즈 라우트", () => {
