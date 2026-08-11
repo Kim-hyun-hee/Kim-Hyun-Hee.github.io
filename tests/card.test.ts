@@ -48,6 +48,8 @@ describe("Card", () => {
     expect(row).toContain("Deep Dive &gt; Architecture");
     expect(row).toContain("Controlled description.");
     expect(row).toContain("data-default-post-thumbnail");
+    expect(row).toContain("font-semibold");
+    expect(row).not.toContain("font-bold");
     expect(row).not.toContain("hover:underline");
     expect(row).not.toMatch(/min read|minute|분 읽기/i);
   });

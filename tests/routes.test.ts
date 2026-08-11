@@ -927,7 +927,7 @@ describe("code blocks", () => {
     );
   });
 
-  it("keeps both-axis scrolling inside the adaptive 550px frame", () => {
+  it("keeps both-axis scrolling inside the adaptive 600px frame", () => {
     const css = builtStyles();
     const scrollportRule = css.match(/\.astro-code>code\{[^}]*\}/)?.[0];
 
@@ -938,7 +938,7 @@ describe("code blocks", () => {
       /\.astro-code\{[^}]*background-color:var\(--shiki-light-bg\)/
     );
     expect(css).toMatch(
-      /\.astro-code>code\{(?=[^}]*display:block)(?=[^}]*max-height:550px)(?=[^}]*padding:11px 13px 8px)(?=[^}]*overflow:auto)/
+      /\.astro-code>code\{(?=[^}]*display:block)(?=[^}]*max-height:600px)(?=[^}]*padding:11px 13px 8px)(?=[^}]*font-size:13px)(?=[^}]*line-height:1\.55)(?=[^}]*overflow:auto)/
     );
     expect(css).toMatch(
       /html\[data-theme=dark\] \.astro-code\{(?=[^}]*background-color:var\(--shiki-dark-bg\))/
@@ -947,16 +947,22 @@ describe("code blocks", () => {
       /\.astro-code>code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*background:linear-gradient\(135deg,#3a9da5,#a97ac0,#dd6577,#d39a78\))(?=[^}]*border:5px solid #fafafa)(?=[^}]*border-radius:10px)/
+      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*background:linear-gradient\(135deg,#3a9da5d1,#a97ac0d1,#dd6577d1,#d39a78d1\))(?=[^}]*border:5px solid #fafafa)(?=[^}]*border-radius:10px)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#3a9da5,#a97ac0,#dd6577,#d39a78\)/
+      /\.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#3a9da5d1,#a97ac0d1,#dd6577d1,#d39a78d1\)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb:vertical\{[^}]*linear-gradient\(#3a9da5,#a97ac0,#dd6577,#d39a78\)/
+      /\.astro-code>code::-webkit-scrollbar-thumb:vertical\{[^}]*linear-gradient\(#3a9da5d1,#a97ac0d1,#dd6577d1,#d39a78d1\)/
     );
     expect(css).toMatch(
-      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1f1f20/
+      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*linear-gradient\(135deg,#24a8b4d1,#b072d1d1,#e93c58d1,#efb993d1\))(?=[^}]*border-color:#1f1f20)/
+    );
+    expect(css).toMatch(
+      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#24a8b4d1,#b072d1d1,#e93c58d1,#efb993d1\)/
+    );
+    expect(css).toMatch(
+      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb:vertical\{[^}]*linear-gradient\(#24a8b4d1,#b072d1d1,#e93c58d1,#efb993d1\)/
     );
     expect(css).toMatch(
       /::-webkit-scrollbar-button\{(?=[^}]*width:0)(?=[^}]*height:0)(?=[^}]*display:none)/
