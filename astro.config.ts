@@ -11,6 +11,7 @@ import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import rehypeCallouts from "rehype-callouts";
+import rehypeWrapTables from "./src/utils/rehypeWrapTables";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -50,7 +51,7 @@ export default defineConfig({
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeCallouts],
+      rehypePlugins: [rehypeCallouts, rehypeWrapTables],
     }),
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },

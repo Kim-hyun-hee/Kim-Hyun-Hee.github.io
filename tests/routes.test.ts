@@ -674,14 +674,14 @@ describe("markdown elements", () => {
       /\.app-prose a:focus-visible\{(?=[^}]*outline-width:2px)(?=[^}]*outline-color:var\(--accent\))/
     );
     expect(css).toMatch(
-      /\.app-prose \[data-responsive-table\]\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)/
+      /\.app-prose \[data-responsive-table\],\.app-prose \[data-markdown-table\]\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)/
     );
     expect(css).toMatch(
       /\.app-prose table (?:th|td),\.app-prose table (?:th|td)\{[^}]*border[^}]*width:0/
     );
   });
 
-  it("gives default responsive tables and raw Markdown tables their own visible shell", () => {
+  it("wraps raw Markdown tables without changing native table display semantics", () => {
     const defaultResponsive = prose(
       readFileSync(page("posts", "how-to-configure-astropaper-theme"), "utf-8")
     );
@@ -691,10 +691,19 @@ describe("markdown elements", () => {
     expect(defaultResponsive).toMatch(
       /<div\b(?=[^>]*\bdata-responsive-table\b)[^>]*>[\s\S]*?<table\b/
     );
-    expect(rawMarkdown).toMatch(/<table\b[^>]*>/);
+    expect(defaultResponsive).not.toMatch(/\bdata-markdown-table\b/);
+    expect(rawMarkdown).toMatch(
+      /<div\b(?=[^>]*\bdata-markdown-table\b)[^>]*>\s*<table\b/
+    );
     expect(rawMarkdown).not.toMatch(/\bdata-responsive-table\b/);
     expect(css).toMatch(
-      /\.app-prose>table\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)(?=[^}]*overflow-x:auto)/
+      /\.app-prose \[data-responsive-table\],\.app-prose \[data-markdown-table\]\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)/
+    );
+    expect(css).toMatch(
+      /\.app-prose \[data-markdown-table\]\{[^}]*overflow-x:auto/
+    );
+    expect(css).not.toMatch(
+      /\.app-prose(?:>| )table\{[^}]*(?:display:block|overflow-x:auto)/
     );
   });
 });
