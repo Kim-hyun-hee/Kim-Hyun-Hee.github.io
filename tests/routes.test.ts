@@ -19,7 +19,7 @@ const page = (...segments: string[]) =>
   join(DIST, ...segments, "index.html");
 
 const projectRecords = () =>
-  readdirSync(PROJECTS)
+  readdirSync(PROJECTS, { recursive: true, encoding: "utf8" })
     .filter(filename => /\.(?:md|mdx)$/i.test(filename))
     .map(filename => {
       const source = readFileSync(join(PROJECTS, filename), "utf-8");
@@ -27,7 +27,7 @@ const projectRecords = () =>
         source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
 
       return {
-        id: filename.replace(/\.(?:md|mdx)$/i, ""),
+        id: filename.replaceAll(sep, "/").replace(/\.(?:md|mdx)$/i, ""),
         featured: /^featured:\s*true\s*$/m.test(frontmatter),
         order: Number(frontmatter.match(/^order:\s*(\d+)\s*$/m)?.[1]),
       };
