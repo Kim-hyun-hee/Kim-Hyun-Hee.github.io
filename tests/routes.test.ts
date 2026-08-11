@@ -651,26 +651,50 @@ describe("markdown elements", () => {
       page("posts", "customizing-astropaper-theme-color-schemes"),
       "utf-8"
     );
+  const prose = (html: string) =>
+    html.match(/<article\b(?=[^>]*\bapp-prose\b)[^>]*>([\s\S]*?)<\/article>/)?.[1] ??
+    "";
 
   it("keeps a rich Markdown specimen semantic while emitting the restrained prose styles", () => {
     const html = specimen();
+    const article = prose(html);
     const css = builtStyles();
 
-    expect(html).toMatch(/<h2\b[^>]*\bid="[^"]+"[^>]*>/);
-    expect(html).toMatch(/<a\b[^>]*href="https?:\/\/[^\"]+"[^>]*>/);
-    expect(html).toMatch(/<blockquote\b[^>]*>/);
-    expect(html).toMatch(/<div\b[^>]*\bdata-table-variant=[^>]*>/);
-    expect(html).toMatch(/<table\b[^>]*>/);
-    expect(html).not.toMatch(/\bheading-link\b/);
+    expect(article).toMatch(/<h2\b[^>]*\bid="[^"]+"[^>]*>/);
+    expect(article).toMatch(/<a\b[^>]*href="https?:\/\/[^\"]+"[^>]*>/);
+    expect(article).toMatch(/<blockquote\b[^>]*>/);
+    expect(article).toMatch(/<div\b[^>]*\bdata-responsive-table[^>]*>/);
+    expect(article).toMatch(/<table\b[^>]*>/);
+    expect(article).not.toMatch(/\bheading-link\b/);
 
     expect(css).toMatch(
       /\.app-prose a\{(?=[^}]*color:inherit)(?=[^}]*text-decoration-color:var\(--accent\))/
     );
     expect(css).toMatch(
-      /\.app-prose \[data-table-variant\]\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)/
+      /\.app-prose a:focus-visible\{(?=[^}]*outline-width:2px)(?=[^}]*outline-color:var\(--accent\))/
+    );
+    expect(css).toMatch(
+      /\.app-prose \[data-responsive-table\]\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)/
     );
     expect(css).toMatch(
       /\.app-prose table (?:th|td),\.app-prose table (?:th|td)\{[^}]*border[^}]*width:0/
+    );
+  });
+
+  it("gives default responsive tables and raw Markdown tables their own visible shell", () => {
+    const defaultResponsive = prose(
+      readFileSync(page("posts", "how-to-configure-astropaper-theme"), "utf-8")
+    );
+    const rawMarkdown = prose(readFileSync(page("posts", "astro-paper-2"), "utf-8"));
+    const css = builtStyles();
+
+    expect(defaultResponsive).toMatch(
+      /<div\b(?=[^>]*\bdata-responsive-table\b)[^>]*>[\s\S]*?<table\b/
+    );
+    expect(rawMarkdown).toMatch(/<table\b[^>]*>/);
+    expect(rawMarkdown).not.toMatch(/\bdata-responsive-table\b/);
+    expect(css).toMatch(
+      /\.app-prose>table\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)(?=[^}]*overflow-x:auto)/
     );
   });
 });

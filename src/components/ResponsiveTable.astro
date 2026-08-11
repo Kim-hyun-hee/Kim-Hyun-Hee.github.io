@@ -2,30 +2,28 @@
 type Props = {
   class?: string;
   variant?:
-    /** No borders */
+    /** Removes internal row rules. */
     | "minimal"
-    /** 1st, 3rd, 5th … body rows tinted — classic zebra. */
+    /** Alternating body rows are tinted. */
     | "striped"
-    /** 1st, 3rd, 5th … body rows tinted + no borders. */
+    /** Alternating body rows are tinted without internal row rules. */
     | "striped-minimal";
 };
 
 const { class: className, variant } = Astro.props;
 
 const variantClasses = {
-  minimal: "[&_td]:border-0 [&_th]:border-0",
   striped: "[&_tbody_tr]:odd:bg-muted/25",
 };
 ---
 
 <div
+  data-responsive-table
   data-table-variant={variant}
   class:list={[
     "overflow-hidden [&_table]:my-0 [&_table]:min-w-xl",
-    variant === "minimal" && variantClasses.minimal,
     variant === "striped" && variantClasses.striped,
-    variant === "striped-minimal" &&
-      `${variantClasses.minimal} ${variantClasses.striped}`,
+    variant === "striped-minimal" && variantClasses.striped,
     className,
   ]}
 >
