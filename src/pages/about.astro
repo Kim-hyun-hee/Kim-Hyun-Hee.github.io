@@ -1,10 +1,14 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import FeaturedProject from "@/components/about/FeaturedProject.astro";
+import ProjectRow from "@/components/about/ProjectRow.astro";
 import config from "@/config";
+import { groupProjects } from "@/utils/groupProjects";
 
 const about = await getEntry("pages", "about");
 
@@ -15,6 +19,14 @@ if (!about) {
 }
 
 const { Content } = await render(about);
+const projects = await getCollection("projects");
+const { featured, other } = groupProjects(projects);
+const github =
+  config.socials.find(social => social.name.toLowerCase() === "github")?.url ??
+  config.site.profile;
+const email = config.socials.find(social =>
+  social.url.toLowerCase().startsWith("mailto:")
+);
 ---
 
 <Layout
@@ -25,8 +37,82 @@ const { Content } = await render(about);
 >
   <Header barTitle={about.data.title} />
 
-  <Main pageTitle={about.data.title} class="app-prose">
-    <Content />
+  <Main pageTitle={about.data.title}>
+    <div data-about-prose class="app-prose">
+      <Content />
+    </div>
+
+    <section id="projects" aria-labelledby="projects-heading" class="mt-16">
+      <header
+        class="border-border flex flex-col gap-5 border-b pb-6 sm:flex-row sm:items-end sm:justify-between"
+      >
+        <div>
+          <p
+            class="text-accent text-xs font-semibold tracking-[0.16em] uppercase"
+          >
+            About / Portfolio
+          </p>
+          <h2 id="projects-heading" class="mt-2 text-2xl font-bold sm:text-3xl">
+            Projects
+          </h2>
+          <p class="text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+            작업의 구조와 문제 해결 과정을 프로젝트 단위로 정리합니다.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {
+            github && (
+              <LinkButton
+                data-about-profile
+                href={github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="김현희의 GitHub 프로필 보기"
+                variant="quiet"
+                class="border-border border"
+              >
+                GitHub
+              </LinkButton>
+            )
+          }
+          {
+            email && (
+              <LinkButton
+                href={email.url}
+                aria-label={email.linkTitle ?? "이메일 보내기"}
+                variant="quiet"
+                class="border-border border"
+              >
+                Email
+              </LinkButton>
+            )
+          }
+        </div>
+      </header>
+
+      {
+        featured.length > 0 && (
+          <div class="mt-8 grid gap-4 sm:grid-cols-2">
+            {featured.map(project => (
+              <FeaturedProject project={project} />
+            ))}
+          </div>
+        )
+      }
+
+      {
+        other.length > 0 && (
+          <ul
+            aria-label="그 밖의 프로젝트"
+            class="border-border mt-10 border-b"
+          >
+            {other.map(project => (
+              <ProjectRow project={project} />
+            ))}
+          </ul>
+        )
+      }
+    </section>
   </Main>
 
   <Footer />

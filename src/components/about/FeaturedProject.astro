@@ -1,0 +1,77 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  project: CollectionEntry<"projects">;
+};
+
+const { project } = Astro.props;
+const { title, summary, period, role, stack, repository, website, order } =
+  project.data;
+const headingId = `project-${project.id}`;
+const number = String(order).padStart(2, "0");
+---
+
+<article
+  data-featured-project
+  aria-labelledby={headingId}
+  class="border-border bg-muted/35 flex min-w-0 flex-col rounded-xl border p-5 sm:p-6"
+>
+  <p class="text-accent text-xs font-semibold tracking-[0.16em] uppercase">
+    Project {number}
+  </p>
+  <h3 id={headingId} class="mt-3 text-xl font-semibold sm:text-2xl">
+    {title}
+  </h3>
+  <p class="text-muted-foreground mt-3 leading-relaxed">{summary}</p>
+
+  <dl class="border-border mt-5 grid gap-3 border-t pt-4 text-sm">
+    <div class="grid gap-1 sm:grid-cols-[4rem_minmax(0,1fr)]">
+      <dt class="text-muted-foreground">기간</dt>
+      <dd>{period}</dd>
+    </div>
+    <div class="grid gap-1 sm:grid-cols-[4rem_minmax(0,1fr)]">
+      <dt class="text-muted-foreground">역할</dt>
+      <dd>{role}</dd>
+    </div>
+  </dl>
+
+  <ul aria-label={`${title} 기술 스택`} class="mt-5 flex flex-wrap gap-2">
+    {
+      stack.map(item => (
+        <li class="bg-accent-muted text-accent rounded-full px-2.5 py-1 text-xs font-medium">
+          {item}
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    (repository || website) && (
+      <div class="mt-5 flex flex-wrap gap-2">
+        {repository && (
+          <a
+            href={repository}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${title} GitHub 저장소 보기`}
+            class="border-border hover:border-accent hover:text-accent rounded-md border px-3 py-2 text-sm font-medium transition-colors"
+          >
+            GitHub
+          </a>
+        )}
+        {website && (
+          <a
+            href={website}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${title} 웹사이트 보기`}
+            class="border-border hover:border-accent hover:text-accent rounded-md border px-3 py-2 text-sm font-medium transition-colors"
+          >
+            Website
+          </a>
+        )}
+      </div>
+    )
+  }
+</article>

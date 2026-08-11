@@ -19,7 +19,3 @@ Unity에서 그래픽스와 데이터 지향 설계(DOD)를 다룹니다. 지금
 - **[Etc](/categories/etc/)** — 잡담·회고·커리어
 
 여러 편으로 이어지는 글은 [Series](/series/)로 따로 묶습니다.
-
-## 연락
-
-- GitHub — [Kim-hyun-hee](https://github.com/Kim-hyun-hee)

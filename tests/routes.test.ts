@@ -285,6 +285,68 @@ describe("About taxonomy links", () => {
   });
 });
 
+describe("About projects", () => {
+  const about = () => readFileSync(page("about"), "utf-8");
+  const projectTitles = [
+    "DOD Digital Twin",
+    "AstroPaper Fork Redesign",
+    "NDT Defect Classifier",
+    "AGV Route Simulator",
+    "Equipment Dashboard",
+    "Sensor Data Pipeline",
+    "Factory Alert Console",
+    "Model Optimizer",
+    "Log Analysis Toolkit",
+    "Portfolio Data Model",
+  ];
+
+  it("renders Markdown prose before the collection-backed projects section", () => {
+    const html = about();
+    const prose = html.indexOf("data-about-prose");
+    const projects = html.indexOf('id="projects"');
+
+    expect(prose).toBeGreaterThanOrEqual(0);
+    expect(projects).toBeGreaterThan(prose);
+    expect(html.match(/data-featured-project/g)).toHaveLength(4);
+    expect(html.match(/data-project-row/g)).toHaveLength(6);
+  });
+
+  it("renders every project exactly once in configured order", () => {
+    const html = about();
+
+    for (const title of projectTitles) {
+      expect(html.match(new RegExp(`>${title}<`, "g")), title).toHaveLength(1);
+    }
+
+    const positions = projectTitles.map(title => html.indexOf(`>${title}<`));
+    expect(positions.every(position => position >= 0)).toBe(true);
+    expect(positions).toEqual([...positions].sort((a, b) => a - b));
+  });
+
+  it("uses a valid heading outline for project records", () => {
+    const html = about();
+    const projects = html.slice(html.indexOf('<section id="projects"'));
+
+    expect(html).toMatch(/<h1\b[^>]*>About<\/h1>/);
+    expect(projects).toMatch(/<h2\b[^>]*>Projects<\/h2>/);
+    expect(projects.match(/<h3\b/g)).toHaveLength(10);
+  });
+
+  it("links the quiet profile action to the configured GitHub and omits email", () => {
+    const html = about();
+    const github = siteConfig.socials?.find(social => social.name === "github");
+
+    expect(github?.url).toBeDefined();
+    expect(html).toMatch(
+      new RegExp(
+        `<a\\b(?=[^>]*data-about-profile)(?=[^>]*href="${github!.url}")[^>]*>`
+      )
+    );
+    expect(html).not.toMatch(/href="mailto:/i);
+    expect(html).not.toContain(">Contact<");
+  });
+});
+
 describe("post title transitions", () => {
   it("does not give post list or article headings a view-transition name", () => {
     const list = readFileSync(page("posts"), "utf-8");
