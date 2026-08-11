@@ -162,11 +162,69 @@
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
-    @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
+    @apply outline-border relative block max-h-[550px] overflow-auto rounded-lg border bg-(--shiki-light-bg) px-4 pt-11 pb-4 text-(--shiki-light) [&_span]:text-(--shiki-light);
+    scrollbar-color: #c08ae5 transparent;
   }
 
   html[data-theme="dark"] .astro-code {
     @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
+  }
+
+  .code-frame-header {
+    @apply border-border pointer-events-none absolute inset-x-0 top-0 z-10 flex h-9 items-center gap-2 border-b px-4;
+    background-color: var(--shiki-light-bg);
+  }
+
+  html[data-theme="dark"] .code-frame-header {
+    background-color: var(--shiki-dark-bg);
+  }
+
+  .code-frame-light {
+    @apply size-3 rounded-full;
+  }
+
+  .code-frame-light-red {
+    background-color: #f5655b;
+  }
+
+  .code-frame-light-yellow {
+    background-color: #f6bd3b;
+  }
+
+  .code-frame-light-green {
+    background-color: #43c645;
+  }
+
+  .astro-code .code-frame-title,
+  .astro-code .copy-code {
+    top: 0.5rem;
+    z-index: 20;
+  }
+
+  .astro-code .code-frame-title {
+    inset-inline-start: 4.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .astro-code .code-frame-title::before {
+    content: none;
+  }
+
+  .astro-code::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+  }
+
+  .astro-code::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #3ac3d0, #c08ae5, #f06689, #ffd0aa);
+    border: 4px solid #fbfafb;
+    border-radius: 999px;
+  }
+
+  [data-theme="dark"] .astro-code::-webkit-scrollbar-thumb {
+    border-color: #1c1e26;
   }
 
   /* Styles for Shiki transformers */

@@ -49,6 +49,12 @@ const builtStyles = () =>
     .map(entry => readFileSync(join(entry.parentPath, entry.name), "utf-8"))
     .join("");
 
+const builtScripts = () =>
+  readdirSync(join(DIST, "_astro"), { recursive: true, withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.endsWith(".js"))
+    .map(entry => readFileSync(join(entry.parentPath, entry.name), "utf-8"))
+    .join("");
+
 const readHtml = (file: string) => readFileSync(file, "utf-8");
 const hasPostRows = (file: string) => readHtml(file).includes("data-post-row");
 const hasListFlow = (file: string) => {
@@ -743,5 +749,58 @@ describe("callouts", () => {
     expect(css).toMatch(
       /\.callout-content>:last-child\{[^}]*margin-bottom:0/
     );
+  });
+});
+
+describe("code blocks", () => {
+  it("renders one macOS frame for filename and unnamed Shiki blocks without line numbers", () => {
+    const html = readFileSync(
+      page("posts", "adding-new-posts-in-astropaper-theme"),
+      "utf-8"
+    );
+    const css = builtStyles();
+    const codeBlock = (language: string) =>
+      [...html.matchAll(/<pre\b[^>]*>[\s\S]*?<\/pre>/g)].find(block =>
+        block[0].includes(`data-language="${language}"`)
+      )?.[0] ?? "";
+
+    expect(codeBlock("ts")).toContain(
+      '<span class="code-frame-header" aria-hidden="true"><span class="code-frame-light code-frame-light-red"></span><span class="code-frame-light code-frame-light-yellow"></span><span class="code-frame-light code-frame-light-green"></span></span>'
+    );
+    expect(codeBlock("ts")).toMatch(
+      /<span class="[^\"]*code-frame-title[^\"]*">src\/content\.config\.ts<\/span>/
+    );
+    expect(codeBlock("bash")).toContain('class="code-frame-header"');
+    expect(builtScripts()).toContain("copy-code");
+    expect(html).not.toMatch(/\bline-number\b/);
+    expect(css).not.toMatch(/counter-(?:reset|increment)/);
+    expect(css).toMatch(/\.code-frame-light-red\{[^}]*background-color:#f5655b/);
+    expect(css).toMatch(
+      /\.code-frame-light-yellow\{[^}]*background-color:#f6bd3b/
+    );
+    expect(css).toMatch(
+      /\.code-frame-light-green\{[^}]*background-color:#43c645/
+    );
+  });
+
+  it("keeps both-axis scrolling inside the adaptive 550px frame", () => {
+    const css = builtStyles();
+
+    expect(css).toMatch(
+      /\.astro-code\{(?=[^}]*max-height:550px)(?=[^}]*overflow:auto)(?=[^}]*background-color:var\(--shiki-light-bg\))/
+    );
+    expect(css).toMatch(
+      /html\[data-theme=dark\] \.astro-code\{(?=[^}]*background-color:var\(--shiki-dark-bg\))/
+    );
+    expect(css).toMatch(
+      /\.astro-code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
+    );
+    expect(css).toMatch(
+      /\.astro-code::-webkit-scrollbar-thumb\{(?=[^}]*#3ac3d0)(?=[^}]*#c08ae5)(?=[^}]*#f06689)(?=[^}]*#ffd0aa)(?=[^}]*border:4px solid #fbfafb)(?=[^}]*border-radius:999px)/
+    );
+    expect(css).toMatch(
+      /\[data-theme=dark\] \.astro-code::-webkit-scrollbar-thumb\{[^}]*border-color:#1c1e26/
+    );
+    expect(css).toMatch(/\.astro-code\{[^}]*scrollbar-color:/);
   });
 });

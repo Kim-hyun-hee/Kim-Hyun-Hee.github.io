@@ -21,6 +21,39 @@ export const transformerFileName = ({
     node.properties.style =
       (node.properties.style || "") + `--file-name-offset: ${fileNameOffset};`;
 
+    node.children.push({
+      type: "element",
+      tagName: "span",
+      properties: {
+        class: ["code-frame-header"],
+        ariaHidden: "true",
+      },
+      children: [
+        {
+          type: "element",
+          tagName: "span",
+          properties: { class: ["code-frame-light", "code-frame-light-red"] },
+          children: [],
+        },
+        {
+          type: "element",
+          tagName: "span",
+          properties: {
+            class: ["code-frame-light", "code-frame-light-yellow"],
+          },
+          children: [],
+        },
+        {
+          type: "element",
+          tagName: "span",
+          properties: {
+            class: ["code-frame-light", "code-frame-light-green"],
+          },
+          children: [],
+        },
+      ],
+    });
+
     const raw = this.options.meta?.__raw?.split(" ");
 
     if (!raw) return;
@@ -49,6 +82,7 @@ export const transformerFileName = ({
       tagName: "span",
       properties: {
         class: [
+          "code-frame-title",
           "absolute py-1 text-foreground text-xs font-medium leading-4",
           hideDot
             ? "px-2"
