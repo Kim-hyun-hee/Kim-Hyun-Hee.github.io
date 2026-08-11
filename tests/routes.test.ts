@@ -782,10 +782,18 @@ describe("callouts", () => {
     );
 
     expect(css).toMatch(
-      /\.callout\{(?=[^}]*padding:14px 16px)(?=[^}]*border-radius:8px)/
+      /\.callout\{(?=[^}]*padding:14px 16px)(?=[^}]*border-radius:8px)(?=[^}]*line-height:1\.55)/
     );
-    expect(css).toMatch(/\.callout-title\{[^}]*align-items:center/);
+    expect(css).toMatch(
+      /\.callout-title\{(?=[^}]*min-height:20px)(?=[^}]*align-items:center)(?=[^}]*gap:7px)(?=[^}]*line-height:1\.4)/
+    );
     expect(css).toMatch(/\.callout-title-text\{[^}]*margin:0/);
+    expect(css).toMatch(
+      /\.callout-fold-icon\{(?=[^}]*display:flex)(?=[^}]*align-items:center)/
+    );
+    expect(css).toMatch(
+      /\.callout-content\{(?=[^}]*margin-top:7px)(?=[^}]*padding-inline-start:25px)/
+    );
     expect(css).toMatch(
       /\.callout-content>:first-child\{[^}]*margin-top:0/
     );
