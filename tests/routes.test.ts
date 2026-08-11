@@ -191,6 +191,7 @@ describe("시리즈 라우트", () => {
       expect(summary).toContain(
         "focus-visible:bg-[linear-gradient(90deg,var(--accent-muted),transparent)]"
       );
+      expect(summary).toContain("px-3");
       if (/href="\/posts\//.test(markup)) {
         expect(markup).toMatch(/>\s*01\s*</);
         const rows = [
