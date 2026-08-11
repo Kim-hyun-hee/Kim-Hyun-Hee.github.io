@@ -698,3 +698,32 @@ describe("markdown elements", () => {
     );
   });
 });
+
+describe("callouts", () => {
+  it("keeps plugin callout markup while applying centered local overrides", () => {
+    const html = readFileSync(
+      page("posts", "adding-new-posts-in-astropaper-theme"),
+      "utf-8"
+    );
+    const css = builtStyles();
+
+    expect(html).toMatch(
+      /<div\b(?=[^>]*\bclass="callout")(?=[^>]*\bdata-callout="note")(?=[^>]*\bdata-collapsible="false")[^>]*>[\s\S]*?<div class="callout-title">[\s\S]*?<div class="callout-title-text">/
+    );
+    expect(html).toMatch(
+      /<details\b(?=[^>]*\bclass="callout")(?=[^>]*\bdata-collapsible="true")[^>]*>[\s\S]*?<summary class="callout-title">[\s\S]*?<div class="callout-fold-icon"/
+    );
+
+    expect(css).toMatch(
+      /\.callout\{(?=[^}]*padding:14px 16px)(?=[^}]*border-radius:8px)/
+    );
+    expect(css).toMatch(/\.callout-title\{[^}]*align-items:center/);
+    expect(css).toMatch(/\.callout-title-text\{[^}]*margin:0/);
+    expect(css).toMatch(
+      /\.callout-content>:first-child\{[^}]*margin-top:0/
+    );
+    expect(css).toMatch(
+      /\.callout-content>:last-child\{[^}]*margin-bottom:0/
+    );
+  });
+});
