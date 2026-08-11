@@ -41,19 +41,28 @@ const pages = defineCollection({
   }),
 });
 
+const httpUrl = z
+  .url()
+  .refine(
+    value => /^https?:\/\//i.test(value),
+    "HTTP(S) URL만 사용할 수 있습니다."
+  );
+
+export const projectSchema = z.object({
+  title: z.string().min(1),
+  summary: z.string().min(1),
+  period: z.string().min(1),
+  role: z.string().min(1),
+  stack: z.array(z.string()).default([]),
+  featured: z.boolean().default(false),
+  repository: httpUrl.optional(),
+  website: httpUrl.optional(),
+  order: z.number().int().nonnegative(),
+});
+
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
-  schema: z.object({
-    title: z.string().min(1),
-    summary: z.string().min(1),
-    period: z.string().min(1),
-    role: z.string().min(1),
-    stack: z.array(z.string()).default([]),
-    featured: z.boolean().default(false),
-    repository: z.url().optional(),
-    website: z.url().optional(),
-    order: z.number().int().nonnegative(),
-  }),
+  schema: projectSchema,
 });
 
 export const collections = { posts, pages, projects };

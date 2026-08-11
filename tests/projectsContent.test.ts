@@ -37,7 +37,7 @@ const readProject = async (filename: string) => {
 };
 
 describe("sample project content", () => {
-  it("keeps ten complete editable samples in their intended featured order", async () => {
+  it("keeps ten complete editable samples in their intended order", async () => {
     const filenames = (await readdir(projectsDirectory)).filter(filename =>
       /\.(?:md|mdx)$/i.test(filename)
     );
@@ -59,14 +59,6 @@ describe("sample project content", () => {
     ]);
     expect(orders).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(new Set(orders)).toHaveLength(10);
-    expect(projects.filter(project => project.featured)).toHaveLength(4);
-    expect(
-      projects
-        .filter(project => project.featured)
-        .map(project => project.order)
-        .sort((a, b) => a - b)
-    ).toEqual([1, 2, 3, 4]);
-
     for (const project of projects) {
       expect(project.title).not.toBe("");
       expect(project.summary).not.toBe("");

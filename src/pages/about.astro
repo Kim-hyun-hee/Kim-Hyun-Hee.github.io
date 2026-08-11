@@ -8,6 +8,7 @@ import LinkButton from "@/components/LinkButton.astro";
 import FeaturedProject from "@/components/about/FeaturedProject.astro";
 import ProjectRow from "@/components/about/ProjectRow.astro";
 import config from "@/config";
+import { getAboutContactLinks } from "@/utils/getAboutContactLinks";
 import { groupProjects } from "@/utils/groupProjects";
 
 const about = await getEntry("pages", "about");
@@ -21,12 +22,7 @@ if (!about) {
 const { Content } = await render(about);
 const projects = await getCollection("projects");
 const { featured, other } = groupProjects(projects);
-const github =
-  config.socials.find(social => social.name.toLowerCase() === "github")?.url ??
-  config.site.profile;
-const email = config.socials.find(social =>
-  social.url.toLowerCase().startsWith("mailto:")
-);
+const { github, email } = getAboutContactLinks(config);
 ---
 
 <Layout
@@ -67,7 +63,7 @@ const email = config.socials.find(social =>
                 href={github}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="김현희의 GitHub 프로필 보기"
+                aria-label={`${config.site.author}의 GitHub 프로필 보기`}
                 variant="quiet"
                 class="border-border border"
               >

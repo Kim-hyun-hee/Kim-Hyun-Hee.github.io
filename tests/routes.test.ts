@@ -7,6 +7,7 @@ import { useTranslations } from "@/i18n";
 import siteConfig from "../astro-paper.config";
 
 const DIST = "dist";
+const PROJECTS = join("src", "content", "projects");
 
 beforeAll(() => {
   if (!existsSync(DIST)) {
@@ -16,6 +17,21 @@ beforeAll(() => {
 
 const page = (...segments: string[]) =>
   join(DIST, ...segments, "index.html");
+
+const projectRecords = () =>
+  readdirSync(PROJECTS)
+    .filter(filename => /\.(?:md|mdx)$/i.test(filename))
+    .map(filename => {
+      const source = readFileSync(join(PROJECTS, filename), "utf-8");
+      const frontmatter =
+        source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
+
+      return {
+        id: filename.replace(/\.(?:md|mdx)$/i, ""),
+        featured: /^featured:\s*true\s*$/m.test(frontmatter),
+        order: Number(frontmatter.match(/^order:\s*(\d+)\s*$/m)?.[1]),
+      };
+    });
 
 /**
  * dist/ 아래 모든 index.html뿐 아니라 모든 *.html을 재귀적으로 찾는다.
@@ -293,40 +309,50 @@ describe("About taxonomy links", () => {
 
 describe("About projects", () => {
   const about = () => readFileSync(page("about"), "utf-8");
-  const projectTitles = [
-    "DOD Digital Twin",
-    "AstroPaper Fork Redesign",
-    "NDT Defect Classifier",
-    "AGV Route Simulator",
-    "Equipment Dashboard",
-    "Sensor Data Pipeline",
-    "Factory Alert Console",
-    "Model Optimizer",
-    "Log Analysis Toolkit",
-    "Portfolio Data Model",
-  ];
 
   it("renders Markdown prose before the collection-backed projects section", () => {
     const html = about();
     const prose = html.indexOf("data-about-prose");
     const projects = html.indexOf('id="projects"');
+    const records = projectRecords();
 
     expect(prose).toBeGreaterThanOrEqual(0);
     expect(projects).toBeGreaterThan(prose);
-    expect(html.match(/data-featured-project/g)).toHaveLength(4);
-    expect(html.match(/data-project-row/g)).toHaveLength(6);
+    expect(html.match(/data-featured-project/g)).toHaveLength(
+      records.filter(record => record.featured).length
+    );
+    expect(html.match(/data-project-row/g)).toHaveLength(
+      records.filter(record => !record.featured).length
+    );
   });
 
-  it("renders every project exactly once in configured order", () => {
+  it("renders every project once with unique ordered h3 headings", () => {
     const html = about();
+    const projects = html.slice(html.indexOf('<section id="projects"'));
+    const records = projectRecords();
+    const byOrder = (a: (typeof records)[number], b: (typeof records)[number]) =>
+      a.order - b.order;
+    const expectedHeadingIds = [
+      ...records.filter(record => record.featured).sort(byOrder),
+      ...records.filter(record => !record.featured).sort(byOrder),
+    ].map(record => `project-${record.id}`);
+    const markerHeadingIds = [
+      ...projects.matchAll(
+        /<(?:article|li)\b(?=[^>]*\bdata-(?:featured-project|project-row)\b)(?=[^>]*\baria-labelledby="([^"]+)")[^>]*>/g
+      ),
+    ].map(([, id]) => id);
+    const headings = [
+      ...projects.matchAll(/<h3\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h3>/g),
+    ];
+    const headingIds = headings.map(([, id]) => id);
 
-    for (const title of projectTitles) {
-      expect(html.match(new RegExp(`>${title}<`, "g")), title).toHaveLength(1);
+    expect(records.length).toBeGreaterThan(0);
+    expect(markerHeadingIds).toEqual(expectedHeadingIds);
+    expect(headingIds).toEqual(expectedHeadingIds);
+    expect(new Set(headingIds)).toHaveLength(records.length);
+    for (const [, , heading] of headings) {
+      expect(heading.replace(/<[^>]+>/g, "").trim()).not.toBe("");
     }
-
-    const positions = projectTitles.map(title => html.indexOf(`>${title}<`));
-    expect(positions.every(position => position >= 0)).toBe(true);
-    expect(positions).toEqual([...positions].sort((a, b) => a - b));
   });
 
   it("uses a valid heading outline for project records", () => {
@@ -335,18 +361,23 @@ describe("About projects", () => {
 
     expect(html).toMatch(/<h1\b[^>]*>About<\/h1>/);
     expect(projects).toMatch(/<h2\b[^>]*>Projects<\/h2>/);
-    expect(projects.match(/<h3\b/g)).toHaveLength(10);
+    expect(projects.match(/<h3\b/g)).toHaveLength(projectRecords().length);
   });
 
   it("links the quiet profile action to the configured GitHub and omits email", () => {
     const html = about();
-    const github = siteConfig.socials?.find(social => social.name === "github");
+    const github =
+      siteConfig.socials?.find(
+        social => social.name.toLowerCase() === "github"
+      )?.url ?? siteConfig.site.profile;
+    const profileAction = html.match(
+      /<a\b(?=[^>]*data-about-profile)[^>]*>/
+    )?.[0];
 
-    expect(github?.url).toBeDefined();
-    expect(html).toMatch(
-      new RegExp(
-        `<a\\b(?=[^>]*data-about-profile)(?=[^>]*href="${github!.url}")[^>]*>`
-      )
+    expect(github).toBeDefined();
+    expect(profileAction).toContain(`href="${github}"`);
+    expect(profileAction).toContain(
+      `aria-label="${siteConfig.site.author}의 GitHub 프로필 보기"`
     );
     expect(html).not.toMatch(/href="mailto:/i);
     expect(html).not.toContain(">Contact<");
