@@ -32,11 +32,10 @@
       @apply text-foreground;
     }
 
-    /* [CUSTOM] 업스트림은 `text-accent`였습니다. 포인트 색은 본문 크기
-       텍스트에 쓰지 않기로 해서 글씨는 --link 로 두고 밑줄만 포인트 색을
-       칠합니다. 나머지 유틸(줄바꿈·오프셋)은 업스트림 원본입니다. */
+    /* [CUSTOM] 업스트림은 `text-accent`였습니다. 링크 글씨는 본문 색을
+       그대로 물려받고 밑줄만 포인트 색을 씁니다. */
     a {
-      @apply text-link decoration-accent wrap-break-word underline-offset-4 focus-visible:no-underline;
+      @apply decoration-accent focus-visible:outline-accent wrap-break-word text-inherit underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2;
     }
 
     ul {
@@ -67,14 +66,30 @@
       @apply opacity-75;
     }
 
+    [data-table-variant] {
+      @apply border-border my-8 overflow-hidden rounded-lg border;
+
+      > div {
+        @apply overflow-x-auto;
+      }
+
+      table {
+        @apply my-0;
+      }
+    }
+
     table {
       th,
       td {
-        @apply border-border border p-2;
+        @apply border-0 p-2;
       }
 
       th {
-        @apply py-1.5;
+        @apply border-border border-b py-1.5;
+      }
+
+      tbody tr:not(:last-child) {
+        @apply border-border border-b;
       }
 
       th[align="center"],

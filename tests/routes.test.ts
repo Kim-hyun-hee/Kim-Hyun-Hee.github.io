@@ -644,3 +644,33 @@ describe("dark site color tokens", () => {
     expect(dark).toContain("--sky-muted:#302820");
   });
 });
+
+describe("markdown elements", () => {
+  const specimen = () =>
+    readFileSync(
+      page("posts", "customizing-astropaper-theme-color-schemes"),
+      "utf-8"
+    );
+
+  it("keeps a rich Markdown specimen semantic while emitting the restrained prose styles", () => {
+    const html = specimen();
+    const css = builtStyles();
+
+    expect(html).toMatch(/<h2\b[^>]*\bid="[^"]+"[^>]*>/);
+    expect(html).toMatch(/<a\b[^>]*href="https?:\/\/[^\"]+"[^>]*>/);
+    expect(html).toMatch(/<blockquote\b[^>]*>/);
+    expect(html).toMatch(/<div\b[^>]*\bdata-table-variant=[^>]*>/);
+    expect(html).toMatch(/<table\b[^>]*>/);
+    expect(html).not.toMatch(/\bheading-link\b/);
+
+    expect(css).toMatch(
+      /\.app-prose a\{(?=[^}]*color:inherit)(?=[^}]*text-decoration-color:var\(--accent\))/
+    );
+    expect(css).toMatch(
+      /\.app-prose \[data-table-variant\]\{(?=[^}]*border-radius:)(?=[^}]*border[^}]*width:1px)/
+    );
+    expect(css).toMatch(
+      /\.app-prose table (?:th|td),\.app-prose table (?:th|td)\{[^}]*border[^}]*width:0/
+    );
+  });
+});
