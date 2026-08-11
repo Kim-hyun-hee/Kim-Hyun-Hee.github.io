@@ -929,6 +929,7 @@ describe("code blocks", () => {
 
   it("keeps both-axis scrolling inside the adaptive 550px frame", () => {
     const css = builtStyles();
+    const scrollportRule = css.match(/\.astro-code>code\{[^}]*\}/)?.[0];
 
     expect(css).toMatch(
       /\.astro-code\{(?=[^}]*overflow:hidden!important)(?=[^}]*padding:0)/
@@ -962,7 +963,8 @@ describe("code blocks", () => {
     );
     expect(css).toMatch(/::-webkit-scrollbar-track\{[^}]*background:0 0/);
     expect(css).toMatch(/::-webkit-scrollbar-corner\{[^}]*background:0 0/);
-    expect(css).toMatch(/\.astro-code>code\{[^}]*scrollbar-color:/);
+    expect(scrollportRule).toBeDefined();
+    expect(scrollportRule).toContain("scrollbar-color:auto");
     expect(css).toMatch(
       /\.astro-code>code:focus-visible\{(?=[^}]*outline[^}]*var\(--accent\))/
     );

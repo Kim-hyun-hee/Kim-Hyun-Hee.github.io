@@ -170,7 +170,7 @@
   .astro-code > code {
     @apply block max-h-[550px] overflow-auto;
     padding: 11px 13px 8px;
-    scrollbar-color: #a97ac0 transparent;
+    scrollbar-color: auto;
   }
 
   .astro-code > code:focus-visible {
