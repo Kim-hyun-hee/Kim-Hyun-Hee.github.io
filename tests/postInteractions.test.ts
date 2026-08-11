@@ -146,6 +146,9 @@ class FakeElement {
       if (selector === ".code-frame-title") {
         return element.className.split(" ").includes("code-frame-title");
       }
+      if (selector === ".code-frame-header") {
+        return element.className.split(" ").includes("code-frame-header");
+      }
       if (selector.startsWith("a[href], button")) {
         return element.tagName === "BUTTON";
       }
@@ -340,9 +343,11 @@ function appendPostArticle(fakeDocument: FakeDocument) {
 
 function appendCodeBlock(article: FakeElement, fakeDocument: FakeDocument) {
   const pre = fakeDocument.createElement("pre");
+  const header = fakeDocument.createElement("span");
+  header.className = "code-frame-header";
   const code = fakeDocument.createElement("code");
   code.innerText = "const answer = 42;";
-  pre.appendChild(code);
+  pre.append(header, code);
   article.appendChild(pre);
   return pre;
 }
@@ -439,7 +444,11 @@ describe("initPostInteractions", () => {
 
     initPostInteractions();
     const copyButton = codeBlock.querySelector(".copy-code");
+    const header = codeBlock.querySelector(".code-frame-header");
     expect(copyButton).not.toBeNull();
+    expect(copyButton!.parentNode).toBe(header);
+    expect(copyButton!.className).not.toMatch(/absolute|top-/);
+    expect(codeBlock.parentNode).toBe(article);
     expect(
       fakeDocument.count(element =>
         element.className.split(" ").includes("copy-code")
@@ -484,7 +493,7 @@ describe("initPostInteractions", () => {
     const title = fakeDocument.createElement("span");
     title.className = "code-frame-title";
     title.innerText = "src/content.config.ts";
-    namedPre.insertBefore(title, namedCode);
+    namedPre.querySelector(".code-frame-header")!.appendChild(title);
     namedPre.setAttribute("tabindex", "0");
     const unnamedPre = appendCodeBlock(article, fakeDocument);
     const unnamedCode = unnamedPre.querySelector("code")!;

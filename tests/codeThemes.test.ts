@@ -73,9 +73,10 @@ describe("Horizon B Shiki themes", () => {
     });
     expect(horizonLight.settings[0]?.settings.background).toBe("#fafafa");
     expect(horizonDark.colors).toMatchObject({
-      "editor.background": "#1c1e26",
+      "editor.background": "#1f1f20",
       "editor.foreground": "#cbced0",
     });
+    expect(horizonDark.settings[0]?.settings.background).toBe("#1f1f20");
 
     for (const [scope, light, dark] of roles) {
       expect(foregroundFor(horizonLight, scope)).toBe(light);
@@ -157,7 +158,7 @@ Plain prose, with punctuation.
       "--shiki-light:#36373d",
       "--shiki-dark:#cbced0",
       "--shiki-light-bg:#fafafa",
-      "--shiki-dark-bg:#1c1e26",
+      "--shiki-dark-bg:#1f1f20",
       "--shiki-light:#3f75a9",
       "--shiki-dark:#8fb4dd",
     ]) {

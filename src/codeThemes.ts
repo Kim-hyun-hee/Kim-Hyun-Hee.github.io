@@ -73,11 +73,11 @@ export const horizonDark: RawTheme = {
   name: "horizon-b-dark",
   type: "dark",
   colors: {
-    "editor.background": "#1c1e26",
+    "editor.background": "#1f1f20",
     "editor.foreground": "#cbced0",
   },
   settings: [
-    { settings: { background: "#1c1e26", foreground: "#cbced0" } },
+    { settings: { background: "#1f1f20", foreground: "#cbced0" } },
     {
       scope: ["comment", "punctuation.definition.comment"],
       settings: { foreground: "#6f6f70" },

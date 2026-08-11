@@ -82,23 +82,14 @@ function setupCodeCopy({ signal, timers }: CopySetupOptions) {
     let copyButton = codeBlock.querySelector<HTMLButtonElement>(".copy-code");
 
     if (!copyButton) {
-      const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
-
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
+      const header = codeBlock.querySelector<HTMLElement>(".code-frame-header");
+      if (!header) continue;
 
       copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
+      copyButton.className =
+        "copy-code ms-auto shrink-0 rounded border px-2 py-1 text-[10px] leading-none font-medium";
       copyButton.innerHTML = copyButtonLabel;
-      codeBlock.appendChild(copyButton);
-
-      codeBlock.parentNode?.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
+      header.appendChild(copyButton);
     } else {
       copyButton.innerText = copyButtonLabel;
     }

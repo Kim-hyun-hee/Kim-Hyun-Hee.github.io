@@ -167,9 +167,8 @@
 
   .astro-code > code {
     @apply block max-h-[550px] overflow-auto;
-    margin-bottom: 30px;
-    padding: 55px 17px 18px;
-    scrollbar-color: #c08ae5 transparent;
+    padding: 11px 13px 8px;
+    scrollbar-color: #a97ac0 transparent;
   }
 
   .astro-code > code:focus-visible {
@@ -179,28 +178,29 @@
 
   html[data-theme="dark"] .astro-code {
     @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
-    border-color: #34353d;
+    border-color: #3a3a3d;
     background-color: var(--shiki-dark-bg);
     box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
   }
 
   .code-frame-header {
-    @apply pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center gap-2 border-b;
-    height: 40px;
-    padding-inline: 14px;
+    @apply relative flex items-center border-b;
+    height: 38px;
+    gap: 7px;
+    padding-inline: 13px 10px;
     border-color: #dedede;
     background-color: #f0f0f1;
   }
 
   html[data-theme="dark"] .code-frame-header {
-    border-color: #2e303e;
-    background-color: #232530;
+    border-color: #343436;
+    background-color: #272729;
   }
 
   .code-frame-light {
     @apply rounded-full;
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
   }
 
   .code-frame-light-red {
@@ -215,21 +215,9 @@
     background-color: #43c645;
   }
 
-  .astro-code .code-frame-title,
-  .astro-code .copy-code {
-    top: 0.5rem;
-    z-index: 20;
-  }
-
   .astro-code .code-frame-title {
-    position: absolute;
-    inset-inline-start: 4.5rem;
-    inset-inline-end: 4.5rem;
-    max-width: calc(100% - 9rem);
+    min-width: 0;
     overflow: hidden;
-    padding: 0;
-    border: 0;
-    background: transparent;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: 11px;
@@ -239,26 +227,56 @@
     content: none;
   }
 
+  .astro-code .copy-code {
+    pointer-events: auto;
+    border-color: #d8d8da;
+    background-color: #fafafa;
+    color: #4c4c50;
+  }
+
+  html[data-theme="dark"] .astro-code .copy-code {
+    border-color: #414145;
+    background-color: #1f1f20;
+    color: #cbced0;
+  }
+
   .astro-code > code::-webkit-scrollbar {
     width: 15px;
     height: 15px;
   }
 
   .astro-code > code::-webkit-scrollbar-thumb {
-    border: 5px solid #fafafa;
+    border: 4px solid #fafafa;
     border-radius: 10px;
   }
 
   .astro-code > code::-webkit-scrollbar-thumb:horizontal {
-    background: linear-gradient(to right, #3ac3d0, #c08ae5, #f06689, #ffd0aa);
+    background: linear-gradient(to right, #3a9da5, #a97ac0, #dd6577, #d39a78);
   }
 
   .astro-code > code::-webkit-scrollbar-thumb:vertical {
-    background: linear-gradient(to bottom, #3ac3d0, #c08ae5, #f06689, #ffd0aa);
+    background: linear-gradient(to bottom, #3a9da5, #a97ac0, #dd6577, #d39a78);
   }
 
   [data-theme="dark"] .astro-code > code::-webkit-scrollbar-thumb {
-    border-color: #1c1e26;
+    border-color: #1f1f20;
+  }
+
+  [data-theme="dark"] .astro-code > code::-webkit-scrollbar-thumb:horizontal {
+    background: linear-gradient(to right, #24a8b4, #b072d1, #e93c58, #efb993);
+  }
+
+  [data-theme="dark"] .astro-code > code::-webkit-scrollbar-thumb:vertical {
+    background: linear-gradient(to bottom, #24a8b4, #b072d1, #e93c58, #efb993);
+  }
+
+  .astro-code > code::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  .astro-code > code::-webkit-scrollbar-track,
+  .astro-code > code::-webkit-scrollbar-corner {
+    background: transparent;
   }
 
   .astro-code > code .line {
@@ -268,24 +286,30 @@
   }
 
   .astro-code > code .line:hover {
-    background-color: #f1f1f2;
+    background-color: #eeeeef;
   }
 
   html[data-theme="dark"] .astro-code > code .line:hover {
-    background-color: #262830;
+    background-color: #29292b;
   }
 
   .astro-code::after {
-    position: absolute;
-    inset-inline-end: 12px;
-    bottom: 8px;
-    color: #3ac3d0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 23px;
+    padding-inline: 10px;
+    color: #8387d3;
     font-family: var(--font-mono);
     font-size: 11px;
     line-height: 1;
     text-transform: uppercase;
     pointer-events: none;
     content: attr(data-language);
+  }
+
+  html[data-theme="dark"] .astro-code::after {
+    color: #e58d7d;
   }
 
   /* Styles for Shiki transformers */

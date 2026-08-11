@@ -822,7 +822,7 @@ describe("code blocks", () => {
       /^<pre\b[^>]*><span class="code-frame-header"><span class="code-frame-light code-frame-light-red" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-yellow" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-green" aria-hidden="true"><\/span><span class="code-frame-title">src\/content\.config\.ts<\/span><\/span><code>/
     );
     expect(unnamed).toMatch(
-      /^<pre\b[^>]*><span class="code-frame-header" aria-hidden="true"><span class="code-frame-light code-frame-light-red" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-yellow" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-green" aria-hidden="true"><\/span><\/span><code>/
+      /^<pre\b[^>]*><span class="code-frame-header"><span class="code-frame-light code-frame-light-red" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-yellow" aria-hidden="true"><\/span><span class="code-frame-light code-frame-light-green" aria-hidden="true"><\/span><\/span><code>/
     );
     expect((named.match(/class="code-frame-header"/g) ?? []).length).toBe(1);
     expect((named.match(/class="code-frame-light /g) ?? []).length).toBe(3);
@@ -857,7 +857,7 @@ describe("code blocks", () => {
       /\.astro-code\{[^}]*background-color:var\(--shiki-light-bg\)/
     );
     expect(css).toMatch(
-      /\.astro-code>code\{(?=[^}]*display:block)(?=[^}]*max-height:550px)(?=[^}]*overflow:auto)/
+      /\.astro-code>code\{(?=[^}]*display:block)(?=[^}]*max-height:550px)(?=[^}]*padding:11px 13px 8px)(?=[^}]*overflow:auto)/
     );
     expect(css).toMatch(
       /html\[data-theme=dark\] \.astro-code\{(?=[^}]*background-color:var\(--shiki-dark-bg\))/
@@ -866,17 +866,20 @@ describe("code blocks", () => {
       /\.astro-code>code::-webkit-scrollbar\{(?=[^}]*width:15px)(?=[^}]*height:15px)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*border:5px solid #fafafa)(?=[^}]*border-radius:10px)/
+      /\.astro-code>code::-webkit-scrollbar-thumb\{(?=[^}]*border:4px solid #fafafa)(?=[^}]*border-radius:10px)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#3ac3d0,#c08ae5,#f06689,#ffd0aa\)/
+      /\.astro-code>code::-webkit-scrollbar-thumb:horizontal\{[^}]*linear-gradient\(90deg,#3a9da5,#a97ac0,#dd6577,#d39a78\)/
     );
     expect(css).toMatch(
-      /\.astro-code>code::-webkit-scrollbar-thumb:vertical\{[^}]*linear-gradient\(#3ac3d0,#c08ae5,#f06689,#ffd0aa\)/
+      /\.astro-code>code::-webkit-scrollbar-thumb:vertical\{[^}]*linear-gradient\(#3a9da5,#a97ac0,#dd6577,#d39a78\)/
     );
     expect(css).toMatch(
-      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1c1e26/
+      /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1f1f20/
     );
+    expect(css).toMatch(/::-webkit-scrollbar-button\{[^}]*display:none/);
+    expect(css).toMatch(/::-webkit-scrollbar-track\{[^}]*background:0 0/);
+    expect(css).toMatch(/::-webkit-scrollbar-corner\{[^}]*background:0 0/);
     expect(css).toMatch(/\.astro-code>code\{[^}]*scrollbar-color:/);
     expect(css).toMatch(
       /\.astro-code>code:focus-visible\{(?=[^}]*outline[^}]*var\(--accent\))/
@@ -885,25 +888,28 @@ describe("code blocks", () => {
       /\.astro-code\{(?=[^}]*border-color:#dedede)(?=[^}]*border-radius:10px)(?=[^}]*background-color:var\(--shiki-light-bg\))(?=[^}]*box-shadow:0 8px 24px)/
     );
     expect(css).toMatch(
-      /html\[data-theme=dark\] \.astro-code\{(?=[^}]*border-color:#34353d)(?=[^}]*background-color:var\(--shiki-dark-bg\))(?=[^}]*box-shadow:0 8px 24px)/
+      /html\[data-theme=dark\] \.astro-code\{(?=[^}]*border-color:#3a3a3d)(?=[^}]*background-color:var\(--shiki-dark-bg\))(?=[^}]*box-shadow:0 8px 24px)/
     );
     expect(css).toMatch(
-      /\.code-frame-header\{(?=[^}]*height:40px)(?=[^}]*background-color:#f0f0f1)/
+      /\.code-frame-header\{(?=[^}]*height:38px)(?=[^}]*position:relative)(?=[^}]*background-color:#f0f0f1)/
     );
     expect(css).toMatch(
-      /html\[data-theme=dark\] \.code-frame-header\{(?=[^}]*border-color:#2e303e)(?=[^}]*background-color:#232530)/
+      /html\[data-theme=dark\] \.code-frame-header\{(?=[^}]*border-color:#343436)(?=[^}]*background-color:#272729)/
     );
-    expect(css).toMatch(/\.code-frame-light\{[^}]*width:11px[^}]*height:11px/);
+    expect(css).toMatch(/\.code-frame-light\{[^}]*width:10px[^}]*height:10px/);
     expect(css).toMatch(/\.astro-code \.code-frame-title\{[^}]*font-size:11px/);
-    expect(css).toMatch(/\.astro-code>code\{[^}]*margin-bottom:30px/);
+    expect(css).not.toMatch(/\.astro-code>code\{[^}]*margin-bottom:/);
     expect(css).toMatch(
-      /\.astro-code>code \.line:hover\{[^}]*background-color:#f1f1f2/
+      /\.astro-code>code \.line:hover\{[^}]*background-color:#eeeeef/
     );
     expect(css).toMatch(
-      /html\[data-theme=dark\] \.astro-code>code \.line:hover\{[^}]*background-color:#262830/
+      /html\[data-theme=dark\] \.astro-code>code \.line:hover\{[^}]*background-color:#29292b/
     );
     expect(css).toMatch(
-      /\.astro-code:after\{(?=[^}]*content:attr\(data-language\))(?=[^}]*inset-inline-end:12px)(?=[^}]*bottom:8px)(?=[^}]*color:#3ac3d0)(?=[^}]*font-size:11px)/
+      /\.astro-code:after\{(?=[^}]*content:attr\(data-language\))(?=[^}]*height:23px)(?=[^}]*color:#8387d3)(?=[^}]*font-size:11px)/
+    );
+    expect(css).toMatch(
+      /html\[data-theme=dark\] \.astro-code:after\{[^}]*color:#e58d7d/
     );
   });
 
@@ -916,7 +922,7 @@ describe("code blocks", () => {
 
     expect(html).toContain("src/content/posts/sample-post.md");
     expect(css).toMatch(
-      /\.astro-code \.code-frame-title\{(?=[^}]*inset-inline:4\.5rem)(?=[^}]*max-width:calc\(100% - 9rem\))(?=[^}]*white-space:nowrap)(?=[^}]*overflow:hidden)(?=[^}]*text-overflow:ellipsis)/
+      /\.astro-code \.code-frame-title\{(?=[^}]*min-width:0)(?=[^}]*white-space:nowrap)(?=[^}]*overflow:hidden)(?=[^}]*text-overflow:ellipsis)/
     );
   });
 

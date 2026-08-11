@@ -4,7 +4,7 @@
  */
 /** @param {{ style?: string; hideDot?: boolean }} options */
 export const transformerFileName = (options = {}) => {
-  const { style = "v2" } = options;
+  void options;
 
   return {
     pre(node) {
@@ -29,18 +29,11 @@ export const transformerFileName = (options = {}) => {
       }
 
       const file = metaMap.get("file");
-      const fileNameOffset = style === "v1" ? "0.75rem" : "-0.75rem";
-
-      node.properties.style =
-        (node.properties.style || "") +
-        `--file-name-offset: ${fileNameOffset};`;
-
       const header = {
         type: "element",
         tagName: "span",
         properties: {
           class: ["code-frame-header"],
-          ...(file ? {} : { ariaHidden: "true" }),
         },
         children: ["red", "yellow", "green"].map(color => ({
           type: "element",
@@ -54,10 +47,6 @@ export const transformerFileName = (options = {}) => {
       };
 
       if (file) {
-        this.addClassToHast(
-          node,
-          `mt-8 ${style === "v1" ? "rounded-tl-none" : ""}`
-        );
         header.children.push({
           type: "element",
           tagName: "span",
