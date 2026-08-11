@@ -154,10 +154,6 @@
     summary {
       @apply focus-visible:outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-dashed;
     }
-
-    pre {
-      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
-    }
   }
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
@@ -168,6 +164,11 @@
   .astro-code > code {
     @apply block max-h-[550px] overflow-auto px-4 pt-11 pb-4;
     scrollbar-color: #c08ae5 transparent;
+  }
+
+  .astro-code > code:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: -2px;
   }
 
   html[data-theme="dark"] .astro-code {

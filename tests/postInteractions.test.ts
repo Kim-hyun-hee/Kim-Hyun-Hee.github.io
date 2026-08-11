@@ -114,6 +114,10 @@ class FakeElement {
     this.text = value;
   }
 
+  getAttribute(name: string) {
+    return this.attributes.get(name) ?? null;
+  }
+
   insertBefore(child: FakeElement, before: FakeElement) {
     const index = this.children.indexOf(before);
     if (index < 0) return this.appendChild(child);
@@ -139,6 +143,9 @@ class FakeElement {
       if (selector === ".copy-code") {
         return element.className.split(" ").includes("copy-code");
       }
+      if (selector === ".code-frame-title") {
+        return element.className.split(" ").includes("code-frame-title");
+      }
       if (selector.startsWith("a[href], button")) {
         return element.tagName === "BUTTON";
       }
@@ -155,6 +162,10 @@ class FakeElement {
     if (!this.parentNode) return;
     this.parentNode.children.splice(this.parentNode.children.indexOf(this), 1);
     this.parentNode = null;
+  }
+
+  removeAttribute(name: string) {
+    this.attributes.delete(name);
   }
 
   setAttribute(name: string, value: string) {
@@ -463,6 +474,54 @@ describe("initPostInteractions", () => {
     cleanup();
     browser.advanceTime(700);
     expect(copyButton!.innerText).toBe("Copied");
+  });
+
+  it("focuses and labels the code scrollport while restoring attributes on re-init and cleanup", () => {
+    const fakeDocument = new FakeDocument();
+    const article = appendPostArticle(fakeDocument);
+    const namedPre = appendCodeBlock(article, fakeDocument);
+    const namedCode = namedPre.querySelector("code")!;
+    const title = fakeDocument.createElement("span");
+    title.className = "code-frame-title";
+    title.innerText = "src/content.config.ts";
+    namedPre.insertBefore(title, namedCode);
+    namedPre.setAttribute("tabindex", "0");
+    const unnamedPre = appendCodeBlock(article, fakeDocument);
+    const unnamedCode = unnamedPre.querySelector("code")!;
+    unnamedPre.setAttribute("tabindex", "0");
+    installBrowserGlobals(fakeDocument);
+
+    initPostInteractions();
+    expect(namedPre.getAttribute("tabindex")).toBeNull();
+    expect(namedCode.getAttribute("tabindex")).toBe("0");
+    expect(namedCode.getAttribute("aria-labelledby")).toBe(
+      title.getAttribute("id")
+    );
+    expect(namedCode.getAttribute("aria-label")).toBeNull();
+    expect(unnamedPre.getAttribute("tabindex")).toBeNull();
+    expect(unnamedCode.getAttribute("tabindex")).toBe("0");
+    expect(unnamedCode.getAttribute("aria-label")).toBe("Code block");
+    expect(unnamedCode.getAttribute("aria-labelledby")).toBeNull();
+
+    const cleanup = initPostInteractions();
+    expect(namedPre.getAttribute("tabindex")).toBeNull();
+    expect(namedCode.getAttribute("aria-labelledby")).toBe(
+      title.getAttribute("id")
+    );
+    expect(
+      fakeDocument.count(element =>
+        element.className.split(" ").includes("copy-code")
+      )
+    ).toBe(2);
+
+    cleanup();
+    expect(namedPre.getAttribute("tabindex")).toBe("0");
+    expect(namedCode.getAttribute("tabindex")).toBeNull();
+    expect(namedCode.getAttribute("aria-labelledby")).toBeNull();
+    expect(title.getAttribute("id")).toBeNull();
+    expect(unnamedPre.getAttribute("tabindex")).toBe("0");
+    expect(unnamedCode.getAttribute("tabindex")).toBeNull();
+    expect(unnamedCode.getAttribute("aria-label")).toBeNull();
   });
 
   it("does not update copy UI when cleanup wins a pending clipboard write", async () => {

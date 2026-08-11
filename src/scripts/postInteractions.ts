@@ -41,8 +41,44 @@ function setupProgress({ signal }: SetupOptions) {
 function setupCodeCopy({ signal, timers }: CopySetupOptions) {
   const copyButtonLabel = "Copy";
   const codeBlocks = Array.from(document.querySelectorAll("pre"));
+  const originalAttributes = new Map<HTMLElement, Map<string, string | null>>();
 
-  for (const codeBlock of codeBlocks) {
+  const setManagedAttribute = (
+    element: HTMLElement,
+    name: string,
+    value: string | null
+  ) => {
+    const attributes = originalAttributes.get(element) ?? new Map();
+    if (!originalAttributes.has(element)) {
+      originalAttributes.set(element, attributes);
+    }
+    if (!attributes.has(name)) attributes.set(name, element.getAttribute(name));
+
+    if (value === null) {
+      element.removeAttribute(name);
+    } else {
+      element.setAttribute(name, value);
+    }
+  };
+
+  for (const [index, codeBlock] of codeBlocks.entries()) {
+    const scrollport = codeBlock.querySelector<HTMLElement>("code");
+    if (!scrollport) continue;
+
+    setManagedAttribute(codeBlock, "tabindex", null);
+    setManagedAttribute(scrollport, "tabindex", "0");
+
+    const title = codeBlock.querySelector<HTMLElement>(".code-frame-title");
+    if (title) {
+      const titleId = title.id || `code-frame-title-${index + 1}`;
+      setManagedAttribute(title, "id", titleId);
+      setManagedAttribute(scrollport, "aria-labelledby", titleId);
+      setManagedAttribute(scrollport, "aria-label", null);
+    } else {
+      setManagedAttribute(scrollport, "aria-labelledby", null);
+      setManagedAttribute(scrollport, "aria-label", "Code block");
+    }
+
     let copyButton = codeBlock.querySelector<HTMLButtonElement>(".copy-code");
 
     if (!copyButton) {
@@ -59,7 +95,6 @@ function setupCodeCopy({ signal, timers }: CopySetupOptions) {
       copyButton = document.createElement("button");
       copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
       copyButton.innerHTML = copyButtonLabel;
-      codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
 
       codeBlock.parentNode?.insertBefore(wrapper, codeBlock);
@@ -85,6 +120,18 @@ function setupCodeCopy({ signal, timers }: CopySetupOptions) {
       { signal }
     );
   }
+
+  return () => {
+    originalAttributes.forEach((attributes, element) => {
+      attributes.forEach((value, name) => {
+        if (value === null) {
+          element.removeAttribute(name);
+        } else {
+          element.setAttribute(name, value);
+        }
+      });
+    });
+  };
 }
 
 function setupLightbox({ signal, timers }: CopySetupOptions) {
@@ -405,14 +452,16 @@ export function initPostInteractions(): () => void {
   const timers = new Set<number>();
 
   setupProgress({ signal });
-  setupCodeCopy({ signal, timers });
+  const restoreCodeAttributes = setupCodeCopy({ signal, timers });
   const closeLightboxImmediately = setupLightbox({ signal, timers });
 
   const cleanup = () => {
     controller.abort();
     timers.forEach(window.clearTimeout);
     timers.clear();
+    restoreCodeAttributes();
     closeLightboxImmediately();
+    if (cleanupCurrent === cleanup) cleanupCurrent = undefined;
   };
   cleanupCurrent = cleanup;
   return cleanup;

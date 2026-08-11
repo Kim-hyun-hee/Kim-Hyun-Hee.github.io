@@ -814,6 +814,9 @@ describe("code blocks", () => {
       /\[data-theme=dark\] \.astro-code>code::-webkit-scrollbar-thumb\{[^}]*border-color:#1c1e26/
     );
     expect(css).toMatch(/\.astro-code>code\{[^}]*scrollbar-color:/);
+    expect(css).toMatch(
+      /\.astro-code>code:focus-visible\{(?=[^}]*outline[^}]*var\(--accent\))/
+    );
   });
 
   it("reserves a clipped filename lane beside copy control at narrow widths", () => {
